@@ -1,0 +1,9 @@
+{
+  "name": "Trip Planner",
+  "short_name": "Trip",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f8f9",
+  "theme_color": "#1b4965",
+  "orientation": "portrait"
+}
