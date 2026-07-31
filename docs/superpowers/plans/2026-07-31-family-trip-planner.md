@@ -1275,7 +1275,7 @@ Expected: `valid`, exit 0. If it fails, do **not** hand-edit the data to make it
 
 - [ ] **Step 3: Run the full test suite**
 
-Run: `node --test test/`
+Run: `node --test test/*.test.mjs`
 Expected: all pass, including `test/data.test.mjs` against the new real data.
 
 - [ ] **Step 4: Spot-check three places by hand**
@@ -2114,7 +2114,7 @@ Confirm: typing in search narrows the list without losing focus; tapping "🌧 R
 In `sw.js`, add `"src/filter.js"` and `"src/state.js"` to `ASSETS` and bump `CACHE` to `"trip-planner-v3"`.
 
 ```bash
-node --test test/
+node --test test/*.test.mjs
 git add src/views/explore.js src/app.js styles.css sw.js
 git commit -m "feat: search, filter chips and per-card actions in Explore"
 git push
@@ -2248,7 +2248,7 @@ Add three places to one day and two to another. Reorder with the chevrons. Confi
 Add `"src/views/itinerary.js"` to `ASSETS` in `sw.js` and bump `CACHE` to `"trip-planner-v4"`.
 
 ```bash
-node --test test/
+node --test test/*.test.mjs
 git add src/views/itinerary.js src/app.js styles.css sw.js
 git commit -m "feat: itinerary with tap-to-assign, reordering and persistence"
 git push
@@ -2387,7 +2387,7 @@ Favourite two places, mark one visited, type a note and click elsewhere to blur.
 Add `"src/views/saved.js"` to `ASSETS` and bump `CACHE` to `"trip-planner-v5"`.
 
 ```bash
-node --test test/
+node --test test/*.test.mjs
 git add src/views/saved.js src/app.js styles.css sw.js
 git commit -m "feat: saved view with favourites, visited and notes"
 git push
@@ -2554,7 +2554,7 @@ Export the file. Clear the site's storage (Safari → Develop → Empty Caches, 
 Add `"src/views/trip.js"` to `ASSETS` and bump `CACHE` to `"trip-planner-v6"`.
 
 ```bash
-node --test test/
+node --test test/*.test.mjs
 git add src/views/trip.js src/app.js styles.css sw.js test/trip.test.mjs
 git commit -m "feat: trip view with countdown, counts and state backup"
 git push
@@ -2595,7 +2595,7 @@ const BATCHES = [
 ```bash
 node tools/generate-trip.mjs --city Copenhagen --country Denmark --from 2026-08-02 --to 2026-08-08 --out data/copenhagen-2026.json
 node tools/validate-data.mjs data/copenhagen-2026.json
-node --test test/
+node --test test/*.test.mjs
 ```
 
 Expected: roughly 70–85 places, `valid`, all tests pass. Note in the commit message any batch that was skipped, so the gap is recorded rather than invisible.
