@@ -80,3 +80,18 @@ main { padding: 1rem; max-width: 46rem; margin: 0 auto; }
 .nudge:disabled { color: var(--line); cursor: default; }
 .day-item-body { flex: 1; display: grid; }
 .remove { width: 44px; min-height: 44px; border: 0; background: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; }
+.saved-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+.saved-item { display: flex; align-items: center; gap: 0.4rem; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.5rem; }
+.saved-item.is-visited .name { text-decoration: line-through; text-decoration-color: var(--muted); }
+.notes { display: grid; gap: 0.6rem; }
+.note-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; }
+.note-input { width: 100%; font: inherit; padding: 0.5rem; border: 1px solid var(--line); border-radius: 10px; resize: vertical; }
+.countdown { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1rem; text-align: center; display: grid; gap: 0.2rem; }
+.countdown strong { font-size: 2rem; line-height: 1; }
+.countdown span { color: var(--muted); font-size: 0.9rem; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.stat { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; text-align: center; display: grid; gap: 0.1rem; }
+.stat strong { font-size: 1.2rem; }
+.stat span { font-size: 0.75rem; color: var(--muted); }
+.hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+label.action { display: inline-flex; align-items: center; cursor: pointer; }

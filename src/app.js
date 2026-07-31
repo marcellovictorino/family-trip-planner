@@ -1,6 +1,8 @@
 import { clear, h } from "./dom.js";
 import { renderExplore } from "./views/explore.js";
 import { renderItinerary } from "./views/itinerary.js";
+import { renderSaved } from "./views/saved.js";
+import { renderTrip } from "./views/trip.js";
 import { state } from "./state.js";
 
 const DATA_URL = "data/copenhagen-2026.json";
@@ -63,6 +65,13 @@ const actions = {
   },
 };
 
+function downloadJson(filename, text) {
+  const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+  const link = h("a", { href: url, download: filename });
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function render() {
   const active = document.activeElement;
   const wasSearch = active?.classList?.contains("search");
@@ -93,7 +102,43 @@ function render() {
       }),
     );
   }
-  // Later tasks add the other branches here.
+  if (activeTab === "saved") {
+    clear(panels.saved);
+    panels.saved.append(
+      renderSaved({
+        places: data.places,
+        favourites: snapshot.favourites,
+        visited: snapshot.visited,
+        notes: snapshot.notes,
+        handlers: {
+          onNote: (id, text) => state.setNote(id, text),
+          onFavourite: (id) => state.toggleFavourite(id),
+          onVisited: (id) => state.toggleVisited(id),
+        },
+      }),
+    );
+  }
+  if (activeTab === "trip") {
+    clear(panels.trip);
+    panels.trip.append(
+      renderTrip({
+        trip: data.trip,
+        places: data.places,
+        snapshot,
+        today: new Date().toISOString().slice(0, 10),
+        handlers: {
+          onExport: () => downloadJson(`${data.trip.city.toLowerCase()}-trip-state.json`, state.exportJson()),
+          onImport: (text) => {
+            try {
+              state.importJson(text);
+            } catch (error) {
+              alert(`That file could not be read: ${error.message}`);
+            }
+          },
+        },
+      }),
+    );
+  }
   if (wasSearch) {
     const search = panels.explore.querySelector(".search");
     search?.focus();
