@@ -1,0 +1,50 @@
+:root {
+  --ink: #17242b;
+  --muted: #5d6b73;
+  --line: #dfe5e8;
+  --bg: #f6f8f9;
+  --accent: #1b4965;
+  --attraction: #cfe3ef;
+  --playground: #d6ecd8;
+  --restaurant: #f4e2cf;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font: 16px/1.5 -apple-system, system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+header { position: sticky; top: 0; background: #fff; border-bottom: 1px solid var(--line); z-index: 2; }
+h1 { margin: 0; padding: 0.6rem 1rem 0.2rem; font-size: 1.1rem; }
+nav { display: flex; overflow-x: auto; }
+.tab {
+  flex: 1 0 auto; min-height: 44px; padding: 0 1rem;
+  border: 0; border-bottom: 3px solid transparent; background: none;
+  font: inherit; color: var(--muted); cursor: pointer;
+}
+.tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+main { padding: 1rem; max-width: 46rem; margin: 0 auto; }
+.cards { display: grid; gap: 0.75rem; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.card summary { display: grid; gap: 0.15rem; padding: 0.75rem; min-height: 44px; cursor: pointer; }
+.card summary::-webkit-details-marker { display: none; }
+.band { font-size: 0.75rem; color: var(--muted); }
+.kind-attraction .band { background: var(--attraction); }
+.kind-playground .band { background: var(--playground); }
+.kind-restaurant .band { background: var(--restaurant); }
+.band { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 6px; justify-self: start; }
+.name { font-weight: 600; }
+.facts-line { font-size: 0.85rem; color: var(--muted); }
+.icons { display: flex; gap: 0.4rem; font-size: 0.9rem; }
+.icon { line-height: 1; }
+.detail { padding: 0 0.75rem 0.75rem; border-top: 1px solid var(--line); }
+.detail p { margin: 0.6rem 0; }
+.tip { font-size: 0.9rem; color: var(--muted); }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 0.75rem; margin: 0.6rem 0; font-size: 0.9rem; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; }
+.links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.links a { min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); }
+.empty { color: var(--muted); }
