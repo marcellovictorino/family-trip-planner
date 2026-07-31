@@ -16,3 +16,6 @@ package-lock.json
 # Secrets
 .env
 .env.*
+
+# Playwright MCP verification output
+.playwright-mcp/
