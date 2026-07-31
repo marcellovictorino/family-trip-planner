@@ -48,3 +48,35 @@ main { padding: 1rem; max-width: 46rem; margin: 0 auto; }
 .links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .links a { min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); }
 .empty { color: var(--muted); }
+.controls { display: grid; gap: 0.6rem; margin-bottom: 0.75rem; }
+.search { min-height: 44px; padding: 0 0.75rem; font: inherit; border: 1px solid var(--line); border-radius: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip {
+  min-height: 44px; padding: 0 0.7rem; font: inherit; font-size: 0.85rem;
+  border: 1px solid var(--line); border-radius: 22px; background: #fff; color: var(--ink); cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip.clear { border-style: dashed; }
+.count { font-size: 0.85rem; color: var(--muted); margin: 0 0 0.5rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+.action {
+  min-height: 44px; padding: 0 0.8rem; font: inherit; font-size: 0.9rem;
+  border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); cursor: pointer;
+}
+.action[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.action.primary { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.is-visited summary .name { text-decoration: line-through; text-decoration-color: var(--muted); }
+.day-picker { border: 0; border-radius: 14px; padding: 1rem; max-width: 22rem; width: calc(100% - 2rem); }
+.day-picker::backdrop { background: rgb(0 0 0 / 0.4); }
+.day-picker h2 { margin: 0 0 0.75rem; font-size: 1rem; }
+.day-list { display: grid; gap: 0.4rem; margin-bottom: 0.6rem; }
+.itinerary { display: grid; gap: 1.25rem; }
+.day h2 { margin: 0 0 0.4rem; font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+.day-total { font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+.day-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+.day-item { display: flex; align-items: center; gap: 0.5rem; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.5rem; }
+.grip { display: grid; }
+.nudge { width: 44px; height: 22px; border: 0; background: none; color: var(--accent); font-size: 0.9rem; cursor: pointer; }
+.nudge:disabled { color: var(--line); cursor: default; }
+.day-item-body { flex: 1; display: grid; }
+.remove { width: 44px; min-height: 44px; border: 0; background: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; }
