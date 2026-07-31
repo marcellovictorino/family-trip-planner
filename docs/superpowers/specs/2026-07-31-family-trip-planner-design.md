@@ -62,6 +62,10 @@ claude -p "<batch prompt with JSON schema inline>" \
 Structured output is enforced by us, not the model: parse, validate against
 `src/schema.mjs`, and re-request the batch on failure. Never merge an invalid batch.
 
+The research call lives in a single `runResearch(prompt)` function with the command held in
+one constant, so a `pi`-driven gpt backend can replace it by editing one place. Claude is
+preferred for now on output quality. This is a single seam, not an abstraction layer.
+
 ## Data model
 
 One collection. `activities[]` + `restaurants[]` + playgrounds collapse into `places[]`
@@ -107,6 +111,17 @@ behaviour. This removes roughly 40% of the render code implied by the original s
 
 `trip.bbox` is derived by the generator from the target city, not hardcoded, so the
 validator stays generic across cities.
+
+### Agreed thresholds
+
+These were undefined in the original spec. The generator prompt states them explicitly so
+bands mean the same thing for every place.
+
+| Concept | Definition |
+| --- | --- |
+| `price_band` | `free` = 0 kr · `€` < 100 kr · `€€` 100–200 kr · `€€€` > 200 kr, per adult entry or per main course |
+| Duration buckets | `<1h` ≤ 60 min · `1–2h` 61–120 · `half day` 121–240 · `full day` > 240 |
+| `near[]` radius | 800m haversine, walking minutes quoted at a slow family pace of 60 m/min (≈13 min at 800m), not an adult 80 m/min |
 
 ### Fields deliberately excluded
 
@@ -217,11 +232,11 @@ rather than when an implementation detail moves.
 
 | Test | Business reason |
 | --- | --- |
-| rain filter excludes `setting: outdoor` | a soaked 1-year-old ends the day |
+| rain filter excludes `setting: outdoor`, keeps `indoor` and `mixed` | a soaked 1-year-old ends the day; a place with indoor shelter is still usable |
 | baby filter requires `baby_friendly`, and ignores `changing_table` | what matters is somewhere the 1-year-old can move around; we carry a portable changing mat |
-| `<1h` duration bucket never returns a 4-hour place | nap windows are short |
+| `<1h` bucket returns only `duration_minutes ≤ 60` | nap windows are short |
 | search matches name, tags, description, category, neighbourhood, metro | one box, no thinking about which field |
-| state round-trips through a regenerated dataset | notes must survive re-research |
+| state round-trips through a regenerated dataset; a note on a place that vanishes is orphaned, not deleted | notes must survive re-research |
 | validator rejects a place outside `trip.bbox` | hallucinations must fail loudly, not silently |
 | validator rejects an unresolvable `near[].id` | a dangling reference is a generator bug |
 
