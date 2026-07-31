@@ -10,6 +10,7 @@ import {
   validatePlace,
 } from "../src/schema.mjs";
 import { computeNear } from "./geo.mjs";
+import { extractJson, extractText } from "./parse.mjs";
 
 // The single seam for swapping research backends. To use pi with a gpt model,
 // change only this constant and the argv it builds.
@@ -51,28 +52,23 @@ function runResearch(prompt) {
   });
 }
 
-// claude -p --output-format json wraps the reply in an envelope whose `result`
-// field holds the model's text. Fall back to treating stdout as the text itself
-// so a backend swap that prints raw text still works.
-function extractText(stdout) {
-  try {
-    const envelope = JSON.parse(stdout);
-    if (typeof envelope?.result === "string") return envelope.result;
-  } catch { /* not an envelope */ }
-  return stdout;
-}
-
-function extractJson(text) {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-  const candidate = (fenced ? fenced[1] : text).trim();
-  const start = candidate.search(/[[{]/);
-  if (start === -1) throw new Error("no JSON found in response");
-  return JSON.parse(candidate.slice(start));
+// Ask the model, then pull one balanced JSON value out of whatever it said.
+// Retried, because one chatty reply must not abort a multi-minute run.
+async function research(prompt, label) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return extractJson(extractText(await runResearch(prompt)));
+    } catch (error) {
+      console.error(`  attempt ${attempt}/${MAX_ATTEMPTS} for "${label}" failed: ${error.message}`);
+      if (attempt === MAX_ATTEMPTS) throw error;
+    }
+  }
+  throw new Error("unreachable");
 }
 
 const bboxPrompt = (city, country) => `Return the geographic bounding box of ${city}, ${country},
 covering the area a tourist would plausibly visit on foot or by metro.
-Reply with ONLY a JSON object, no prose and no code fence:
+Output nothing except the JSON object. No prose before it, no remarks after it, no code fence:
 {"west":<number>,"east":<number>,"south":<number>,"north":<number>}`;
 
 function batchPrompt({ city, country, from, to, batch, bbox, existingNames }) {
@@ -124,8 +120,7 @@ Required and never null: ${REQUIRED_PLACE_FIELDS.join(", ")}.`;
 async function researchBatch(context) {
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
     try {
-      const raw = await runResearch(batchPrompt(context));
-      const places = extractJson(extractText(raw));
+      const places = extractJson(extractText(await runResearch(batchPrompt(context))));
       if (!Array.isArray(places)) throw new Error("response was not an array");
       const problems = places.flatMap((place) =>
         validatePlace(place, { bbox: context.bbox, knownIds: new Set() }),
@@ -148,7 +143,7 @@ const country = args.country ?? "Denmark";
 const out = args.out ?? `data/${args.city.toLowerCase().replace(/\s+/g, "-")}-${args.from.slice(0, 4)}.json`;
 
 console.log(`Resolving bounding box for ${args.city}...`);
-const bbox = extractJson(extractText(await runResearch(bboxPrompt(args.city, country))));
+const bbox = await research(bboxPrompt(args.city, country), "bounding box");
 console.log(`  ${JSON.stringify(bbox)}`);
 
 const places = [];
