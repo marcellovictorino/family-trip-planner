@@ -1,3 +1,18 @@
+# Local review artifacts (lavish-axi sessions)
 .lavish/
+
+# Local task database (td)
+.todos/
+
+# Editor and OS noise
 .DS_Store
+.vscode/
+.idea/
+
+# Should never appear — this project has zero npm dependencies
 node_modules/
+package-lock.json
+
+# Secrets
+.env
+.env.*
