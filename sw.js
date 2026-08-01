@@ -1,4 +1,4 @@
-const CACHE = "trip-planner-v6";
+const CACHE = "trip-planner-v7";
 
 const ASSETS = [
   "./",
@@ -14,6 +14,24 @@ const ASSETS = [
   "src/filter.js",
   "src/state.js",
   "data/copenhagen-2026.json",
+  "design/tokens/colors.css",
+  "design/tokens/fonts.css",
+  "design/tokens/motion.css",
+  "design/tokens/shape.css",
+  "design/tokens/spacing.css",
+  "design/tokens/typography.css",
+  "assets/icons/app-icon-180.png",
+  "assets/icons/app-icon-192.png",
+  "assets/icons/app-icon-512.png",
+  "assets/icons/app-icon-maskable-512.png",
+  "assets/fonts/bricolage-grotesque-1.woff2",
+  "assets/fonts/bricolage-grotesque-2.woff2",
+  "assets/fonts/bricolage-grotesque-3.woff2",
+  "assets/fonts/nunito-sans-1.woff2",
+  "assets/fonts/nunito-sans-2.woff2",
+  "assets/fonts/nunito-sans-3.woff2",
+  "assets/fonts/nunito-sans-4.woff2",
+  "assets/fonts/nunito-sans-5.woff2",
 ];
 
 self.addEventListener("install", (event) => {
