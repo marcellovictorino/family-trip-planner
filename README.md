@@ -52,8 +52,17 @@ Two consequences of the split are worth stating explicitly:
 | Offline after first load | The whole point; verified in airplane mode, not assumed |
 | Mobile first, iPhone Safari | Where it will actually be used |
 | Tap-to-assign, no drag-and-drop | HTML5 drag does not work on iOS, and a day picker is better on touch anyway |
-| No images | Verified, hotlink-stable, cacheable image URLs cost hours and break silently. A category glyph and colour band cost nothing |
-| Plain CSS | A design system comes later and must not block function |
+| No place photography | Verified, hotlink-stable, cacheable image URLs for *places* cost hours and break silently. A category glyph and colour band cost nothing. This is narrower than "no images" — the app icon and the self-hosted font files below are images and fonts, not place photos, and carry none of that risk because they ship once, in the repo, at a fixed set of sizes |
+
+## Design system
+
+A design system was produced separately from this app (see `docs/design/design-system.md`) and its outputs are vendored here rather than linked externally, so the app keeps working with no network access:
+
+- `design/tokens/*.css` — colour, typography, spacing, shape and motion custom properties. These are the single source of truth for values: `styles.css` is written to match them rather than inventing its own numbers, so a token changing in one place is a deliberate, traceable decision, not a drift.
+- `assets/icons/` — the app icon at 180/192/512px plus a maskable 512px tile, wired up through `manifest.webmanifest` and the `<link rel="apple-touch-icon">` in `index.html`.
+- `assets/fonts/` — Bricolage Grotesque, Nunito Sans and JetBrains Mono, self-hosted as `.woff2` files and declared in `design/tokens/fonts.css`.
+
+The one deliberate deviation from the design system as published: its font tokens `@import` the same three typefaces from Google Fonts, but a runtime font fetch is exactly the kind of thing that breaks in airplane mode, which is the app's core promise. The fonts are vendored as static files and served from the app's own cache instead. `docs/design/ADHERENCE.md` has the full token-by-token mapping and every other deviation, with reasons.
 
 ## Family rules encoded in tests
 
@@ -79,13 +88,13 @@ Each slice ends with something usable on a phone.
 | S5 | Favourites, visited, notes, backup | Export and import round-trip the whole state |
 | S6 | Widen the dataset to full coverage | ~85 places, zero code changes |
 
-Deferred by choice, not oversight: private hosting via Cloudflare Access, a dedicated design system, an interactive map, live weather, budget tracking, packing lists, transit routing, and a journal.
+Deferred by choice, not oversight: private hosting via Cloudflare Access, an interactive map, live weather, budget tracking, packing lists, transit routing, and a journal.
 
 ## Running it
 
 ```bash
 python3 -m http.server 8000   # then open http://localhost:8000
-node --test test/             # the whole suite; no install step
+node --test test/*.test.mjs   # the whole suite; no install step
 ```
 
 ## Documents
