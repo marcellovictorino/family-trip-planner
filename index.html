@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -12,22 +12,37 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/app-icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/icons/app-icon-180.png">
+<style>
+/* Inline because we don't own styles.css — visually-hidden until focused,
+   so keyboard users can jump past the tab bar without sighted users seeing it. */
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  display: inline-flex; align-items: center; min-height: var(--tap-min);
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-body); font-size: var(--text-small); color: var(--text-body);
+  background: var(--surface-raised); border-radius: var(--radius-sm); box-shadow: var(--shadow-raised);
+}
+.skip-link:focus { left: var(--space-sm); top: var(--space-sm); }
+</style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <header>
   <h1 id="trip-title">Trip Planner</h1>
-  <nav id="tabs" role="tablist">
-    <button role="tab" class="tab" data-tab="explore" aria-selected="true">Explore</button>
-    <button role="tab" class="tab" data-tab="itinerary" aria-selected="false">Itinerary</button>
-    <button role="tab" class="tab" data-tab="saved" aria-selected="false">Saved</button>
-    <button role="tab" class="tab" data-tab="trip" aria-selected="false">Trip</button>
+  <nav id="tabs" role="tablist" aria-label="Sections">
+    <button id="tab-explore" role="tab" class="tab" data-tab="explore" aria-selected="true" aria-controls="panel-explore">Explore</button>
+    <button id="tab-itinerary" role="tab" class="tab" data-tab="itinerary" aria-selected="false" aria-controls="panel-itinerary">Itinerary</button>
+    <button id="tab-saved" role="tab" class="tab" data-tab="saved" aria-selected="false" aria-controls="panel-saved">Saved</button>
+    <button id="tab-trip" role="tab" class="tab" data-tab="trip" aria-selected="false" aria-controls="panel-trip">Trip</button>
   </nav>
 </header>
-<main>
-  <section id="panel-explore" role="tabpanel"></section>
-  <section id="panel-itinerary" role="tabpanel" hidden></section>
-  <section id="panel-saved" role="tabpanel" hidden></section>
-  <section id="panel-trip" role="tabpanel" hidden></section>
+<main id="main-content" tabindex="-1">
+  <!-- aria-live here (not on .count in src/views/explore.js, which this task does not own) so a
+       screen reader hears the result count change when filters are applied. -->
+  <section id="panel-explore" role="tabpanel" aria-labelledby="tab-explore" aria-live="polite"></section>
+  <section id="panel-itinerary" role="tabpanel" aria-labelledby="tab-itinerary" hidden></section>
+  <section id="panel-saved" role="tabpanel" aria-labelledby="tab-saved" hidden></section>
+  <section id="panel-trip" role="tabpanel" aria-labelledby="tab-trip" hidden></section>
 </main>
 <script type="module" src="src/app.js"></script>
 </body>
