@@ -125,7 +125,7 @@ globalThis.document = {
   createTextNode: (text) => ({ text }),
 };
 
-const { renderExplore } = await import("../src/views/explore.js");
+const { renderExplore, collectOpenIds, restoreOpenIds } = await import("../src/views/explore.js");
 const { renderItinerary } = await import("../src/views/itinerary.js");
 const { renderSaved } = await import("../src/views/saved.js");
 const { renderTrip } = await import("../src/views/trip.js");
@@ -285,4 +285,79 @@ test("renderTrip shows the countdown and the visited-of-total figure", () => {
   const stats = root.querySelectorAll(".stat");
   const visitedStat = stats.find((s) => /visited/.test(s.textContent));
   assert.match(visitedStat.textContent, /1\/2/);
+});
+
+test("a card left open survives collectOpenIds/restoreOpenIds around a rebuild, keyed by data-id", () => {
+  const places = [place({ id: "tivoli" }), place({ id: "rundetaarn", name: "Rundetaarn" })];
+  const opts = { filters: { ...EMPTY_FILTERS }, onFilterChange: () => {}, actions: noopActions };
+
+  const before = document.createElement("div");
+  before.append(renderExplore(places, opts));
+  before.querySelector('.card[data-id="tivoli"]').setAttribute("open", "");
+  const openIds = collectOpenIds(before);
+  assert.ok(openIds.has("tivoli"));
+  assert.ok(!openIds.has("rundetaarn"));
+
+  // A fresh render — the same rebuild that would otherwise silently close it.
+  const after = document.createElement("div");
+  after.append(renderExplore(places, opts));
+  restoreOpenIds(after, openIds);
+  assert.equal(after.querySelector('.card[data-id="tivoli"]').getAttribute("open"), "");
+  assert.equal(after.querySelector('.card[data-id="rundetaarn"]').getAttribute("open"), undefined);
+});
+
+test("collectOpenIds finds nothing on a panel with no expanded cards, and restoreOpenIds is a no-op", () => {
+  const places = [place({ id: "tivoli" })];
+  const opts = { filters: { ...EMPTY_FILTERS }, onFilterChange: () => {}, actions: noopActions };
+  const container = document.createElement("div");
+  container.append(renderExplore(places, opts));
+  const openIds = collectOpenIds(container);
+  assert.equal(openIds.size, 0);
+  restoreOpenIds(container, openIds);
+  assert.equal(container.querySelector('.card[data-id="tivoli"]').getAttribute("open"), undefined);
+});
+
+test("a vanished place id reads identically in Itinerary and Saved, and shows no duration", () => {
+  const places = []; // "ghost" is no longer in the dataset
+  const itinerary = renderItinerary({
+    trip: {},
+    places,
+    days: { "2026-08-03": ["ghost"] },
+    dates: ["2026-08-03"],
+    handlers: { onMove: () => {}, onRemove: () => {} },
+  });
+  const saved = renderSaved({
+    places,
+    favourites: ["ghost"],
+    visited: [],
+    notes: {},
+    handlers: { onNote: () => {}, onFavourite: () => {}, onVisited: () => {} },
+  });
+  assert.match(itinerary.textContent, /ghost \(no longer in the guide\)/);
+  assert.match(saved.textContent, /ghost \(no longer in the guide\)/);
+  // The old itinerary.js placeholder set duration_minutes: 0, which printed a
+  // misleading "0 min" next to the unknown stop itself (the day's own total
+  // is a separate computation, out of scope here).
+  const row = itinerary.querySelector(".day-item-body .facts-line");
+  assert.equal(row.textContent, "");
+});
+
+test("search input debounces the committed query, but clearing it commits immediately", async () => {
+  const places = [place({ id: "tivoli" }), place({ id: "rundetaarn", name: "Rundetaarn" })];
+  let committed = null;
+  const root = renderExplore(places, {
+    filters: { ...EMPTY_FILTERS },
+    onFilterChange: (filters) => { committed = filters; },
+    actions: noopActions,
+  });
+  const search = root.querySelector(".search");
+  search.listeners.input({ target: { value: "tivo" } });
+  assert.equal(committed, null, "typing should not commit synchronously");
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  assert.equal(committed.query, "tivo", "the debounced commit should land after the pause");
+
+  committed = null;
+  search.listeners.input({ target: { value: "" } });
+  assert.ok(committed, "clearing the box should commit immediately, with no debounce");
+  assert.equal(committed.query, "");
 });

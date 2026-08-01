@@ -34,6 +34,30 @@ export function durationLabel(minutes) {
   return Number.isInteger(hours) ? `${hours}h` : `${Math.floor(hours)}h${minutes % 60}`;
 }
 
+// A stored place id that the dataset no longer has (regenerated away) reads
+// identically wherever it's shown — Itinerary and Saved both resolve to this.
+// No duration_minutes: an unknown stop's length is unknown, not zero.
+export function unknownPlace(id) {
+  return { id, name: `${id} (no longer in the guide)` };
+}
+
+// Which cards were expanded before a re-render, keyed by data-id, and how to
+// reopen them after the DOM is rebuilt from scratch. Attribute-based (not the
+// `.open` IDL property) so it works the same on a real <details> and in the
+// test harness's fake DOM.
+export function collectOpenIds(container) {
+  return new Set(
+    [...container.querySelectorAll("details.card[open]")].map((el) => el.getAttribute("data-id")),
+  );
+}
+
+export function restoreOpenIds(container, openIds) {
+  if (!openIds || openIds.size === 0) return;
+  for (const card of container.querySelectorAll("details.card")) {
+    if (openIds.has(card.getAttribute("data-id"))) card.setAttribute("open", "");
+  }
+}
+
 function icons(place) {
   return [
     place.baby_friendly && "baby",
@@ -137,6 +161,24 @@ function multiGroup(items, currentList, onPick) {
   );
 }
 
+// Rebuilding every card on every keystroke is fine at a handful of places and
+// janky at ~200 — debounce the commit so a full re-render happens once typing
+// pauses, not on each character. Clearing the box (backspace to empty, or the
+// input's native clear control) commits immediately: there is nothing to wait
+// for once the search is gone. Module-level so the timer survives the fact
+// that renderControls itself is a fresh call on every render.
+const SEARCH_DEBOUNCE_MS = 120;
+let searchDebounce = null;
+
+function commitSearch(set, query) {
+  clearTimeout(searchDebounce);
+  if (query === "") {
+    set({ query });
+    return;
+  }
+  searchDebounce = setTimeout(() => set({ query }), SEARCH_DEBOUNCE_MS);
+}
+
 function renderControls(filters, onFilterChange) {
   const set = (patch) => onFilterChange({ ...filters, ...patch });
   const count = activeFilterCount(filters);
@@ -149,7 +191,7 @@ function renderControls(filters, onFilterChange) {
       value: filters.query,
       placeholder: "Search places, areas, metro…",
       "aria-label": "Search places",
-      onInput: (event) => set({ query: event.target.value }),
+      onInput: (event) => commitSearch(set, event.target.value),
     }),
     h(
       "div",

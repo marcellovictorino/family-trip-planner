@@ -1,4 +1,5 @@
 import { h } from "../dom.js";
+import { unknownPlace } from "./explore.js";
 
 function line(place, handlers, { favourite, visited }) {
   return h(
@@ -50,7 +51,7 @@ function noteEditor(place, text, handlers) {
 
 export function renderSaved({ places, favourites, visited, notes, handlers }) {
   const byId = new Map(places.map((place) => [place.id, place]));
-  const resolve = (id) => byId.get(id) ?? { id, name: `${id} (no longer in the guide)`, neighbourhood: "" };
+  const resolve = (id) => byId.get(id) ?? unknownPlace(id);
   const flags = (id) => ({ favourite: favourites.includes(id), visited: visited.includes(id) });
 
   // Every place with a note, plus every favourite, gets an editor — so a note

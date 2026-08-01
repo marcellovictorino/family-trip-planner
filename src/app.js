@@ -1,5 +1,5 @@
 import { clear, h } from "./dom.js";
-import { renderExplore } from "./views/explore.js";
+import { renderExplore, collectOpenIds, restoreOpenIds } from "./views/explore.js";
 import { renderItinerary } from "./views/itinerary.js";
 import { renderSaved } from "./views/saved.js";
 import { renderTrip } from "./views/trip.js";
@@ -76,6 +76,9 @@ function render() {
   const active = document.activeElement;
   const wasSearch = active?.classList?.contains("search");
   const caret = wasSearch ? active.selectionStart : null;
+  // A rebuild would otherwise silently snap shut any card the user had open —
+  // its <details open> state lives only on the DOM node being replaced.
+  const openCardIds = activeTab === "explore" ? collectOpenIds(panels.explore) : null;
   const snapshot = state.get();
   if (activeTab === "explore") {
     clear(panels.explore);
@@ -86,6 +89,7 @@ function render() {
         actions,
       }),
     );
+    restoreOpenIds(panels.explore, openCardIds);
   }
   if (activeTab === "itinerary") {
     clear(panels.itinerary);

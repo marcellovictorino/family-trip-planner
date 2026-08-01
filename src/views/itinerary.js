@@ -1,5 +1,5 @@
 import { h } from "../dom.js";
-import { durationLabel } from "./explore.js";
+import { durationLabel, unknownPlace } from "./explore.js";
 
 function totalMinutes(items) {
   return items.reduce((sum, place) => sum + (place?.duration_minutes ?? 0), 0);
@@ -21,7 +21,10 @@ function row(place, date, index, count, handlers) {
     h("span", { class: "day-item-body" },
       h("span", { class: "name" }, place.name),
       h("span", { class: "facts-line" },
-        [place.neighbourhood, durationLabel(place.duration_minutes)].filter(Boolean).join(" · "))),
+        // An unknown place has no duration_minutes at all — showing "0 min"
+        // would claim it takes no time, rather than that its length is unknown.
+        [place.neighbourhood, typeof place.duration_minutes === "number" ? durationLabel(place.duration_minutes) : null]
+          .filter(Boolean).join(" · "))),
     h("button", {
       class: "remove", type: "button", "aria-label": `Remove ${place.name} from ${date}`,
       onClick: () => handlers.onRemove(date, place.id),
@@ -48,7 +51,7 @@ export function renderItinerary({ trip, places, days, dates, handlers }) {
       // A stored id with no matching place means the dataset was regenerated
       // without it. Show it as unknown rather than dropping it silently.
       const ids = days[date] ?? [];
-      const items = ids.map((id) => byId.get(id) ?? { id, name: `${id} (no longer in the guide)`, duration_minutes: 0 });
+      const items = ids.map((id) => byId.get(id) ?? unknownPlace(id));
       return h(
         "section",
         { class: "day" },
