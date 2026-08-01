@@ -114,22 +114,52 @@ function findNonHttpsWebsites(places) {
     .map((p) => `"${p.name}" (${p.id}): ${p.website}`);
 }
 
+// True when `a` and `b` are equal, or one is a whole-word prefix of the
+// other (e.g. "den bl planet" is a prefix of "den bl planet national
+// aquarium denmark"). Deliberately NOT a raw substring check: "tivoli" is a
+// whole word inside "wagamama tivoli" too, so plain word-boundary containment
+// would still misread that restaurant as Tivoli Gardens. Real official names
+// only ever grow by appending a descriptor — "X (Y)", "X – Z" — never by
+// prefixing one, so prefix containment catches that pattern without opening
+// the door to unrelated names that merely share a word.
+function isPrefixOf(shorter, longer) {
+  return shorter === longer || longer.startsWith(`${shorter} `);
+}
+
+function attractionMatches(place, attraction) {
+  const placeName = normaliseName(place.name);
+  return attraction.names.some((name) => {
+    const known = normaliseName(name);
+    return isPrefixOf(known, placeName) || isPrefixOf(placeName, known);
+  });
+}
+
 function findAbsentKnownAttractions(places) {
-  const normalisedNames = new Set(places.map((p) => normaliseName(p.name)));
   return KNOWN_ATTRACTIONS.filter(
-    (attraction) => !attraction.names.some((name) => normalisedNames.has(normaliseName(name))),
+    (attraction) => !places.some((place) => attractionMatches(place, attraction)),
   ).map((a) => a.label);
 }
 
-// Proves the Wagamama Tivoli false negative stays fixed: a restaurant whose
-// name merely contains "Tivoli" must not be read as Tivoli Gardens itself.
-// Runs on every invocation so a future edit that reintroduces substring
-// matching fails loudly (a crash, non-zero exit) rather than silently.
+// Proves both directions stay fixed on every invocation, so a future edit
+// that reintroduces either bug fails loudly (a crash, non-zero exit) rather
+// than silently:
+// - substring false negative: a restaurant whose name merely *contains* the
+//   word "Tivoli" must not be read as Tivoli Gardens itself.
+// - whole-name false positive: a real landmark whose name carries a trailing
+//   descriptor, e.g. "Den Blå Planet (National Aquarium Denmark)", must still
+//   be read as present — the descriptor is not a different place.
 function selfCheckAttractionMatching() {
   const decoy = [{ name: "Wagamama Tivoli", tags: [] }];
   if (!findAbsentKnownAttractions(decoy).includes("Tivoli Gardens")) {
     throw new Error(
       "self-check failed: a place named \"Wagamama Tivoli\" fooled the attraction-absence check into treating Tivoli Gardens as present",
+    );
+  }
+
+  const descriptorSuffix = [{ name: "Den Blå Planet (National Aquarium Denmark)", tags: [] }];
+  if (findAbsentKnownAttractions(descriptorSuffix).includes("Den Blå Planet")) {
+    throw new Error(
+      "self-check failed: \"Den Blå Planet (National Aquarium Denmark)\" was reported as an absent landmark despite being present under a descriptive suffix",
     );
   }
 }
@@ -221,9 +251,13 @@ async function main() {
   );
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(`data-report CRASHED — this is exit 1, distinct from the report's own exit 0: ${error.stack}`);
-    process.exit(1);
-  });
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+      console.error(`data-report CRASHED — this is exit 1, distinct from the report's own exit 0: ${error.stack}`);
+      process.exit(1);
+    });
+}
+
+export { findAbsentKnownAttractions, KNOWN_ATTRACTIONS };
