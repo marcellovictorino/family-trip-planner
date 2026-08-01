@@ -126,7 +126,7 @@ globalThis.document = {
 };
 
 const { renderExplore, collectOpenIds, restoreOpenIds } = await import("../src/views/explore.js");
-const { renderItinerary } = await import("../src/views/itinerary.js");
+const { renderItinerary, starLabel } = await import("../src/views/itinerary.js");
 const { renderSaved } = await import("../src/views/saved.js");
 const { renderTrip } = await import("../src/views/trip.js");
 const { EMPTY_FILTERS } = await import("../src/filter.js");
@@ -402,6 +402,38 @@ test("stars already given appear on the row", () => {
     handlers: { onMove: () => {}, onRemove: () => {}, onToggleDone: () => {}, onRate: () => {} },
   });
   assert.match(root.querySelector("li.day-item").textContent, /★★★★☆/);
+});
+
+// Un-ticking a rated stop keeps the rating, so "has an entry" and "was visited"
+// are different questions. If a future change swapped `entry.done` for a bare
+// `entry` truthiness check, this row would silently come back struck-through
+// with its arrows gone, even though the family hasn't been there yet.
+test("an entry with done: false still holding a rating renders as an ordinary, not-yet-visited row", () => {
+  const places = [place({ id: "tivoli", name: "Tivoli Gardens" })];
+  const root = renderItinerary({
+    trip: {},
+    places,
+    days: { "2026-08-03": ["tivoli"] },
+    dates: ["2026-08-03"],
+    dayLog: {
+      "2026-08-03": {
+        tivoli: { done: false, thumb: "up", stars: 3, tags: ["baby-great"], at: "2026-08-02T18:00:00Z" },
+      },
+    },
+    handlers: { onMove: () => {}, onRemove: () => {}, onToggleDone: () => {}, onRate: () => {} },
+  });
+  const row = root.querySelector("li.day-item");
+  assert.ok(!row.classList.contains("is-visited"));
+  assert.equal(root.querySelectorAll("button.nudge").length, 2);
+  assert.equal(root.querySelectorAll("button.thumb").length, 0);
+  assert.match(row.textContent, /★★★☆☆/);
+});
+
+test("starLabel always returns five glyphs, filled up to the given count", () => {
+  assert.equal(starLabel(1), "★☆☆☆☆");
+  assert.equal(starLabel(5), "★★★★★");
+  assert.equal(starLabel(1).length, 5);
+  assert.equal(starLabel(5).length, 5);
 });
 
 test("search input debounces the committed query, but clearing it commits immediately", async () => {
