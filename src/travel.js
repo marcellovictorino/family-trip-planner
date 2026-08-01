@@ -26,6 +26,22 @@ function zoneMinutes(a, b, zonesConfig) {
   return typeof minutes === "number" ? minutes : null;
 }
 
+// D4: last stop on the active day → trip base → city centre. Anchoring on the
+// last stop is what turns browsing into routing; base covers morning
+// planning before anything is ticked; the bbox-derived centre is the one
+// fallback that always exists, so the chain never comes back empty.
+export function resolveAnchor({ places, days, activeDate, base, bbox }) {
+  const lastStopId = activeDate ? (days[activeDate] ?? []).at(-1) : undefined;
+  if (lastStopId) {
+    const place = places.find((p) => p.id === lastStopId);
+    if (place && typeof place.lat === "number") {
+      return { point: { lat: place.lat, lon: place.lon, neighbourhood: place.neighbourhood }, label: place.name };
+    }
+  }
+  if (base) return { point: base, label: "your base" };
+  return { point: { lat: (bbox.north + bbox.south) / 2, lon: (bbox.east + bbox.west) / 2 }, label: "the city centre" };
+}
+
 export function travelMinutes(a, b, zonesConfig) {
   const override = zoneMinutes(a, b, zonesConfig); // branch B
   if (override !== null) return { minutes: override, mode: "transit" };

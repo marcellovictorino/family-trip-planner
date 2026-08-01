@@ -197,6 +197,51 @@ test("a visited place is visually marked so a user can tell what they've already
   assert.ok(!otherCard.classList.contains("is-visited"));
 });
 
+test("distance sort is off by default — Explore keeps dataset order until asked otherwise", () => {
+  const places = [
+    place({ id: "far", name: "Far", lat: 55.7, lon: 12.65, neighbourhood: "Amager" }),
+    place({ id: "near", name: "Near", lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" }),
+  ];
+  const anchor = { point: { lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" }, label: "Near" };
+  const root = renderExplore(places, {
+    filters: { ...EMPTY_FILTERS }, onFilterChange: () => {}, actions: noopActions, anchor,
+  });
+  const names = root.querySelectorAll(".card .name").map((n) => n.textContent);
+  assert.deepEqual(names, ["Far", "Near"], "unsorted, dataset order is preserved");
+  assert.equal(root.querySelectorAll(".anchor-chip").length, 0, "no anchor chip until sorting is turned on");
+});
+
+test("turning on nearest-first sorts by travel time from the anchor and shows a dismissible anchor chip", () => {
+  const places = [
+    place({ id: "far", name: "Far", lat: 55.7, lon: 12.65, neighbourhood: "Amager" }),
+    place({ id: "near", name: "Near", lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" }),
+  ];
+  const anchor = { point: { lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" }, label: "Near" };
+  const root = renderExplore(places, {
+    filters: { ...EMPTY_FILTERS, sort: "distance" }, onFilterChange: () => {}, actions: noopActions, anchor,
+  });
+  const names = root.querySelectorAll(".card .name").map((n) => n.textContent);
+  assert.deepEqual(names, ["Near", "Far"]);
+  const chip = root.querySelector(".anchor-chip");
+  assert.ok(chip, "expected a visible anchor chip while sorting");
+  assert.match(chip.textContent, /Near/);
+  assert.ok(root.querySelector(".anchor-dismiss"), "the chip must be dismissible");
+});
+
+test("dismissing the anchor chip turns the sort back off, rather than picking a different anchor", () => {
+  const places = [place({ id: "a" })];
+  let lastFilters = null;
+  const anchor = { point: { lat: 55.6736, lon: 12.5681 }, label: "Near" };
+  const root = renderExplore(places, {
+    filters: { ...EMPTY_FILTERS, sort: "distance" },
+    onFilterChange: (f) => { lastFilters = f; },
+    actions: noopActions,
+    anchor,
+  });
+  root.querySelector(".anchor-dismiss").listeners.click();
+  assert.equal(lastFilters.sort, null);
+});
+
 test("renderItinerary shows every trip day, including empty ones, so a gap in the plan is obvious", () => {
   const dates = ["2026-08-03", "2026-08-04", "2026-08-05"];
   const places = [place({ id: "tivoli" })];

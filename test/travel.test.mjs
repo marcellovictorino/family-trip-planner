@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { travelMinutes } from "../src/travel.js";
+import { travelMinutes, resolveAnchor } from "../src/travel.js";
 
 const TIVOLI = { lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" };
 const GLYPTOTEKET = { lat: 55.6725, lon: 12.5729, neighbourhood: "Vesterbro" }; // ~320 m
@@ -58,4 +58,39 @@ test("a place with no matching zone falls back to the heuristic rather than thro
   const zonesConfig = { zones: { a: { members: ["Vesterbro"] } }, zone_minutes: {} };
   const noNeighbourhood = { lat: 55.7, lon: 12.6 };
   assert.doesNotThrow(() => travelMinutes(TIVOLI, noNeighbourhood, zonesConfig));
+});
+
+const BBOX = { west: 12.5, east: 12.6, south: 55.65, north: 55.7 };
+const PLACES = [
+  { id: "a", name: "A", lat: 55.68, lon: 12.58, neighbourhood: "Indre By" },
+  { id: "b", name: "B", lat: 55.69, lon: 12.59, neighbourhood: "Vesterbro" },
+];
+
+test("the anchor chain picks the last stop on the active day first", () => {
+  const anchor = resolveAnchor({
+    places: PLACES, days: { "2026-08-03": ["a", "b"] }, activeDate: "2026-08-03",
+    base: { lat: 55.6, lon: 12.5 }, bbox: BBOX,
+  });
+  assert.equal(anchor.point.lat, PLACES[1].lat);
+  assert.equal(anchor.label, "B");
+});
+
+test("no active day falls through to the trip base", () => {
+  const base = { lat: 55.6, lon: 12.5 };
+  const anchor = resolveAnchor({ places: PLACES, days: {}, activeDate: null, base, bbox: BBOX });
+  assert.deepEqual(anchor.point, base);
+  assert.equal(anchor.label, "your base");
+});
+
+test("no active day and no base falls through to the city centre derived from the bbox", () => {
+  const anchor = resolveAnchor({ places: PLACES, days: {}, activeDate: null, base: null, bbox: BBOX });
+  assert.equal(anchor.point.lat, (BBOX.north + BBOX.south) / 2);
+  assert.equal(anchor.point.lon, (BBOX.east + BBOX.west) / 2);
+  assert.equal(anchor.label, "the city centre");
+});
+
+test("an active day with no stops yet skips straight past it to base", () => {
+  const base = { lat: 55.6, lon: 12.5 };
+  const anchor = resolveAnchor({ places: PLACES, days: { "2026-08-03": [] }, activeDate: "2026-08-03", base, bbox: BBOX });
+  assert.deepEqual(anchor.point, base);
 });

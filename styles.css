@@ -92,6 +92,11 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
 .chip:active { transform: scale(var(--press-scale)); }
 .count { font-size: var(--text-fine); color: var(--text-muted); margin: 0 0 var(--space-sm); }
 
+/* Explore: anchored distance sort */
+.anchor-chip { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); cursor: default; gap: var(--space-xs); }
+.anchor-dismiss { border: 0; background: none; color: inherit; font-size: var(--text-fine); cursor: pointer; padding: 0; }
+.facts-line--distance { color: var(--accent); }
+
 /* Place card (PlaceCard) */
 .cards { display: grid; gap: var(--gap-cards); }
 .card {

@@ -212,6 +212,30 @@ test("a v1 payload loads into v2 with an empty dayLog and nothing lost", () => {
   assert.deepEqual(snapshot.dayLog, {});
 });
 
+// ── v2 → v3: base is additive, same shape as the earlier dayLog bump ──
+test("a v2 payload with no base loads with base: null, and nothing else lost", () => {
+  const v2 = JSON.stringify({
+    version: 2,
+    favourites: ["tivoli"],
+    visited: [],
+    notes: {},
+    days: {},
+    dayLog: {},
+  });
+  const state = createState(fakeStorage({ [STORAGE_KEY]: v2 }));
+  assert.equal(state.get().base, null);
+  assert.deepEqual(state.get().favourites, ["tivoli"]);
+});
+
+test("setBase stores the base and persists it", () => {
+  const storage = fakeStorage();
+  const state = createState(storage);
+  state.setBase({ lat: 55.68, lon: 12.58 });
+  assert.deepEqual(state.get().base, { lat: 55.68, lon: 12.58 });
+  const reloaded = createState(storage);
+  assert.deepEqual(reloaded.get().base, { lat: 55.68, lon: 12.58 });
+});
+
 // ── R9: ratings are the point; losing them in transit defeats the feature ──
 test("ratings survive an export and import round trip", () => {
   const source = createState(fakeStorage());

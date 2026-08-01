@@ -5,6 +5,7 @@ import { renderRatingSheet } from "./views/rating.js";
 import { renderSaved } from "./views/saved.js";
 import { renderTrip } from "./views/trip.js";
 import { state } from "./state.js";
+import { resolveAnchor } from "./travel.js";
 
 const DATA_URL = "data/copenhagen-2026.json";
 
@@ -124,11 +125,21 @@ function render() {
   const snapshot = state.get();
   if (activeTab === "explore") {
     clear(panels.explore);
+    // "Active day" is today's date when the trip is under way; otherwise the
+    // anchor chain has nothing to key a last-stop off and falls straight
+    // through to base, then the city centre.
+    const today = new Date().toISOString().slice(0, 10);
+    const activeDate = tripDates(data.trip).includes(today) ? today : null;
+    const anchor = resolveAnchor({
+      places: data.places, days: snapshot.days, activeDate, base: snapshot.base, bbox: data.trip.bbox,
+    });
     panels.explore.append(
       renderExplore(data.places, {
         filters: snapshot.filters,
         onFilterChange: (filters) => guard(() => state.setFilters(filters)),
         actions,
+        anchor,
+        zonesConfig: { zones: data.zones, zone_minutes: data.zone_minutes },
       }),
     );
     restoreOpenIds(panels.explore, openCardIds);

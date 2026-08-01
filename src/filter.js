@@ -8,6 +8,7 @@ export const EMPTY_FILTERS = Object.freeze({
   kind: null,         // null | attraction | playground | restaurant
   glutenFree: false,
   query: "",
+  sort: null,        // null | "distance"
 });
 
 const WEATHER_SETTINGS = { rainy: ["indoor", "mixed"], sunny: ["outdoor", "mixed"] };

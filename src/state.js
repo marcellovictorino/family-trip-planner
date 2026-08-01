@@ -1,7 +1,7 @@
 import { EMPTY_FILTERS } from "./filter.js";
 
 export const STORAGE_KEY = "trip.state.v1";
-export const STATE_VERSION = 2;
+export const STATE_VERSION = 3;
 
 const emptyState = () => ({
   version: STATE_VERSION,
@@ -13,6 +13,10 @@ const emptyState = () => ({
   // event, with its own verdict — the global `visited` flag cannot express that.
   dayLog: {},
   filters: { ...EMPTY_FILTERS },
+  // Where the family is staying. Anchors the Explore distance sort when there
+  // is no active day to anchor on instead; null until the user sets it, in
+  // which case the anchor chain skips straight to the city centre.
+  base: null,
 });
 
 function read(storage) {
@@ -26,8 +30,9 @@ function read(storage) {
 }
 
 // Merge over a fresh empty state so a partial or older payload cannot leave a
-// field undefined and crash a view mid-trip. v1 → v2 is purely additive: a v1
-// payload gains an empty dayLog and keeps everything else exactly as it was.
+// field undefined and crash a view mid-trip. Each version bump is purely
+// additive: v1 → v2 gained an empty dayLog, v2 → v3 gains base: null — older
+// payloads keep everything else exactly as it was.
 function hydrate(parsed) {
   return {
     ...emptyState(),
@@ -35,6 +40,7 @@ function hydrate(parsed) {
     version: STATE_VERSION,
     dayLog: parsed.dayLog ?? {},
     filters: { ...EMPTY_FILTERS, ...(parsed.filters ?? {}) },
+    base: parsed.base ?? null,
   };
 }
 
@@ -153,6 +159,10 @@ export function createState(storage) {
 
     setFilters(filters) {
       commit({ ...current, filters: { ...EMPTY_FILTERS, ...filters } });
+    },
+
+    setBase(base) {
+      commit({ ...current, base });
     },
 
     subscribe(listener) {

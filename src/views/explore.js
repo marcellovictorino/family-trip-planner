@@ -1,5 +1,6 @@
 import { h } from "../dom.js";
 import { filterPlaces, activeFilterCount, EMPTY_FILTERS } from "../filter.js";
+import { travelMinutes } from "../travel.js";
 
 const PRICE_LABEL = { free: "Free", "€": "€", "€€": "€€", "€€€": "€€€" };
 
@@ -179,7 +180,31 @@ function commitSearch(set, query) {
   searchDebounce = setTimeout(() => set({ query }), SEARCH_DEBOUNCE_MS);
 }
 
-function renderControls(filters, onFilterChange) {
+// D5: distance sort is an explicit control, never a silent default. The
+// anchor renders as its own dismissible chip so the list never reorders
+// without saying why — dismissing it turns the sort back off rather than
+// picking a different anchor behind the user's back.
+function sortControl(filters, anchor, set) {
+  const active = filters.sort === "distance";
+  return h(
+    "div",
+    { class: "chips" },
+    chip("📍 Nearest first", active, () => set({ sort: active ? null : "distance" })),
+    active &&
+      anchor &&
+      h(
+        "span",
+        { class: "chip anchor-chip" },
+        `Sorted from ${anchor.label}`,
+        h("button", {
+          class: "anchor-dismiss", type: "button", "aria-label": "Stop sorting by distance",
+          onClick: () => set({ sort: null }),
+        }, "✕"),
+      ),
+  );
+}
+
+function renderControls(filters, onFilterChange, anchor) {
   const set = (patch) => onFilterChange({ ...filters, ...patch });
   const count = activeFilterCount(filters);
   return h(
@@ -193,6 +218,7 @@ function renderControls(filters, onFilterChange) {
       "aria-label": "Search places",
       onInput: (event) => commitSearch(set, event.target.value),
     }),
+    sortControl(filters, anchor, set),
     h(
       "div",
       { class: "chips" },
@@ -245,17 +271,38 @@ function noResults(count, onFilterChange) {
   );
 }
 
-export function renderExplore(places, { filters, onFilterChange, actions }) {
+// Sorting happens after filtering, over what's left to show — an unsorted
+// row (no lat/lon left in the dataset) sinks to the end rather than throwing.
+function sortByAnchor(matching, anchor, zonesConfig) {
+  return matching
+    .map((place) => ({
+      place,
+      minutes: typeof place.lat === "number" ? travelMinutes(anchor.point, place, zonesConfig).minutes : Infinity,
+    }))
+    .sort((a, b) => a.minutes - b.minutes);
+}
+
+export function renderExplore(places, { filters, onFilterChange, actions, anchor, zonesConfig }) {
   const matching = filterPlaces(places, filters);
+  const sorting = filters.sort === "distance" && anchor;
+  const rows = sorting
+    ? sortByAnchor(matching, anchor, zonesConfig)
+    : matching.map((place) => ({ place, minutes: null }));
+
   return h(
     "div",
     {},
-    renderControls(filters, onFilterChange),
+    renderControls(filters, onFilterChange, anchor),
     h("p", { class: "count" }, `${matching.length} of ${places.length}`),
-    matching.length === 0
+    rows.length === 0
       ? noResults(activeFilterCount(filters), onFilterChange)
-      : h("div", { class: "cards" }, matching.map((place) => {
+      : h("div", { class: "cards" }, rows.map(({ place, minutes }) => {
           const card = renderCard(place);
+          if (Number.isFinite(minutes)) {
+            card.querySelector("summary").append(
+              h("span", { class: "facts-line facts-line--distance" }, `~${minutes} min from ${anchor.label}`),
+            );
+          }
           card.querySelector(".detail").append(cardActions(place, actions));
           if (actions.isVisited(place.id)) card.classList.add("is-visited");
           return card;
