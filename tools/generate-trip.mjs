@@ -24,6 +24,10 @@ const MAX_ATTEMPTS = 3;
 // the padded metro bounding box, so the validator would reject them. The
 // remaining counts are widened to make up the total.
 const BATCHES = [
+  // Deliberately first: an earlier run produced a technically valid dataset with
+  // no Tivoli in it. The batches below ask by category, which quietly skips the
+  // places a first-time visitor would simply expect to be there.
+  { key: "landmarks", count: 10, brief: "the best-known landmark attractions a first-time family visitor would expect to find, the ones it would be strange to omit from any guide to the city" },
   { key: "rainy-museums", count: 10, brief: "indoor museums and galleries that work on a wet day with young children" },
   { key: "rainy-other", count: 9, brief: "indoor attractions that are not museums — aquariums, science centres, swimming halls, indoor play" },
   { key: "sunny-parks", count: 10, brief: "parks, gardens and waterfront spots for fine weather" },

@@ -161,7 +161,11 @@ document.querySelector("#tabs").addEventListener("click", (event) => {
 });
 
 async function start() {
-  const response = await fetch(DATA_URL);
+  // Revalidate rather than trusting the HTTP cache. Without this the browser
+  // happily serves a stale guide forever after the dataset is regenerated,
+  // which is invisible and would only be noticed mid-trip. Offline is
+  // unaffected: the service worker intercepts and falls back to its cache.
+  const response = await fetch(DATA_URL, { cache: "no-cache" });
   if (!response.ok) throw new Error(`Could not load ${DATA_URL}: ${response.status}`);
   data = await response.json();
   document.querySelector("#trip-title").textContent = `${data.trip.city} ${data.trip.from.slice(0, 4)}`;
