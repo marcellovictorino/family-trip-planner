@@ -1,4 +1,4 @@
-const CACHE = "trip-planner-v9";
+const CACHE = "trip-planner-v10";
 
 const ASSETS = [
   "./",
@@ -34,8 +34,20 @@ const ASSETS = [
   "assets/fonts/nunito-sans-5.woff2",
 ];
 
+// cache.addAll() is atomic: one bad path (a 404, a momentary network blip) fails the
+// whole call and leaves the cache empty, with no offline support at all and no error
+// anyone would see. Cache each asset individually instead, so one bad path can't sink
+// the rest, and log which ones failed so it's at least visible in devtools.
+function cacheAssetsIndividually(cache) {
+  return Promise.all(
+    ASSETS.map((asset) =>
+      cache.add(asset).catch((error) => console.error(`SW install: failed to cache "${asset}"`, error)),
+    ),
+  );
+}
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then(cacheAssetsIndividually).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {
@@ -55,7 +67,9 @@ self.addEventListener("fetch", (event) => {
     fetch(event.request)
       .then((response) => {
         const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+        // Guaranteed with waitUntil — without it, the browser is free to kill this
+        // worker the instant respondWith's promise settles, before the write lands.
+        event.waitUntil(caches.open(CACHE).then((cache) => cache.put(event.request, copy)));
         return response;
       })
       .catch(() => caches.match(event.request).then((hit) => hit ?? caches.match("index.html"))),
