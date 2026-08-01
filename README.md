@@ -77,12 +77,13 @@ Filtering is not generic. Each rule exists for a reason, and each test states th
 
 ## Status and roadmap
 
-All six slices are shipped: the app is live with 90 verified Copenhagen places, 74 tests
+Seven slices are shipped: the app is live with 90 verified Copenhagen places, 98 tests
 pass, and it installs to an iPhone home screen. One claim remains unproven — nobody has
 yet opened it on real hardware and turned on airplane mode.
 
 See **[ROADMAP.md](ROADMAP.md)** for what shipped, what is next, and what was deliberately
-deferred. Live work is tracked in `td`: `td list`.
+deferred; **[CHANGELOG.md](CHANGELOG.md)** for the release history. Live work is tracked
+in `td`: `td list`.
 
 | Slice | Delivered |
 | --- | --- |
@@ -92,6 +93,7 @@ deferred. Live work is tracked in `td`: `td list`.
 | S4 | Itinerary: tap-to-assign, reorder, persist |
 | S5 | Favourites, visited, notes, export and import |
 | S6 | 90 real places — 51 attractions, 16 playgrounds, 23 restaurants |
+| S7 | Tick a stop off, thumb it, rate it: stars, kind-specific tags and a note |
 
 ## Running it
 

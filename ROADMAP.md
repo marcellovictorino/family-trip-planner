@@ -10,8 +10,8 @@ Status as of 1 August 2026.
 
 The MVP is built, deployed and usable. A family can browse 90 verified Copenhagen
 places, filter them by weather, age suitability, cost and duration, build a seven-day
-itinerary, record what they have visited and why, and take notes — with the whole thing
-cached for use without a signal.
+itinerary, tick each stop off as the day happens, rate it and say why, and take notes —
+with the whole thing cached for use without a signal.
 
 One thing stands between "built" and "proven": nobody has yet opened it on a real iPhone
 and turned on airplane mode. Until that happens, offline is an untested claim.
@@ -26,10 +26,12 @@ and turned on airplane mode. Until that happens, offline is an untested claim.
 | S4 | Itinerary: tap-to-assign, reorder, remove, persist | Driven end-to-end in a browser |
 | S5 | Favourites, visited, notes, export and import | 13 tests encoding rule R5 |
 | S6 | Widened the guide from 3 fixtures to 90 real places | Validator passes; landmarks confirmed present |
+| S7 | Tick a stop off, thumb it, rate it: stars, kind-specific tags, a note | Nine-point walkthrough driven in a browser; 24 tests |
 | — | Design system applied: tokens, icons, self-hosted fonts, installable PWA | Computed styles checked in a real browser |
 
-74 tests pass under `node --test test/*.test.mjs`. `node tools/verify-app.mjs` checks
-asset resolution, CSS URL targets, the manifest, the module graph and the dataset.
+98 tests pass under `node --test test/*.test.mjs`. `node tools/verify-app.mjs` checks
+asset resolution, CSS URL targets, the manifest, the module graph, that every module in
+that graph is precached by the service worker, and the dataset.
 
 Still zero npm dependencies and no build step.
 
@@ -70,12 +72,12 @@ This closes that: tick stops off as the day happens, say why they worked or did 
 accumulate that judgement in the repository so the next `generate-trip` run starts from
 what the last trip taught.
 
-- **S7 · Tick and rate** (`td-319ae6`). Tapping an itinerary row marks the stop visited —
+- **S7 · Tick and rate** — **shipped 1 August 2026** (`td-319ae6`). Tapping an itinerary row marks the stop visited —
   struck through and greyed. A visited row swaps its reorder arrows for a 👍/👎 pill; the
   thumb records a verdict and opens a sheet with stars, tag chips and a note. Tags vary by
   `place.kind`, because a playground and a restaurant fail in different ways. State gains a
-  per-`(date, place)` `dayLog`; the Explore visited flag derives from it.
-  **This is the only slice that must land before the flight on 2 August.**
+  per-`(date, place)` `dayLog`; the Explore visited flag derives from it. Un-ticking a
+  rated stop keeps the rating, so a stray tap costs nothing.
 - **S8 · Ingest** (`td-f7cc82`). One command turns an exported state file into rows in
   `feedback/<YYYY-MM>-<city>.jsonl`, denormalising place attributes so a row still means
   something after the dataset is regenerated. JSONL rather than a committed SQLite or
@@ -89,6 +91,13 @@ what the last trip taught.
 S8 and S9 are post-trip work by design. Building them now means building against imagined
 data; S7 is useful with neither ever built, since the ratings ride along in the existing
 export file.
+
+Two S7 decisions the review recorded rather than fixed, both chosen deliberately.
+Hand-ticking a place in Explore, then ticking and un-ticking it on a day, clears the
+hand-set flag — one rule, no provenance tracking, and re-ticking in Explore restores it.
+And an un-ticked-but-rated row still shows its stars while styled as not visited, which
+is the only remaining signal that the preserved rating exists. The rest of the review's
+deferred items are in `td-37a677`.
 
 ## Deferred by choice
 
