@@ -8,8 +8,12 @@ travel on. Run it with:
 node tools/data-report.mjs data/copenhagen-2026.json
 ```
 
-It always exits `0` — this is a report to read, not a gate that blocks a
-build. Argument defaults to `data/copenhagen-2026.json` if omitted.
+It exits `0` whenever it runs to completion — a report to read, not a gate
+that blocks a build — even when it finds data problems; those are
+informational. It exits non-zero only if the tool itself crashes (bad JSON,
+missing file, a bug in the report), so a caller can tell "ran, findings
+above" from "never actually ran". Argument defaults to
+`data/copenhagen-2026.json` if omitted.
 
 ## Reading guide
 
@@ -20,7 +24,10 @@ much they should worry you:
   exists. An earlier generated dataset was schema-valid but silently had no
   Tivoli in it; nothing in the validator catches a whole obvious category
   going missing. Anything listed here should be investigated before the trip,
-  not just noted.
+  not just noted. This check matches on a place's *whole* normalised name,
+  never a substring — an earlier version matched substrings and was fooled by
+  a restaurant called "Wagamama Tivoli" into believing Tivoli Gardens was
+  present. A self-check for exactly that case runs on every invocation.
 - **Duplicate or near-duplicate names** — usually means the generator asked
   overlapping batches for the same place and both slipped through. Worth a
   quick check; may just need one entry removed.
@@ -98,6 +105,7 @@ Data quality report for data/copenhagen-2026.json
   none found
 
 == Well-known Copenhagen attractions absent from the dataset ==
+  - Tivoli Gardens
   - Den Blå Planet
   - Nyhavn
   - Rundetaarn / the Round Tower
@@ -106,8 +114,13 @@ Data quality report for data/copenhagen-2026.json
   - Bakken
   - The Little Mermaid
   - Amalienborg
+
+Exit 0: the report ran to completion. This says nothing about whether the data is clean — read the findings above.
 ```
 
 This dataset is the earlier 20-place fixture, ahead of the orchestrator's wider
-regeneration. The eight attractions absent above are exactly the gap the wider
-batch run is meant to close — re-run this report once that dataset lands.
+regeneration. It contains a restaurant called "Wagamama Tivoli" — before the
+whole-name-match fix, its "tivoli" tag fooled the absence check into treating
+Tivoli Gardens as present. With the fix, Tivoli Gardens now correctly appears
+in the list above, alongside the other eight attractions the wider batch run
+is meant to add — re-run this report once that dataset lands.

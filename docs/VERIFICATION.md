@@ -48,3 +48,22 @@ non-zero with `RESULT: FAIL` and a list of the specific failures.
 
 Treat a `PASS` here as "nothing is silently broken offline", not as a
 substitute for the manual device check.
+
+## Live deployment check — 2026-08-01
+
+`tools/verify-app.mjs` only proves the paths are correct on a local server at
+the repo root. GitHub Pages serves this app from a subdirectory
+(`https://marcellovictorino.github.io/family-trip-planner/`), so a path that
+resolves fine locally can still 404 once served from a subpath. Checked by
+fetching the site root plus every path in `sw.js`'s `ASSETS` array against
+that live origin (not localhost):
+
+| Result | Count |
+|---|---|
+| 200 | 31 / 31 (site root + all 30 `ASSETS` entries) |
+| Non-200 | none |
+
+All paths — `index.html`, `styles.css`, `manifest.webmanifest`, every `src/`
+module, every `design/tokens/*.css` file, all four icon PNGs and all eight
+font woff2 files, and `data/copenhagen-2026.json` — returned HTTP 200 from
+the live GitHub Pages origin. No subpath-resolution problems found.

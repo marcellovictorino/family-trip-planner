@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 // Zero-dependency data-quality report for a generated trip dataset.
-// This is a report, not a gate: it always exits 0. See docs/DATA-QUALITY.md
-// for a reading guide to what each section means.
+// This is a report, not a gate: it exits 0 whenever it runs to completion,
+// even if it finds data problems (missing Tivoli, duplicate names, etc — those
+// are informational). It exits non-zero only if the tool itself crashes (bad
+// JSON, missing file, a bug in the report), so a caller can tell "ran and the
+// data looks fine/has findings" from "never actually ran". See
+// docs/DATA-QUALITY.md for a reading guide to what each section means.
 import { readFile } from "node:fs/promises";
 
 const MIN_DESCRIPTION_LENGTH = 40;
@@ -10,17 +14,21 @@ const SUSPICIOUSLY_SHORT_LENGTH = 60;
 // Well-known Copenhagen family attractions. Recorded here because an earlier
 // generated dataset was technically valid but silently contained no Tivoli at
 // all — the schema cannot catch an entire obvious category going missing.
+//
+// `names` are compared against a place's *whole* normalised name, never as a
+// substring — a substring match let a restaurant called "Wagamama Tivoli"
+// convince an earlier version of this check that Tivoli Gardens was present.
 const KNOWN_ATTRACTIONS = [
-  { label: "Tivoli Gardens", keywords: ["tivoli"] },
-  { label: "Den Blå Planet", keywords: ["den blå planet", "den bla planet", "blue planet"] },
-  { label: "Nyhavn", keywords: ["nyhavn"] },
-  { label: "Rundetaarn / the Round Tower", keywords: ["rundetårn", "rundetaarn", "round tower"] },
-  { label: "Copenhagen Zoo", keywords: ["copenhagen zoo", "zoologisk have"] },
-  { label: "The National Aquarium", keywords: ["national aquarium", "den blå planet", "den bla planet"] },
-  { label: "Louisiana Museum of Modern Art", keywords: ["louisiana"] },
-  { label: "Bakken", keywords: ["bakken"] },
-  { label: "The Little Mermaid", keywords: ["little mermaid", "den lille havfrue"] },
-  { label: "Amalienborg", keywords: ["amalienborg"] },
+  { label: "Tivoli Gardens", names: ["tivoli", "tivoli gardens"] },
+  { label: "Den Blå Planet", names: ["den blå planet", "den bla planet", "blue planet", "the blue planet"] },
+  { label: "Nyhavn", names: ["nyhavn"] },
+  { label: "Rundetaarn / the Round Tower", names: ["rundetårn", "rundetaarn", "the round tower", "round tower"] },
+  { label: "Copenhagen Zoo", names: ["copenhagen zoo", "zoologisk have"] },
+  { label: "The National Aquarium", names: ["national aquarium", "den blå planet", "den bla planet", "the national aquarium denmark"] },
+  { label: "Louisiana Museum of Modern Art", names: ["louisiana", "louisiana museum of modern art"] },
+  { label: "Bakken", names: ["bakken"] },
+  { label: "The Little Mermaid", names: ["little mermaid", "the little mermaid", "den lille havfrue"] },
+  { label: "Amalienborg", names: ["amalienborg"] },
 ];
 
 function counts(places, field) {
@@ -107,10 +115,23 @@ function findNonHttpsWebsites(places) {
 }
 
 function findAbsentKnownAttractions(places) {
-  const haystacks = places.map((p) => [p.name, ...(p.tags ?? [])].join(" ").toLowerCase());
+  const normalisedNames = new Set(places.map((p) => normaliseName(p.name)));
   return KNOWN_ATTRACTIONS.filter(
-    (attraction) => !haystacks.some((haystack) => attraction.keywords.some((kw) => haystack.includes(kw))),
+    (attraction) => !attraction.names.some((name) => normalisedNames.has(normaliseName(name))),
   ).map((a) => a.label);
+}
+
+// Proves the Wagamama Tivoli false negative stays fixed: a restaurant whose
+// name merely contains "Tivoli" must not be read as Tivoli Gardens itself.
+// Runs on every invocation so a future edit that reintroduces substring
+// matching fails loudly (a crash, non-zero exit) rather than silently.
+function selfCheckAttractionMatching() {
+  const decoy = [{ name: "Wagamama Tivoli", tags: [] }];
+  if (!findAbsentKnownAttractions(decoy).includes("Tivoli Gardens")) {
+    throw new Error(
+      "self-check failed: a place named \"Wagamama Tivoli\" fooled the attraction-absence check into treating Tivoli Gardens as present",
+    );
+  }
 }
 
 function formatDistribution(pairs, total) {
@@ -190,13 +211,19 @@ function report(dataset, path) {
 }
 
 async function main() {
+  selfCheckAttractionMatching();
   const path = process.argv[2] ?? "data/copenhagen-2026.json";
   const dataset = JSON.parse(await readFile(path, "utf8"));
   console.log(report(dataset, path));
-  process.exit(0);
+  console.log();
+  console.log(
+    "Exit 0: the report ran to completion. This says nothing about whether the data is clean — read the findings above.",
+  );
 }
 
-main().catch((error) => {
-  console.error(`data-report crashed: ${error.stack}`);
-  process.exit(0);
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(`data-report CRASHED — this is exit 1, distinct from the report's own exit 0: ${error.stack}`);
+    process.exit(1);
+  });
