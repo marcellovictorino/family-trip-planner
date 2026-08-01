@@ -1,0 +1,22 @@
+<!-- @dsCard group="Components" viewport="700x330" name="Core" subtitle="Button, Chip, SearchField, KindBand, glyphs, headings" -->
+<meta charset="utf-8"><link rel="stylesheet" href="../../styles.css"><style>body{margin:0;padding:16px;background:var(--bg-page);font-family:var(--font-body);color:var(--text-body)}.lbl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:0 0 6px}.grp{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}</style><div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+const { Button, Chip, ChipRow, SearchField, KindBand, FacilityRow, EmptyState, SectionHeading } = window.FamilyTripPlannerDesignSystem_205d71;
+function Demo(){return (<div>
+  <p className="lbl">Button</p>
+  <div className="grp"><Button>♡ Save</Button><Button variant="primary" icon="+">Add to day</Button><Button variant="filled">Confirm</Button><Button variant="ghost">Cancel</Button><Button pressed icon="♥">Saved</Button><Button disabled>Disabled</Button></div>
+  <p className="lbl">Chip</p>
+  <ChipRow style={{marginBottom:"12px"}}><Chip pressed>🌧 Rainy</Chip><Chip>☀️ Sunny</Chip><Chip>👶 Baby</Chip><Chip pressed>🧒 Toddler</Chip><Chip>€€</Chip><Chip dashed>Clear 2</Chip></ChipRow>
+  <p className="lbl">SearchField</p>
+  <div style={{marginBottom:"12px"}}><SearchField value="" readOnly /></div>
+  <p className="lbl">KindBand · FacilityRow · SectionHeading · EmptyState</p>
+  <div className="grp"><KindBand kind="attraction" label="theme-park" /><KindBand kind="playground" label="playground" /><KindBand kind="restaurant" label="bakery" /><FacilityRow facilities={["baby","stroller","mixed","glutenFree","booking"]} /></div>
+  <SectionHeading meta="3 stops · 4h30">Monday, 3 August</SectionHeading>
+  <EmptyState glyph="🗓">Nothing planned. Add something from Explore.</EmptyState>
+</div>);}
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo/>);
+</script>

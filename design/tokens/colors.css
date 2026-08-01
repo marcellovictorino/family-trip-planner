@@ -1,0 +1,23 @@
+:root{
+/* --- base neutrals: warm, never pure white --- */
+--sand-50:#fffdf9;--sand-100:#faf6ef;--sand-200:#f7f3ec;--sand-300:#f1ebe1;--sand-400:#e4ddd1;--sand-500:#cfc6b7;
+--ink-900:#17242b;--ink-700:#3a4a53;--ink-500:#5d6b73;--ink-300:#8d979d;
+/* --- brand: harbour blue (from the app's --accent #1b4965) --- */
+--harbour-900:#123549;--harbour-700:#1b4965;--harbour-500:#3d7191;--harbour-200:#cfe3ef;--harbour-100:#e6f0f6;
+/* --- kind bands: carried over verbatim from the app's category colours --- */
+--kind-attraction:#cfe3ef;--kind-playground:#d6ecd8;--kind-restaurant:#f4e2cf;
+--kind-attraction-ink:#1b4965;--kind-playground-ink:#31593a;--kind-restaurant-ink:#8a5326;
+/* --- accents: the "fun" half of calm-and-fun --- */
+--sun-500:#f2b544;--sun-200:#fbe6bb;--rain-500:#7fa8c4;--rain-200:#dcebf4;
+--leaf-600:#4a7c59;--leaf-200:#d6ecd8;--clay-600:#c4643c;--clay-200:#f6ddd2;
+
+/* --- semantic aliases --- */
+--bg-page:var(--sand-200);--bg-sunken:var(--sand-300);--bg-header:var(--sand-50);
+--surface-card:var(--sand-50);--surface-raised:#fff;--surface-hover:var(--sand-100);
+--text-body:var(--ink-900);--text-muted:var(--ink-500);--text-faint:var(--ink-300);
+--text-on-accent:var(--sand-50);--text-link:var(--harbour-700);--text-link-hover:var(--harbour-900);
+--line:var(--sand-400);--line-strong:var(--sand-500);--line-focus:var(--harbour-500);
+--accent:var(--harbour-700);--accent-hover:var(--harbour-900);--accent-soft:var(--harbour-200);
+--status-good:var(--leaf-600);--status-warn:var(--sun-500);--status-alert:var(--clay-600);
+--focus-ring:0 0 0 3px var(--harbour-200);
+}

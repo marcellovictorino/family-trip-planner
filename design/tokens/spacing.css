@@ -1,0 +1,7 @@
+:root{
+/* Scale carried from the app's rem values (0.15/0.2/0.4/0.5/0.6/0.75/1/1.25rem) */
+--space-2xs:0.2rem;--space-xs:0.4rem;--space-sm:0.5rem;--space-md:0.6rem;--space-lg:0.75rem;--space-xl:1rem;--space-2xl:1.25rem;--space-3xl:2rem;
+--gap-cards:0.75rem;--gap-chips:0.4rem;--gap-sections:1.25rem;
+--pad-card:0.75rem;--pad-row:0.4rem 0.5rem;--pad-screen:1rem;
+--tap-min:44px;--content-max:46rem;
+}

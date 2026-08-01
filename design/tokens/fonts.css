@@ -1,0 +1,65 @@
+/* Self-hosted so the app works offline. The design system's tokens/fonts.css
+   imports from Google Fonts, which would fail in airplane mode in Copenhagen. */
+
+@font-face{
+  font-family:"Bricolage Grotesque";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/bricolage-grotesque-1.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Bricolage Grotesque";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/bricolage-grotesque-2.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Bricolage Grotesque";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/bricolage-grotesque-3.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Nunito Sans";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/nunito-sans-1.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Nunito Sans";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/nunito-sans-2.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Nunito Sans";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/nunito-sans-3.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Nunito Sans";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/nunito-sans-4.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Nunito Sans";
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+  src:url("assets/fonts/nunito-sans-5.woff2") format("woff2");
+}
+
+:root{
+--font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+--font-body:"Nunito Sans",-apple-system,system-ui,sans-serif;
+--font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+}

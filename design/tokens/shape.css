@@ -1,0 +1,9 @@
+:root{
+--radius-xs:6px;--radius-sm:10px;--radius-md:12px;--radius-lg:14px;--radius-pill:22px;
+--border-hairline:1px solid var(--line);--border-accent:1px solid var(--accent);
+--shadow-card:0 1px 2px rgb(23 36 43 / 0.04);
+--shadow-raised:0 2px 8px rgb(23 36 43 / 0.07);
+--shadow-dialog:0 12px 32px rgb(23 36 43 / 0.18);
+--shadow-inset-press:inset 0 1px 2px rgb(23 36 43 / 0.10);
+--backdrop:rgb(23 36 43 / 0.4);
+}

@@ -1,0 +1,21 @@
+<!-- @dsCard group="Components" viewport="700x340" name="Itinerary" subtitle="DayItem rows and the DayPicker dialog" -->
+<meta charset="utf-8"><link rel="stylesheet" href="../../styles.css"><style>body{margin:0;padding:16px;background:var(--bg-page);font-family:var(--font-body);color:var(--text-body)}.lbl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:0 0 6px}.grp{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}</style><div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+const { DayItem, DayPicker, SectionHeading } = window.FamilyTripPlannerDesignSystem_205d71;
+function Demo(){return (<div style={{display:"grid",gridTemplateColumns:"1fr 300px",gap:"20px",alignItems:"start"}}>
+  <div>
+    <SectionHeading meta="3 stops · 6h">Monday, 3 August</SectionHeading>
+    <ol style={{listStyle:"none",margin:0,padding:0,display:"grid",gap:"6px"}}>
+      <DayItem name="Kongens Have Playground" meta="Indre By · 1h" first />
+      <DayItem name="Tivoli Gardens" meta="Indre By · 4h" />
+      <DayItem name="Madkaffe" meta="Vesterbro · 1h" last />
+    </ol>
+  </div>
+  <DayPicker placeName="Tivoli" dates={[{value:"a",label:"Sun 2 Aug"},{value:"b",label:"Mon 3 Aug"},{value:"c",label:"Tue 4 Aug"}]} />
+</div>);}
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo/>);
+</script>
