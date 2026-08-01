@@ -75,6 +75,11 @@ export function renderRatingSheet({ place, date, entry, note, handlers }) {
     field(
       "Notes",
       h("textarea", {
+        // aria-label rather than Saved's <label for="note-${id}">: Saved's textarea
+        // keeps that id in the hidden panel's last-rendered DOM, so visiting Saved
+        // then opening this sheet for the same place from the Itinerary would put
+        // a duplicate id in the document with the label pointing at whichever
+        // element came first. Deliberate divergence — don't "fix" it to <label for>.
         class: "note-input", rows: 3, "aria-label": `Notes about ${place.name}`,
         placeholder: "What would you tell another family?",
         // Commit on blur rather than on every keystroke, matching the Saved

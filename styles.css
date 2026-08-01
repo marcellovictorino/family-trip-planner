@@ -175,8 +175,11 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
   font-size: var(--text-small); cursor: pointer; transition: var(--transition-tap);
 }
 .nudge:disabled { color: var(--line-strong); cursor: default; }
-.day-item-body {
-  flex: 1; display: grid; gap: var(--space-2xs); text-align: left;
+.day-item-body { flex: 1; display: grid; gap: var(--space-2xs); text-align: left; }
+/* Only the Itinerary row's day-item-body is a <button> — rating lives there by
+   design. Saved's day-item-body is a plain <span>, so the tap-target sizing
+   and pointer cursor below never apply to it. */
+button.day-item-body {
   min-height: var(--tap-min); border: 0; background: none; padding: 0;
   font: inherit; color: inherit; cursor: pointer;
 }
@@ -185,7 +188,7 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
 
 /* Itinerary: a stop that has happened */
 .day-item.is-visited { background: var(--bg-sunken); }
-.day-item.is-visited .name { text-decoration: line-through; text-decoration-color: var(--text-faint); color: var(--text-muted); }
+.day-item.is-visited .name { text-decoration-color: var(--text-faint); color: var(--text-muted); }
 .day-item.is-visited .facts-line { color: var(--text-faint); }
 .thumbs { display: flex; gap: var(--space-2xs); }
 .thumb {
