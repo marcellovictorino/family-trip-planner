@@ -13,3 +13,7 @@ test("the first day of the trip counts as zero, not one", () => {
 test("a past start date returns a negative number so the view can say the trip has begun", () => {
   assert.equal(daysUntil("2026-08-02", "2026-08-04"), -2);
 });
+
+test("the day before departure reads 'day', not 'days' — it is the most-looked-at screen that week", () => {
+  assert.equal(daysUntil("2026-08-02", "2026-08-01"), 1);
+});

@@ -12,7 +12,11 @@ function stat(value, label) {
 
 function countdown(trip, today) {
   const days = daysUntil(trip.from, today);
-  if (days > 0) return h("div", { class: "countdown" }, h("strong", {}, String(days)), h("span", {}, `days to ${trip.city}`));
+  if (days > 0) {
+    return h("div", { class: "countdown" },
+      h("strong", {}, String(days)),
+      h("span", {}, `${days === 1 ? "day" : "days"} to ${trip.city}`));
+  }
   const ended = daysUntil(trip.to, today) < 0;
   return h("div", { class: "countdown" }, h("strong", {}, ended ? "🏠" : "🎉"),
     h("span", {}, ended ? `${trip.city} done` : `In ${trip.city} now`));
