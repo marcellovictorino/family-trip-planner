@@ -2,6 +2,60 @@
 
 Notable changes, newest first. Dates are the day the work merged to `main`.
 
+## 1 August 2026 — S11–S14: logistics
+
+Stops the itinerary pinballing across the city. Explore can sort by how far a place is,
+the itinerary shows how long each hop takes, and a day can propose its own running order.
+All of it offline, with no dependencies and no routing API
+(`docs/superpowers/specs/2026-08-01-proximity-routing-design.md`).
+
+### Added
+
+- `src/travel.js`: `travelMinutes(from, to)` returning minutes and a mode. Haversine
+  distance with a detour factor, a walk branch and a transit branch, taking whichever is
+  cheaper.
+- A nine-zone table in the dataset overrides that estimate for cross-zone pairs. Straight
+  lines lie about harbour crossings, and lie optimistically — Refshaleøen is 1.4 km from
+  Nyhavn as the crow flies and nowhere near a 20-minute walk. A pair the table does not
+  cover falls back to the estimate rather than throwing.
+- Itinerary legs: a connector between consecutive stops showing mode and minutes, with a
+  slow leg coloured rather than blocked. The day header splits time at stops from time
+  moving, and flags a long day quietly.
+- Explore gains an explicit **Nearest first** sort. The anchor is the last stop on the
+  active day, else where you are staying, else the city centre — always shown as a
+  dismissible chip, because a list that silently reorders itself when you tap a stop is
+  disorienting.
+- **Auto Re-Order** proposes a running order for a day and shows the before and after
+  moving time. At eight or fewer stops the optimal order is an exact search over at most
+  5 040 permutations, so nothing is approximated. It is a proposal you accept or dismiss;
+  it never rewrites a day on its own.
+
+### Changed
+
+- State is now `trip.state.v3`, adding `base` for where the family is staying. Additive,
+  same shape as v1 → v2: an older payload gains `base: null` and the anchor chain skips
+  to the city centre.
+
+### Known limitation
+
+The zone table's numbers are researched estimates, not measured journeys. The
+water-crossing pairs are the ones worth checking against reality before trusting them,
+since correcting exactly those is the reason the table exists. Separately, the dataset
+carries no opening hours — only a free-text `best_time` — so a day can be geometrically
+feasible and still impossible. Nothing in the app implies otherwise.
+
+## 1 August 2026 — data quality
+
+- Gluten-free coverage across the guide's restaurants went from 7 rated `good` to 15.
+  Only the dedicated gluten-free batch had been briefed for it, so weak coverage leaked
+  in through the quick-meal and evening batches. The guide now holds 98 places.
+- `tools/data-report.mjs` matched landmark names by whole-name equality, which fixed a
+  substring false negative by introducing a false positive: six landmarks that were
+  present were reported missing. Matching is now by word-boundary prefix, with a test for
+  each direction.
+- The twelve places with an empty `near[]` were investigated and left alone. At an 800 m
+  radius that is accurate geography, not a defect.
+
 ## 1 August 2026 — S7: tick and rate
 
 Turns the Itinerary into a todo list you tick as the day happens, and captures why each

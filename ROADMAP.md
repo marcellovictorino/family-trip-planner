@@ -1,20 +1,24 @@
 # Roadmap
 
 Live: **https://marcellovictorino.github.io/family-trip-planner/**
-Task board: `td list` — epics `td-ed4661` (MVP), `td-1f0fe9` (beyond MVP) and
-`td-0f99ca` (feedback loop)
+Task board: `td list` — epics `td-ed4661` (MVP), `td-1f0fe9` (beyond MVP),
+`td-0f99ca` (feedback loop) and `td-6a2f15` (logistics)
 
 Status as of 1 August 2026.
 
 ## Where this stands
 
-The MVP is built, deployed and usable. A family can browse 90 verified Copenhagen
-places, filter them by weather, age suitability, cost and duration, build a seven-day
-itinerary, tick each stop off as the day happens, rate it and say why, and take notes —
-with the whole thing cached for use without a signal.
+The MVP is built, deployed and proven on hardware. A family can browse 98 verified
+Copenhagen places, filter them by weather, age suitability, cost and duration, build a
+seven-day itinerary ordered so it does not pinball across the city, tick each stop off as
+the day happens, rate it and say why, and take notes — with the whole thing cached for
+use without a signal.
 
-One thing stands between "built" and "proven": nobody has yet opened it on a real iPhone
-and turned on airplane mode. Until that happens, offline is an untested claim.
+The offline claim is no longer a claim: the app has been opened from an iPhone home
+screen in airplane mode and still worked (`td-f779f7`).
+
+What is left is mostly post-trip by design. The feedback loop's second half needs real
+ratings to build against, and the guide's accuracy needs a trip to test it.
 
 ## Shipped
 
@@ -27,9 +31,12 @@ and turned on airplane mode. Until that happens, offline is an untested claim.
 | S5 | Favourites, visited, notes, export and import | 13 tests encoding rule R5 |
 | S6 | Widened the guide from 3 fixtures to 90 real places | Validator passes; landmarks confirmed present |
 | S7 | Tick a stop off, thumb it, rate it: stars, kind-specific tags, a note | Nine-point walkthrough driven in a browser; 24 tests |
+| S11–S14 | Logistics: travel-time primitive, itinerary leg times and a day budget, anchored distance sort, Auto Re-Order | 132-line `travel.test.mjs` plus view tests; `verify-app` green |
+| — | Data quality: gluten-free `good` from 7 to 15 restaurants, landmark matching fixed, guide widened to 98 places | Validator passes; a test per matching direction |
 | — | Design system applied: tokens, icons, self-hosted fonts, installable PWA | Computed styles checked in a real browser |
+| — | Offline acceptance on a real iPhone (`td-f779f7`) | Home-screen launch in airplane mode, by hand |
 
-98 tests pass under `node --test test/*.test.mjs`. `node tools/verify-app.mjs` checks
+127 tests pass under `node --test test/*.test.mjs`. `node tools/verify-app.mjs` checks
 asset resolution, CSS URL targets, the manifest, the module graph, that every module in
 that graph is precached by the service worker, and the dataset.
 
@@ -39,28 +46,45 @@ Still zero npm dependencies and no build step.
 
 ### Blocking — needs a human
 
-**Offline acceptance test on a real iPhone** (`td-f779f7`). Open the URL in Safari, Add
-to Home Screen, open from there, enable airplane mode, force-quit, reopen. The MVP epic
-is explicitly blocked on this. Automated checks confirm the service worker registers and
-every asset resolves; they cannot prove iOS will not evict the cache.
+**Spot-check the zone table** (`td-6a2f15`). The nine-zone transit table in
+`data/copenhagen-2026.json` holds researched estimates, not measured journeys. The
+water-crossing pairs are the ones that matter, because correcting exactly those is why
+the table exists: if `indre-by|refshaleoen: 28` is wrong, the app now states a confident
+number it invented. Everything else in the model degrades gracefully; this does not.
 
 ### Then — data quality
 
-The app's usefulness now rests entirely on generated content, and the schema gate proves
-structure, not truth.
+The app's usefulness rests on generated content, and the schema gate proves structure,
+not truth.
 
-- **Isolated places and thin gluten-free coverage** (`td-5d5c84`). Twelve places have no
-  `near[]` neighbours. Only 8 of 23 restaurants are rated `good` for gluten-free; the
-  rest are `limited`, which is not enough to plan a coeliac meal around.
 - **Day trips are unreachable** (`td-920b3a`). Louisiana and Bakken fall outside even the
   padded bounding box, so that batch was cut. Regional batches need their own box.
-- **The landmark report over-reports** (`td-e4ea27`). Fixing a substring false negative
-  introduced a whole-name false positive; six present landmarks are reported missing.
+- **`nearest_metro` is 55 free-text variants** (`td-1e55cb`). `Nørreport`,
+  `Nørreport Station` and `Nørreport St.` are three separate values across 98 places.
+  Blocks any future station-graph routing; deliberately out of scope for S11–S14, which
+  need only coordinates.
 
 ### Then — scale
 
-- **Verify at 200+ places** (`td-9fdf7e`). The spec targets 200; the guide holds 90.
-  Measure before optimising.
+- **Verify at 200+ places** (`td-9fdf7e`). The spec targets 200; the guide holds 98.
+  Measure before optimising. Note that Auto Re-Order is exact only to eight stops a day,
+  which is a per-day bound and does not move with the dataset.
+
+## Shipped — logistics
+
+Epic `td-6a2f15`. Designed and built 1 August 2026; full spec in
+`docs/superpowers/specs/2026-08-01-proximity-routing-design.md`.
+
+A seven-day plan that ignores geography sends a family back and forth across the city.
+This closes that, without a routing API or a network call: `travelMinutes(from, to)` is a
+haversine estimate with a walk branch and a transit branch, corrected by a nine-zone
+table for the pairs a straight line gets dangerously wrong. Explore sorts from an anchor,
+the itinerary shows leg times and a moving-versus-stopped budget, and Auto Re-Order
+proposes a running order the user accepts or dismisses.
+
+A baked pair matrix from a real routing engine was considered and rejected: the free
+service has no transit profile, so it would have bought street geometry at the cost of
+the public-transport model, and shipped a quadratic blob nobody could review.
 
 ## Next — the feedback loop
 
