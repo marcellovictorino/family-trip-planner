@@ -30,6 +30,33 @@ non-zero with `RESULT: FAIL` and a list of the specific failures.
    through `validateDataset` from `src/schema.mjs`, the same check the
    generator's own pipeline uses.
 
+## Cache-version bumps always fetch fresh bytes, not just fresh names
+
+Bumping `CACHE` in `sw.js` makes `install` write into a new, empty cache — but
+that alone does not guarantee the *bytes* it writes are current. The install
+handler re-fetches every asset in `ASSETS`, and an ordinary fetch is still
+subject to the browser's own HTTP cache: a file whose response was served
+with a cacheable `Cache-Control` header can come back from that HTTP cache
+with its *old* content even though the request reached the fetch layer and
+even though the on-disk file has since changed. That is exactly the same
+class of bug the dataset fetch in `src/app.js` was fixed for (`fetch(DATA_URL,
+{ cache: "no-cache" })`) — a deploy can look like it worked and still ship
+stale JavaScript to a phone that already had a service worker installed.
+
+`sw.js`'s `install` handler now fetches every asset via
+`new Request(asset, { cache: "reload" })`, the one fetch mode that always
+revalidates against the network regardless of what the HTTP cache already
+holds. A version bump is therefore guaranteed to pull current bytes for
+every asset, not just a differently-named cache pointing at old ones.
+
+This was proved with a throwaway Node script (not committed) that: served a
+file from a real local HTTP server, cached it once through the same
+`{ cache: "reload" }` logic `sw.js` uses, changed the file on disk, then
+showed that (a) a plain re-fetch to the same URL through a simulated
+browser HTTP cache returned the stale bytes, while (b) a second install run
+with a bumped cache name and `{ cache: "reload" }` returned the current
+ones. Both assertions held.
+
 ## What it deliberately does not check
 
 - **That the service worker actually caches correctly at runtime.** This
@@ -38,6 +65,16 @@ non-zero with `RESULT: FAIL` and a list of the specific failures.
   handlers behave, that `caches.match` falls back correctly, or that a real
   browser goes offline cleanly after a first visit. That needs a real device
   or browser with airplane mode toggled.
+- **That a real browser's HTTP cache is actually bypassed by `{ cache:
+  "reload" }` the way this document claims.** The reload-vs-stale proof above
+  runs against a hand-written stand-in for the browser's HTTP cache, in
+  Node — it demonstrates the *logic* is correct, not that Safari or Chrome's
+  actual cache implementation honours `reload` identically in every case
+  (intermediate proxies, some CDN configurations, and Safari's disk cache
+  under low storage have all been known to have their own quirks here). Only
+  a real device — install the app, deploy a change, bump the cache version,
+  reopen without clearing site data — can confirm the phone actually
+  receives new bytes end to end.
 - **That the app looks right.** No visual, layout or tap-target check is
   performed. Confirming 44px tap targets, no horizontal scroll at 375px, or
   that the design system renders as intended still needs manual review in a

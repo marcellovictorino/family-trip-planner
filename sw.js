@@ -1,4 +1,4 @@
-const CACHE = "trip-planner-v10";
+const CACHE = "trip-planner-v11";
 
 const ASSETS = [
   "./",
@@ -38,10 +38,20 @@ const ASSETS = [
 // whole call and leaves the cache empty, with no offline support at all and no error
 // anyone would see. Cache each asset individually instead, so one bad path can't sink
 // the rest, and log which ones failed so it's at least visible in devtools.
+//
+// Each fetch also forces `cache: "reload"`, bypassing the browser's own HTTP cache.
+// Without this, a version bump still re-adds every asset, but those requests go
+// through the ordinary HTTP cache — which can hand back the OLD bytes of a changed
+// file even though the request reached the network layer, so a deploy could look
+// like it worked and still ship stale JavaScript. "reload" is the one fetch mode
+// that always revalidates against the network regardless of what the HTTP cache
+// thinks it already has.
 function cacheAssetsIndividually(cache) {
   return Promise.all(
     ASSETS.map((asset) =>
-      cache.add(asset).catch((error) => console.error(`SW install: failed to cache "${asset}"`, error)),
+      cache
+        .add(new Request(asset, { cache: "reload" }))
+        .catch((error) => console.error(`SW install: failed to cache "${asset}"`, error)),
     ),
   );
 }
