@@ -42,10 +42,10 @@ export function renderItinerary({ trip, places, days, dates, handlers }) {
       return h(
         "section",
         { class: "day" },
-        h("h2", {}, formatDayHeading(date), items.length > 0 && h("span", { class: "day-total" },
+        h("h2", { class: "section-heading" }, formatDayHeading(date), items.length > 0 && h("span", { class: "meta" },
           `${items.length} stop${items.length === 1 ? "" : "s"} · ${durationLabel(totalMinutes(items))}`)),
         items.length === 0
-          ? h("p", { class: "empty" }, "Nothing planned. Add something from Explore.")
+          ? h("p", { class: "empty-state" }, h("span", { class: "glyph", "aria-hidden": "true" }, "🗓"), "Nothing planned. Add something from Explore.")
           : h("ol", { class: "day-items" },
               items.map((place, index) => row(place, date, index, items.length, handlers))),
       );

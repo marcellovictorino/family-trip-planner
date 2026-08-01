@@ -24,8 +24,8 @@ function section(title, items) {
   return h(
     "section",
     { class: "day" },
-    h("h2", {}, title),
-    items.length === 0 ? h("p", { class: "empty" }, "Nothing yet.") : h("ul", { class: "saved-list" }, items),
+    h("h2", { class: "section-heading" }, title),
+    items.length === 0 ? h("p", { class: "empty-state" }, "Nothing yet.") : h("ul", { class: "saved-list" }, items),
   );
 }
 
@@ -61,9 +61,9 @@ export function renderSaved({ places, favourites, visited, notes, handlers }) {
     section(`✓ Visited · ${visited.length}`,
       visited.map((id) => line(resolve(id), handlers, flags(id)))),
     h("section", { class: "day" },
-      h("h2", {}, `📝 Notes · ${Object.keys(notes).length}`),
+      h("h2", { class: "section-heading" }, `📝 Notes · ${Object.keys(notes).length}`),
       noteIds.length === 0
-        ? h("p", { class: "empty" }, "Favourite something to start noting.")
+        ? h("p", { class: "empty-state" }, "Favourite something to start noting.")
         : h("div", { class: "notes" }, noteIds.map((id) => noteEditor(resolve(id), notes[id], handlers)))),
   );
 }
