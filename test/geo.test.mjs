@@ -1,10 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { haversineMetres, computeNear } from "../tools/geo.mjs";
+import { haversineMetres, computeNear, padBbox } from "../tools/geo.mjs";
 
 const TIVOLI = { lat: 55.6736, lon: 12.5681 };
 const GLYPTOTEKET = { lat: 55.6725, lon: 12.5729 };   // ~320 m east of Tivoli
 const BLA_PLANET = { lat: 55.6329, lon: 12.6549 };    // ~7 km away
+const COPENHAGEN_METRO_BBOX = { west: 12.52, east: 12.62, south: 55.63, north: 55.73 };
+const MALMO = { lat: 55.6050, lon: 13.0038 };
 
 test("haversine matches a known short distance within 5%", () => {
   const metres = haversineMetres(TIVOLI, GLYPTOTEKET);
@@ -54,4 +56,32 @@ test("near[] is sorted nearest first so the UI can show the closest option", () 
   const [tivoli] = computeNear(places, { radius: 800, pace: 60 });
   const distances = tivoli.near.map((n) => n.walk_minutes);
   assert.deepEqual(distances, [...distances].sort((a, b) => a - b));
+});
+
+function insideBox(point, box) {
+  return point.lon >= box.west && point.lon <= box.east
+    && point.lat >= box.south && point.lat <= box.north;
+}
+
+test("padding rescues a real place a too-tight model box would reject", () => {
+  assert.ok(!insideBox(BLA_PLANET, COPENHAGEN_METRO_BBOX), "must be outside the raw box for this test to mean anything");
+  assert.ok(insideBox(BLA_PLANET, padBbox(COPENHAGEN_METRO_BBOX)), "Den Blå Planet should fall inside the padded box");
+});
+
+test("padding is generous, not unbounded — a different city stays outside", () => {
+  assert.ok(!insideBox(MALMO, padBbox(COPENHAGEN_METRO_BBOX)), "Malmö is a different country and must not pass as Copenhagen");
+});
+
+test("padding is symmetric on each axis, so it cannot skew the box toward one edge", () => {
+  const padded = padBbox(COPENHAGEN_METRO_BBOX);
+  const lonPad = padded.east - COPENHAGEN_METRO_BBOX.east;
+  const lonPadOtherSide = COPENHAGEN_METRO_BBOX.west - padded.west;
+  const latPad = padded.north - COPENHAGEN_METRO_BBOX.north;
+  const latPadOtherSide = COPENHAGEN_METRO_BBOX.south - padded.south;
+  assert.equal(lonPad, lonPadOtherSide);
+  assert.equal(latPad, latPadOtherSide);
+});
+
+test("a zero fraction is a no-op, so padding can be disabled without a special case", () => {
+  assert.deepEqual(padBbox(COPENHAGEN_METRO_BBOX, 0), COPENHAGEN_METRO_BBOX);
 });

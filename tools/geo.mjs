@@ -12,6 +12,18 @@ export function haversineMetres(a, b) {
   return 2 * EARTH_RADIUS_METRES * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
+// A too-tight bounding box silently discards real places (Den Blå Planet at
+// 12.6549°E fell outside a raw model box of east 12.62°), which is worse than
+// a loud validation failure. Padding trades a little slack for that safety.
+export function padBbox(box, fraction = 0.35) {
+  const lonPad = (box.east - box.west) * fraction;
+  const latPad = (box.north - box.south) * fraction;
+  return {
+    west: +(box.west - lonPad).toFixed(4), east: +(box.east + lonPad).toFixed(4),
+    south: +(box.south - latPad).toFixed(4), north: +(box.north + latPad).toFixed(4),
+  };
+}
+
 export function computeNear(places, { radius, pace }) {
   return places.map((place) => {
     const near = places

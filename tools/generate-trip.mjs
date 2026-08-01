@@ -9,7 +9,7 @@ import {
   WALK_METRES_PER_MINUTE,
   validatePlace,
 } from "../src/schema.mjs";
-import { computeNear } from "./geo.mjs";
+import { computeNear, padBbox } from "./geo.mjs";
 import { extractJson, extractText } from "./parse.mjs";
 
 // The single seam for swapping research backends. To use pi with a gpt model,
@@ -20,11 +20,18 @@ const RESEARCH_ARGS = ["-p", "--model", "claude-sonnet-5", "--effort", "medium",
 
 const MAX_ATTEMPTS = 3;
 
+// No "day-trips" batch: places like Louisiana at lat 55.97 sit outside even
+// the padded metro bounding box, so the validator would reject them. The
+// remaining counts are widened to make up the total.
 const BATCHES = [
-  { key: "rainy", count: 6, brief: "indoor attractions and museums that work on a wet day" },
-  { key: "sunny", count: 6, brief: "outdoor attractions, parks and waterfront spots for fine weather" },
-  { key: "playgrounds", count: 4, brief: "playgrounds and indoor play spaces, prioritising ones with a separate toddler area where a crawling 1-year-old is safe from older children" },
-  { key: "food", count: 4, brief: "family-friendly restaurants and cafes with reliable gluten-free options" },
+  { key: "rainy-museums", count: 10, brief: "indoor museums and galleries that work on a wet day with young children" },
+  { key: "rainy-other", count: 9, brief: "indoor attractions that are not museums — aquariums, science centres, swimming halls, indoor play" },
+  { key: "sunny-parks", count: 10, brief: "parks, gardens and waterfront spots for fine weather" },
+  { key: "sunny-attractions", count: 10, brief: "outdoor attractions, towers, boat trips and open-air museums" },
+  { key: "playgrounds", count: 14, brief: "playgrounds and indoor play spaces, prioritising ones with a separate toddler area where a crawling 1-year-old is safe from older children" },
+  { key: "food-gf", count: 12, brief: "family-friendly restaurants and cafes with reliable gluten-free options" },
+  { key: "food-quick", count: 10, brief: "quick, casual, child-tolerant lunch spots and bakeries" },
+  { key: "evening", count: 5, brief: "early-evening options that work with a 19:00 bedtime" },
 ];
 
 function parseArgs(argv) {
@@ -150,15 +157,6 @@ const rawBbox = await research(bboxPrompt(args.city, country), "bounding box");
 // (12.6549) as a hallucination. The box is a hallucination detector, not a
 // curation filter, so it should be generous enough that only genuinely wrong
 // cities fail it.
-const BBOX_PAD = 0.35;
-function padBbox(box) {
-  const lonPad = (box.east - box.west) * BBOX_PAD;
-  const latPad = (box.north - box.south) * BBOX_PAD;
-  return {
-    west: +(box.west - lonPad).toFixed(4), east: +(box.east + lonPad).toFixed(4),
-    south: +(box.south - latPad).toFixed(4), north: +(box.north + latPad).toFixed(4),
-  };
-}
 const bbox = padBbox(rawBbox);
 console.log(`  model: ${JSON.stringify(rawBbox)}`);
 console.log(`  padded: ${JSON.stringify(bbox)}`);
