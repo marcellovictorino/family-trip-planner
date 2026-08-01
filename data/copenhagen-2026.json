@@ -4,99 +4,1007 @@
     "country": "Denmark",
     "from": "2026-08-02",
     "to": "2026-08-08",
-    "bbox": { "west": 12.40, "east": 12.70, "south": 55.60, "north": 55.75 },
-    "generated_at": "2026-07-31T00:00:00Z"
+    "bbox": {
+      "west": 12.52,
+      "east": 12.62,
+      "south": 55.63,
+      "north": 55.73
+    },
+    "generated_at": "2026-08-01T05:21:53.062Z"
   },
   "places": [
     {
-      "id": "tivoli",
-      "name": "Tivoli Gardens",
+      "id": "experimentarium",
+      "name": "Experimentarium",
       "kind": "attraction",
-      "category": "theme-park",
-      "neighbourhood": "Indre By",
-      "lat": 55.6736,
-      "lon": 12.5681,
-      "description": "Historic pleasure garden with gentle rides for a 6-year-old and quiet lakeside lawns where a 1-year-old can crawl. Several indoor halls make it usable in rain.",
-      "duration_minutes": 240,
+      "category": "science-museum",
+      "neighbourhood": "Hellerup",
+      "lat": 55.7236,
+      "lon": 12.5786,
+      "description": "6-year-old runs bubble labs, water tables and physics stations across three interactive floors, plus a dedicated Miniverse zone. 1-year-old crawls freely on soft carpeted floors in the Miniverse, a play space built for ages 1-5 with a nursery room and pram parking.",
+      "duration_minutes": 210,
       "price_band": "€€€",
       "booking": "recommended",
-      "booking_url": "https://www.tivoli.dk/en/",
-      "website": "https://www.tivoli.dk/en/",
-      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6736,12.5681",
-      "setting": "mixed",
-      "ages": ["baby", "toddler", "child", "adult"],
+      "booking_url": "https://shop.experimentarium.dk/",
+      "website": "https://www.experimentarium.dk/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.7236,12.5786",
+      "setting": "indoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
       "baby_friendly": true,
       "stroller": true,
       "changing_table": true,
-      "baby_notes": "Quiet garden by the lake for naps",
+      "baby_notes": "Miniverse has a nursery room, stroller parking and carpeted floor for crawling and first steps.",
       "gluten_free": "limited",
-      "kids_menu": true,
+      "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "København H",
-      "tags": ["classic", "evening", "rides"],
-      "tips": "Enter before 11:00 to beat the queues",
+      "nearest_metro": "Poul Henningsens Plads (then bus 1A)",
+      "tags": [
+        "science",
+        "hands-on",
+        "toddler-zone",
+        "rainy-day"
+      ],
+      "tips": "Arrive at opening to get a locker and stroller-parking spot in Miniverse before it fills up.",
       "best_time": "morning",
       "near": []
     },
     {
-      "id": "den-bla-planet",
-      "name": "Den Blå Planet",
+      "id": "nationalmuseet",
+      "name": "National Museum of Denmark (Nationalmuseet)",
       "kind": "attraction",
-      "category": "aquarium",
-      "neighbourhood": "Kastrup",
-      "lat": 55.6329,
-      "lon": 12.6549,
-      "description": "Northern Europe's largest aquarium. Fully indoors, flat throughout, and dark tunnels hold a toddler's attention. Prams roll everywhere.",
+      "category": "history-museum",
+      "neighbourhood": "Indre By",
+      "lat": 55.6747,
+      "lon": 12.5747,
+      "description": "6-year-old explores the ground-floor Children's Museum, an indoor playground for dressing up, a Viking ship replica and hands-on history displays. 1-year-old can crawl on carpeted play areas in the Children's Museum while parents take turns with a museum-provided pram.",
       "duration_minutes": 150,
-      "price_band": "€€€",
-      "booking": "recommended",
-      "booking_url": "https://denblaaplanet.dk/en/",
-      "website": "https://denblaaplanet.dk/en/",
-      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6329,12.6549",
+      "price_band": "€",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://en.natmus.dk/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6747,12.5747",
       "setting": "indoor",
-      "ages": ["baby", "toddler", "child", "adult"],
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": false,
+      "changing_table": true,
+      "baby_notes": "Own prams stay at the entrance; the museum lends loan prams, and the Children's Museum floor is safe for crawling and cruising.",
+      "gluten_free": "limited",
+      "kids_menu": false,
+      "high_chair": true,
+      "nearest_metro": "Gammel Strand",
+      "tags": [
+        "vikings",
+        "free-for-kids",
+        "childrens-museum",
+        "rainy-day"
+      ],
+      "tips": "Leave your own pram at the info desk and borrow one of the museum's — own prams aren't allowed into exhibition rooms.",
+      "best_time": "morning",
+      "near": [
+        {
+          "id": "gorms-magstraede",
+          "walk_minutes": 1
+        },
+        {
+          "id": "restaurant-tight",
+          "walk_minutes": 3
+        },
+        {
+          "id": "ny-carlsberg-glyptotek",
+          "walk_minutes": 4
+        },
+        {
+          "id": "blox-dac",
+          "walk_minutes": 6
+        },
+        {
+          "id": "wagamama-tivoli",
+          "walk_minutes": 11
+        }
+      ]
+    },
+    {
+      "id": "tycho-brahe-planetarium",
+      "name": "Tycho Brahe Planetarium",
+      "kind": "attraction",
+      "category": "planetarium",
+      "neighbourhood": "Vesterbro",
+      "lat": 55.6745,
+      "lon": 12.5581,
+      "description": "6-year-old watches an IMAX-style dome film on a 1,000 sq m tilted screen, picking an English-language showtime. 1-year-old can sit on a parent's lap in the reclined dome seating for a short, dark, low-stimulation break from the rain.",
+      "duration_minutes": 90,
+      "price_band": "€€",
+      "booking": "recommended",
+      "booking_url": "https://planetarium.dk/en/tickets/",
+      "website": "https://www.planetarium.dk/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6745,12.5581",
+      "setting": "indoor",
+      "ages": [
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": false,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "No floor space to crawl — babies stay on a lap in the dome seating for one film.",
+      "gluten_free": "limited",
+      "kids_menu": false,
+      "high_chair": true,
+      "nearest_metro": "Vesterport (S-train)",
+      "tags": [
+        "space",
+        "imax-dome",
+        "film",
+        "rainy-day"
+      ],
+      "tips": "Book an English-language show in advance — many screenings are Danish-only.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "wagamama-tivoli",
+          "walk_minutes": 11
+        }
+      ]
+    },
+    {
+      "id": "blox-dac",
+      "name": "BLOX / Danish Architecture Center",
+      "kind": "attraction",
+      "category": "architecture-center",
+      "neighbourhood": "Slotsholmen",
+      "lat": 55.672,
+      "lon": 12.5786,
+      "description": "6-year-old builds with a huge table of Lego bricks next to Lego models of famous Danish buildings, then explores changing architecture exhibitions. 1-year-old can cruise around the open, flat exhibition floors and the ground-floor public atrium.",
+      "duration_minutes": 120,
+      "price_band": "€€",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://dac.dk/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6720,12.5786",
+      "setting": "indoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
       "baby_friendly": true,
       "stroller": true,
       "changing_table": true,
-      "baby_notes": "Floor space in the tunnel gallery for a crawler",
+      "baby_notes": "Open, flat exhibition floors and a ground-floor atrium give a baby room to crawl and cruise out of the rain.",
       "gluten_free": "limited",
-      "kids_menu": true,
+      "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Kastrup",
-      "tags": ["rainy-day", "animals"],
-      "tips": "Go on arrival or last two hours; midday is busiest",
-      "best_time": "afternoon",
-      "near": []
+      "nearest_metro": "Rådhuspladsen",
+      "tags": [
+        "lego",
+        "architecture",
+        "harbour-view",
+        "rainy-day"
+      ],
+      "tips": "Kids under 18 enter free with a paying adult — check the ground-floor Lego table isn't fully booked by a school group.",
+      "best_time": "any",
+      "near": [
+        {
+          "id": "nationalmuseet",
+          "walk_minutes": 6
+        },
+        {
+          "id": "ny-carlsberg-glyptotek",
+          "walk_minutes": 7
+        },
+        {
+          "id": "gorms-magstraede",
+          "walk_minutes": 8
+        },
+        {
+          "id": "restaurant-tight",
+          "walk_minutes": 9
+        },
+        {
+          "id": "wagamama-tivoli",
+          "walk_minutes": 13
+        }
+      ]
     },
     {
-      "id": "kongens-have-playground",
-      "name": "Kongens Have Playground",
-      "kind": "playground",
-      "category": "playground",
-      "neighbourhood": "Indre By",
-      "lat": 55.6845,
-      "lon": 12.5797,
-      "description": "Fenced wooden playground in the King's Garden. Separate toddler area with low equipment and soft ground, so a 1-year-old can move around without being run over by older children.",
-      "duration_minutes": 60,
+      "id": "smk-national-gallery",
+      "name": "SMK – National Gallery of Denmark",
+      "kind": "attraction",
+      "category": "art-museum",
+      "neighbourhood": "Østre Anlæg",
+      "lat": 55.6888,
+      "lon": 12.5783,
+      "description": "6-year-old joins the Children's Workshop on weekends and holidays to paint, work with clay and plaster alongside resident artists. 1-year-old can crawl in the wide, flat sculpture halls and garden hall, out of the weather.",
+      "duration_minutes": 120,
       "price_band": "free",
       "booking": "none",
       "booking_url": null,
-      "website": "https://www.kongernessamling.dk/en/rosenborg/",
-      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6845,12.5797",
+      "website": "https://www.smk.dk/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6888,12.5783",
+      "setting": "indoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "Wide flat gallery halls give a baby space to crawl; the Children's Workshop only runs weekends and school holidays.",
+      "gluten_free": "limited",
+      "kids_menu": false,
+      "high_chair": true,
+      "nearest_metro": "Østerport",
+      "tags": [
+        "art",
+        "free-entry",
+        "childrens-workshop",
+        "rainy-day"
+      ],
+      "tips": "The Children's Workshop is included in (free) admission but only open Sat-Sun and holiday periods — check it's running on your visit day.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "hug-bageri",
+          "walk_minutes": 6
+        },
+        {
+          "id": "botanisk-have",
+          "walk_minutes": 6
+        },
+        {
+          "id": "kongens-have-playground",
+          "walk_minutes": 7
+        }
+      ]
+    },
+    {
+      "id": "ny-carlsberg-glyptotek",
+      "name": "Ny Carlsberg Glyptotek",
+      "kind": "attraction",
+      "category": "art-museum",
+      "neighbourhood": "Vesterbro",
+      "lat": 55.673,
+      "lon": 12.5724,
+      "description": "6-year-old wanders Roman and Egyptian sculpture halls and the palm-filled Winter Garden with a fountain. 1-year-old can be walked or crawl on the flat stone floor of the Winter Garden while adults linger over the antiquities.",
+      "duration_minutes": 120,
+      "price_band": "€",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://glyptoteket.com/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6730,12.5724",
+      "setting": "indoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "The Winter Garden's flat stone floor and open space under a glass roof suit a cruising or crawling baby.",
+      "gluten_free": "limited",
+      "kids_menu": false,
+      "high_chair": true,
+      "nearest_metro": "Rådhuspladsen",
+      "tags": [
+        "sculpture",
+        "winter-garden",
+        "free-for-kids",
+        "rainy-day"
+      ],
+      "tips": "Free entry on the last Wednesday of the month, but expect it busier then.",
+      "best_time": "morning",
+      "near": [
+        {
+          "id": "nationalmuseet",
+          "walk_minutes": 4
+        },
+        {
+          "id": "gorms-magstraede",
+          "walk_minutes": 5
+        },
+        {
+          "id": "restaurant-tight",
+          "walk_minutes": 6
+        },
+        {
+          "id": "blox-dac",
+          "walk_minutes": 7
+        },
+        {
+          "id": "wagamama-tivoli",
+          "walk_minutes": 7
+        }
+      ]
+    },
+    {
+      "id": "copenhagen-zoo",
+      "name": "Copenhagen Zoo",
+      "kind": "attraction",
+      "category": "zoo",
+      "neighbourhood": "Frederiksberg",
+      "lat": 55.67278,
+      "lon": 12.52139,
+      "description": "6-year-old tracks down elephants, lions and the Arctic Ring polar bears across wide outdoor paths built for exploring. 1-year-old naps in the pram between stops or crawls on grass near the children's zoo petting area.",
+      "duration_minutes": 180,
+      "price_band": "€€€",
+      "booking": "recommended",
+      "booking_url": "https://www.zoo.dk/en/tickets",
+      "website": "https://www.zoo.dk/en",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.67278,12.52139",
       "setting": "outdoor",
-      "ages": ["baby", "toddler", "child"],
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "Grassy children's zoo area lets a walking 1-year-old crawl safely; several indoor houses give shade and nappy-change breaks.",
+      "gluten_free": "limited",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Frederiksberg",
+      "tags": [
+        "animals",
+        "family",
+        "stroller-friendly"
+      ],
+      "tips": "Arrive at opening to beat tour-bus crowds and get feeding-time slots.",
+      "best_time": "morning",
+      "near": [
+        {
+          "id": "frederiksberg-have",
+          "walk_minutes": 11
+        }
+      ]
+    },
+    {
+      "id": "frederiksberg-have",
+      "name": "Frederiksberg Have",
+      "kind": "attraction",
+      "category": "park",
+      "neighbourhood": "Frederiksberg",
+      "lat": 55.6786,
+      "lon": 12.5241,
+      "description": "6-year-old runs the winding paths, spots the canal boats and free-roaming birds, and climbs at the playground. 1-year-old crawls on open lawns or naps in pram shade under old trees.",
+      "duration_minutes": 90,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://slks.dk/omraader/slotte-og-ejendomme/slotshaver/frederiksberg-have-og-soendermarken/frederiksberg-have/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6786,12.5241",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
       "baby_friendly": true,
       "stroller": true,
       "changing_table": false,
-      "baby_notes": "Soft ground in the toddler pen; no changing table, bring a mat",
+      "baby_notes": "Wide grass lawns near the playground area are flat and safe for early walking.",
+      "gluten_free": "none",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Frederiksberg",
+      "tags": [
+        "park",
+        "free",
+        "playground",
+        "picnic"
+      ],
+      "tips": "Combine with the adjacent zoo visit, entrance right next door.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "copenhagen-zoo",
+          "walk_minutes": 11
+        }
+      ]
+    },
+    {
+      "id": "botanisk-have",
+      "name": "Botanical Garden (Botanisk Have)",
+      "kind": "attraction",
+      "category": "garden",
+      "neighbourhood": "Indre By",
+      "lat": 55.68694,
+      "lon": 12.57389,
+      "description": "6-year-old hunts for giant leaves, ponds with ducks, and the old Palm House glasshouse. 1-year-old crawls on lawns near the entrance or dozes in the pram along shaded gravel paths.",
+      "duration_minutes": 75,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://www.botanic-garden.ku.dk",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.68694,12.57389",
+      "setting": "mixed",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": "Lawns near the pond are calm and flat; Palm House gives indoor shelter if it rains later.",
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
       "nearest_metro": "Nørreport",
-      "tags": ["free", "quick", "park"],
-      "tips": "Combine with Rosenborg Castle grounds",
+      "tags": [
+        "garden",
+        "free",
+        "ducks",
+        "greenhouse"
+      ],
+      "tips": "Palm House charges separate small entry fee; garden itself is free.",
+      "best_time": "morning",
+      "near": [
+        {
+          "id": "hug-bageri",
+          "walk_minutes": 3
+        },
+        {
+          "id": "smk-national-gallery",
+          "walk_minutes": 6
+        },
+        {
+          "id": "kongens-have-playground",
+          "walk_minutes": 7
+        }
+      ]
+    },
+    {
+      "id": "faelledparken-tower-playground",
+      "name": "Fælledparken Tower Playground (Tårnlegepladsen)",
+      "kind": "playground",
+      "category": "playground",
+      "neighbourhood": "Østerbro",
+      "lat": 55.6994,
+      "lon": 12.5661,
+      "description": "6-year-old climbs and slides down miniature versions of Copenhagen's famous towers and free-rents a balance bike during staffed hours. 1-year-old crawls on the soft rubber and sand surfacing at the toddler end.",
+      "duration_minutes": 90,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://www.visitcopenhagen.com/copenhagen/planning/playground-with-towers-in-faelledparken-gdk570166",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6994,12.5661",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "Sand and rubber-matted toddler zone away from the taller tower structures suits a new walker.",
+      "gluten_free": "none",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Trianglen (S-train)",
+      "tags": [
+        "playground",
+        "free",
+        "towers",
+        "bikes"
+      ],
+      "tips": "Free bike/trike loan runs only during staffed hours, check on arrival.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "trafiklegepladsen-faelledparken",
+          "walk_minutes": 8
+        }
+      ]
+    },
+    {
+      "id": "kastellet",
+      "name": "Kastellet",
+      "kind": "attraction",
+      "category": "park",
+      "neighbourhood": "Indre By",
+      "lat": 55.69111,
+      "lon": 12.59389,
+      "description": "6-year-old runs the star-shaped ramparts, spots the windmill and cannons, and looks for the moat swans. 1-year-old crawls on the flat grass bastions or naps in the pram on the ring-road paths.",
+      "duration_minutes": 60,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://www.forsvaret.dk/en/facts-and-figures/kastellet/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.69111,12.59389",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": "Flat grass ramparts atop the fortress walls are open and safe for early crawling/walking.",
+      "gluten_free": "none",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Østerport",
+      "tags": [
+        "park",
+        "free",
+        "fortress",
+        "walk"
+      ],
+      "tips": "Combine with a walk to The Little Mermaid statue nearby.",
       "best_time": "morning",
       "near": []
+    },
+    {
+      "id": "broens-gadekokken",
+      "name": "Broens Gadekøkken",
+      "kind": "restaurant",
+      "category": "street-food",
+      "neighbourhood": "Christianshavn",
+      "lat": 55.67795,
+      "lon": 12.59684,
+      "description": "6-year-old picks from dozens of stalls (pizza, noodles, burgers) at a harbour-view picnic table. 1-year-old sits in a high chair by the water's edge, watching boats and harbour buses go by.",
+      "duration_minutes": 75,
+      "price_band": "€€",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://broensstreetfood.dk",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.67795,12.59684",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "Communal harbourside tables have open floor space for a pram parked right beside high chairs.",
+      "gluten_free": "limited",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Christianshavn",
+      "tags": [
+        "street-food",
+        "waterfront",
+        "harbour-view"
+      ],
+      "tips": "Seasonal (spring-autumn only), arrive before noon to grab a shaded harbourside table.",
+      "best_time": "afternoon",
+      "near": []
+    },
+    {
+      "id": "boernuda-triangle-noerrebroparken",
+      "name": "Bermuda Triangle Playground, Nørrebroparken",
+      "kind": "playground",
+      "category": "playground",
+      "neighbourhood": "Nørrebro",
+      "lat": 55.6975,
+      "lon": 12.541,
+      "description": "The 6-year-old climbs the crashed-plane and shipwreck structures, ziplines and sandpits in the main park. The 1-year-old crawls safely in the playground's separate toddler zone, away from the bigger climbing frames, with a baby-changing room and bottle-warming microwave right beside it.",
+      "duration_minutes": 90,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://legeplads.kk.dk/vaelg-en-bydel/noerrebro/noerrebroparken",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6975,12.5410",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "Dedicated toddler zone fenced off from the bigger structures, plus a staffed indoor activity house nearby for shelter.",
+      "gluten_free": "none",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Nørrebros Runddel (bus) / Nørreport (metro, ~20 min walk)",
+      "tags": [
+        "staffed-playground",
+        "toddler-zone",
+        "free"
+      ],
+      "tips": "Staffed Mon-Thu 9:30-17:00, Fri 10:00-17:30; open but unstaffed weekends.",
+      "best_time": "morning",
+      "near": []
+    },
+    {
+      "id": "christianshavns-vold-toddler-legeplads",
+      "name": "Toddler Playground at Christianshavns Vold (Panterens Bastion)",
+      "kind": "playground",
+      "category": "playground",
+      "neighbourhood": "Christianshavn",
+      "lat": 55.6706,
+      "lon": 12.5933,
+      "description": "The 6-year-old can walk over to the larger staffed playground a short stroll away on the same ramparts for bigger equipment, while the 1-year-old crawls in this small, toddler-only playground with a big sandbox, seesaw and rocking animals, well away from older kids. The grassy rampart setting is calm and easy to supervise.",
+      "duration_minutes": 60,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://legeplads.kk.dk/vaelg-en-bydel/indre-by/christianshavns-vold-panterens-bastion",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6706,12.5933",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": "Small sandbox with seesaw and rocking animals sized for toddlers only, separate from the larger staffed playground on the same rampart.",
+      "gluten_free": "none",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Christianshavn",
+      "tags": [
+        "rampart",
+        "toddler-only",
+        "free",
+        "sandbox"
+      ],
+      "tips": "Combine with a walk along the grassy ramparts; bring your own snacks as there's no kiosk on site.",
+      "best_time": "morning",
+      "near": []
+    },
+    {
+      "id": "trafiklegepladsen-faelledparken",
+      "name": "Trafiklegepladsen i Fælledparken (Traffic Playground)",
+      "kind": "playground",
+      "category": "playground",
+      "neighbourhood": "Østerbro",
+      "lat": 55.696,
+      "lon": 12.571,
+      "description": "The 6-year-old pedals go-karts and bikes around a mini traffic city with real road signs, roundabouts and cycle paths. The 1-year-old has a separate baby-and-toddler section with its own slides, away from the older kids' traffic circuit, plus a Tuesday-morning baby playroom with bottle-warming facilities.",
+      "duration_minutes": 90,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://legeplads.kk.dk/vaelg-en-bydel/oesterbro/faelledparken-trafiklegepladsen-b",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6960,12.5710",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "Separate toddler and baby section with its own slides, distinct from the older kids' traffic-circuit area; Tuesday 10am baby playroom (0-2 years) with a kitchen for heating bottles.",
+      "gluten_free": "none",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Trianglen",
+      "tags": [
+        "traffic-playground",
+        "staffed",
+        "toddler-section",
+        "free"
+      ],
+      "tips": "Staffed Mon-Fri 9-17 and weekends 10-17 in even weeks (summer season); go-karts are the big draw for 6-year-olds.",
+      "best_time": "morning",
+      "near": [
+        {
+          "id": "faelledparken-tower-playground",
+          "walk_minutes": 8
+        }
+      ]
+    },
+    {
+      "id": "kongens-have-playground",
+      "name": "The King's Garden Playground (Kongens Have)",
+      "kind": "playground",
+      "category": "playground",
+      "neighbourhood": "Indre By",
+      "lat": 55.6853,
+      "lon": 12.5797,
+      "description": "The 6-year-old rides the giant bronze dragon and explores the golden-egg island reached over a sand-filled moat. The 1-year-old can crawl safely on the enclosed grass since the whole playground is fenced with hedges and has just one entrance, so a toddler can't wander into traffic or away from the group even with older children around.",
+      "duration_minutes": 75,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://www.visitcopenhagen.com/copenhagen/planning/the-kings-garden-playground-gdk566087",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6853,12.5797",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": "Fully hedge-enclosed with a single entrance, so a crawling baby is contained even without a formally separate zone; grass is soft for sitting and crawling.",
+      "gluten_free": "none",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Nørreport",
+      "tags": [
+        "royal-garden",
+        "fenced",
+        "free",
+        "central"
+      ],
+      "tips": "Pair with an ice cream from the on-site kiosk; garden paths are stroller- and wheelchair-friendly throughout.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "smk-national-gallery",
+          "walk_minutes": 7
+        },
+        {
+          "id": "botanisk-have",
+          "walk_minutes": 7
+        },
+        {
+          "id": "hug-bageri",
+          "walk_minutes": 9
+        }
+      ]
+    },
+    {
+      "id": "restaurant-tight",
+      "name": "Restaurant Tight",
+      "kind": "restaurant",
+      "category": "new-nordic",
+      "neighbourhood": "Indre By",
+      "lat": 55.6762,
+      "lon": 12.5747,
+      "description": "Housed in an 1800s building near Strøget, large parts of the menu are marked GF including a kids burger the 6-year-old can order themselves. The 1-year-old rides in a high chair at the table while adults work through the a la carte lunch.",
+      "duration_minutes": 75,
+      "price_band": "€€",
+      "booking": "recommended",
+      "booking_url": "https://www.tight-cph.dk/kontaktos?lang=en",
+      "website": "https://www.tight-cph.dk",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6762,12.5747",
+      "setting": "indoor",
+      "ages": [
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": false,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": null,
+      "gluten_free": "good",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Kongens Nytorv",
+      "tags": [
+        "gluten-free",
+        "kids-menu",
+        "historic-building"
+      ],
+      "tips": "Book lunch sitting, calmer with a stroller than dinner service.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "gorms-magstraede",
+          "walk_minutes": 2
+        },
+        {
+          "id": "nationalmuseet",
+          "walk_minutes": 3
+        },
+        {
+          "id": "ny-carlsberg-glyptotek",
+          "walk_minutes": 6
+        },
+        {
+          "id": "blox-dac",
+          "walk_minutes": 9
+        },
+        {
+          "id": "wagamama-tivoli",
+          "walk_minutes": 13
+        }
+      ]
+    },
+    {
+      "id": "gorms-magstraede",
+      "name": "Gorm's Magstræde",
+      "kind": "restaurant",
+      "category": "pizzeria",
+      "neighbourhood": "Indre By",
+      "lat": 55.6753,
+      "lon": 12.5738,
+      "description": "Thin-crust pizza with a fully gluten-free dough option across the whole menu, cooked separately from regular pans. The 6-year-old picks a kids-size pizza while the 1-year-old sits in a high chair between the wood-panelled booths.",
+      "duration_minutes": 70,
+      "price_band": "€€",
+      "booking": "recommended",
+      "booking_url": "https://www.gormsandfriends.dk/",
+      "website": "https://www.gormsandfriends.dk/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6753,12.5738",
+      "setting": "indoor",
+      "ages": [
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": false,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": null,
+      "gluten_free": "good",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Rådhuspladsen",
+      "tags": [
+        "gluten-free",
+        "pizza",
+        "kids-menu"
+      ],
+      "tips": "Mention gluten-free celiac-level care isn't guaranteed — pans are separate but same oven, so ask staff about cross-contact if severe.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "nationalmuseet",
+          "walk_minutes": 1
+        },
+        {
+          "id": "restaurant-tight",
+          "walk_minutes": 2
+        },
+        {
+          "id": "ny-carlsberg-glyptotek",
+          "walk_minutes": 5
+        },
+        {
+          "id": "blox-dac",
+          "walk_minutes": 8
+        },
+        {
+          "id": "wagamama-tivoli",
+          "walk_minutes": 11
+        }
+      ]
+    },
+    {
+      "id": "wagamama-tivoli",
+      "name": "Wagamama Tivoli",
+      "kind": "restaurant",
+      "category": "asian",
+      "neighbourhood": "Vesterbro",
+      "lat": 55.6712,
+      "lon": 12.5665,
+      "description": "Long communal benches inside Tivoli Gardens serving noodles, ramen and rice bowls, with gluten-free noodles and tofu dishes available on request. The 6-year-old gets their own kids menu while the 1-year-old sits in a high chair, handy for a lunch break between Tivoli rides.",
+      "duration_minutes": 60,
+      "price_band": "€€",
+      "booking": "recommended",
+      "booking_url": "https://www.wagamama.dk/en/bookinger",
+      "website": "https://www.wagamama.dk/en/restauranter/kobenhavn/tivoli",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6712,12.5665",
+      "setting": "indoor",
+      "ages": [
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": false,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": null,
+      "gluten_free": "limited",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "København H",
+      "tags": [
+        "gluten-free",
+        "kids-menu",
+        "tivoli"
+      ],
+      "tips": "Ask staff for the allergen-marked menu — no dedicated GF menu, but noodles/pad thai/tofu are swappable.",
+      "best_time": "afternoon",
+      "near": [
+        {
+          "id": "ny-carlsberg-glyptotek",
+          "walk_minutes": 7
+        },
+        {
+          "id": "tycho-brahe-planetarium",
+          "walk_minutes": 11
+        },
+        {
+          "id": "nationalmuseet",
+          "walk_minutes": 11
+        },
+        {
+          "id": "gorms-magstraede",
+          "walk_minutes": 11
+        },
+        {
+          "id": "restaurant-tight",
+          "walk_minutes": 13
+        },
+        {
+          "id": "blox-dac",
+          "walk_minutes": 13
+        }
+      ]
+    },
+    {
+      "id": "hug-bageri",
+      "name": "H.U.G Bageri",
+      "kind": "restaurant",
+      "category": "bakery",
+      "neighbourhood": "Østerbro",
+      "lat": 55.6883,
+      "lon": 12.5729,
+      "description": "Fully gluten-free organic bakery near the lakes, so every pastry on the shelf is safe for a gluten-free 6-year-old to pick themselves without asking. Buggy fits inside for the 1-year-old, ideal for a nap-and-snack stop after the lakes path.",
+      "duration_minutes": 30,
+      "price_band": "€",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://hugbageri.dk/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.6883,12.5729",
+      "setting": "indoor",
+      "ages": [
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": false,
+      "stroller": true,
+      "changing_table": false,
+      "baby_notes": null,
+      "gluten_free": "good",
+      "kids_menu": false,
+      "high_chair": false,
+      "nearest_metro": "Nørrebro Station",
+      "tags": [
+        "gluten-free",
+        "bakery",
+        "dedicated-gf"
+      ],
+      "tips": "Small shop — go off-peak (mid-morning weekday) with a pram.",
+      "best_time": "morning",
+      "near": [
+        {
+          "id": "botanisk-have",
+          "walk_minutes": 3
+        },
+        {
+          "id": "smk-national-gallery",
+          "walk_minutes": 6
+        },
+        {
+          "id": "kongens-have-playground",
+          "walk_minutes": 9
+        }
+      ]
     }
   ]
 }
