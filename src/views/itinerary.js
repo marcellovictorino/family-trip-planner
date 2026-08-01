@@ -5,26 +5,57 @@ function totalMinutes(items) {
   return items.reduce((sum, place) => sum + (place?.duration_minutes ?? 0), 0);
 }
 
-function row(place, date, index, count, handlers) {
+export function starLabel(stars) {
+  return "★★★★★".slice(0, stars) + "☆☆☆☆☆".slice(0, 5 - stars);
+}
+
+function thumbButton(place, date, entry, direction, handlers) {
+  const glyph = direction === "up" ? "👍" : "👎";
+  const wording = direction === "up" ? "recommend" : "not recommend";
+  return h("button", {
+    class: "thumb", type: "button",
+    "aria-pressed": String(entry.thumb === direction),
+    "aria-label": `Would ${wording} ${place.name} to another family, and open notes`,
+    onClick: () => handlers.onRate(date, place.id, direction),
+  }, glyph);
+}
+
+function row(place, date, index, count, handlers, entry) {
+  const done = Boolean(entry?.done);
+  const log = entry ?? { thumb: null, stars: null, tags: [] };
+  const facts = [
+    place.neighbourhood,
+    // An unknown place has no duration_minutes at all — showing "0 min"
+    // would claim it takes no time, rather than that its length is unknown.
+    typeof place.duration_minutes === "number" ? durationLabel(place.duration_minutes) : null,
+    log.stars ? starLabel(log.stars) : null,
+  ].filter(Boolean).join(" · ");
+
   return h(
     "li",
-    { class: "day-item" },
-    h("span", { class: "grip" },
-      h("button", {
-        class: "nudge", type: "button", "aria-label": `Move ${place.name} earlier`,
-        disabled: index === 0, onClick: () => handlers.onMove(date, place.id, -1),
-      }, "⌃"),
-      h("button", {
-        class: "nudge", type: "button", "aria-label": `Move ${place.name} later`,
-        disabled: index === count - 1, onClick: () => handlers.onMove(date, place.id, 1),
-      }, "⌄")),
-    h("span", { class: "day-item-body" },
+    { class: `day-item${done ? " is-visited" : ""}` },
+    // Reordering a stop that already happened is meaningless, and the space is
+    // better spent on the verdict.
+    done
+      ? h("span", { class: "thumbs" },
+          thumbButton(place, date, log, "up", handlers),
+          thumbButton(place, date, log, "down", handlers))
+      : h("span", { class: "grip" },
+          h("button", {
+            class: "nudge", type: "button", "aria-label": `Move ${place.name} earlier`,
+            disabled: index === 0, onClick: () => handlers.onMove(date, place.id, -1),
+          }, "⌃"),
+          h("button", {
+            class: "nudge", type: "button", "aria-label": `Move ${place.name} later`,
+            disabled: index === count - 1, onClick: () => handlers.onMove(date, place.id, 1),
+          }, "⌄")),
+    h("button", {
+      class: "day-item-body", type: "button", "aria-pressed": String(done),
+      "aria-label": `Mark ${place.name} ${done ? "not visited" : "visited"}`,
+      onClick: () => handlers.onToggleDone(date, place.id),
+    },
       h("span", { class: "name" }, place.name),
-      h("span", { class: "facts-line" },
-        // An unknown place has no duration_minutes at all — showing "0 min"
-        // would claim it takes no time, rather than that its length is unknown.
-        [place.neighbourhood, typeof place.duration_minutes === "number" ? durationLabel(place.duration_minutes) : null]
-          .filter(Boolean).join(" · "))),
+      h("span", { class: "facts-line" }, facts)),
     h("button", {
       class: "remove", type: "button", "aria-label": `Remove ${place.name} from ${date}`,
       onClick: () => handlers.onRemove(date, place.id),
@@ -36,7 +67,7 @@ function emptyDay(text) {
   return h("p", { class: "empty-state" }, h("span", { class: "glyph", "aria-hidden": "true" }, "🗓"), text);
 }
 
-export function renderItinerary({ trip, places, days, dates, handlers }) {
+export function renderItinerary({ trip, places, days, dates, dayLog = {}, handlers }) {
   const byId = new Map(places.map((place) => [place.id, place]));
   const allEmpty = dates.every((date) => (days[date] ?? []).length === 0);
 
@@ -60,7 +91,8 @@ export function renderItinerary({ trip, places, days, dates, handlers }) {
         items.length === 0
           ? emptyDay(allEmpty ? "Nothing here." : 'Nothing planned. Open a place in Explore and tap "+ Add to day".')
           : h("ol", { class: "day-items" },
-              items.map((place, index) => row(place, date, index, items.length, handlers))),
+              items.map((place, index) =>
+                row(place, date, index, items.length, handlers, dayLog[date]?.[place.id]))),
       );
     }),
   );

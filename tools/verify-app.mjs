@@ -131,6 +131,35 @@ async function checkModuleGraph() {
   return { name: "src/app.js module graph resolves transitively", results };
 }
 
+// checkModuleGraph proves the graph resolves and checkAssetsServe proves the
+// listed assets serve, but neither proves the two lists agree — a module the
+// graph reaches but ASSETS omits passes both and still breaks offline (it's
+// simply never cached, so it 404s from the cache once the network is gone).
+async function checkModuleGraphInAssets() {
+  const assets = new Set(await parseSwAssets());
+  const graphFiles = new Set();
+  const importRe = /(?:^|\s)(?:import|export)\s+(?:[^'"]*?from\s+)?["']([^"']+)["']/g;
+
+  async function visit(filePath) {
+    if (graphFiles.has(filePath)) return;
+    if (!existsSync(filePath)) return;
+    graphFiles.add(filePath);
+    const source = await readFile(filePath, "utf8");
+    for (const match of source.matchAll(importRe)) {
+      const specifier = match[1];
+      if (!specifier.startsWith("./") && !specifier.startsWith("../")) continue;
+      await visit(resolvePath(dirname(filePath), specifier));
+    }
+  }
+  await visit(join(ROOT, "src/app.js"));
+
+  const results = [...graphFiles].map((filePath) => {
+    const rel = posix.relative(ROOT, filePath);
+    return { item: rel, ok: assets.has(rel), detail: assets.has(rel) ? "" : "in module graph but missing from sw.js ASSETS" };
+  });
+  return { name: "every module in the resolved graph is listed in sw.js ASSETS", results };
+}
+
 async function checkDataset() {
   const dataPath = join(ROOT, "data/copenhagen-2026.json");
   try {
@@ -171,6 +200,7 @@ async function main() {
       await checkCssUrls(),
       await checkManifest(),
       await checkModuleGraph(),
+      await checkModuleGraphInAssets(),
       await checkDataset(),
     ];
     for (const section of sections) {

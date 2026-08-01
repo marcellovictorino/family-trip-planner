@@ -1,4 +1,4 @@
-const CACHE = "trip-planner-v13";
+const CACHE = "trip-planner-v15";
 
 const ASSETS = [
   "./",
@@ -7,11 +7,14 @@ const ASSETS = [
   "manifest.webmanifest",
   "src/app.js",
   "src/dom.js",
+  "src/feedback.js",
   "src/views/explore.js",
   "src/views/itinerary.js",
+  "src/views/rating.js",
   "src/views/saved.js",
   "src/views/trip.js",
   "src/filter.js",
+  "src/schema.mjs",
   "src/state.js",
   "data/copenhagen-2026.json",
   "design/tokens/colors.css",
@@ -82,6 +85,18 @@ self.addEventListener("fetch", (event) => {
         event.waitUntil(caches.open(CACHE).then((cache) => cache.put(event.request, copy)));
         return response;
       })
-      .catch(() => caches.match(event.request).then((hit) => hit ?? caches.match("index.html"))),
+      .catch(() =>
+        caches.match(event.request).then((hit) => {
+          if (hit) return hit;
+          // A partly-failed install (one module fetch dropped on flaky wifi) can
+          // leave a sub-resource uncached while the rest of the app installed fine.
+          // Answering that miss with index.html used to seem like a safe fallback,
+          // but a `.js` request answered with HTML fails the browser's module MIME
+          // check, killing the whole static-import chain — a blank screen offline.
+          // Only navigations (the user opening a page) get the index.html
+          // fallback; a missing sub-resource must fail as a missing sub-resource.
+          return event.request.mode === "navigate" ? caches.match("index.html") : undefined;
+        }),
+      ),
   );
 });

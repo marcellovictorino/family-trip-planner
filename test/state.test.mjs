@@ -123,3 +123,120 @@ test("importing rubbish throws rather than silently wiping the trip", () => {
   assert.throws(() => state.importJson("{not json"));
   assert.deepEqual(state.get().favourites, ["tivoli"], "existing state must survive a failed import");
 });
+
+// ── R6: a visit is a per-day event, but "we have been here" is not ──
+// A place can sit on two days, and each visit is its own event with its own
+// rating. Explore only ever asks the simpler question, so its flag is derived:
+// any ticked day means yes, and un-ticking the last one means no again.
+test("ticking a day sets the global visited flag; un-ticking an unrated day clears it and the entry", () => {
+  const state = createState(fakeStorage());
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  assert.equal(state.get().dayLog["2026-08-02"].tivoli.done, true);
+  assert.deepEqual(state.get().visited, ["tivoli"]);
+
+  // No rating was ever attached, so an untouched stop and an un-ticked one
+  // are the same thing — the entry is discarded, not kept as done: false.
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  assert.equal(state.get().dayLog["2026-08-02"]?.tivoli, undefined);
+  assert.deepEqual(state.get().visited, []);
+});
+
+// An accidental tap must not cost a rating: un-ticking a stop that carries a
+// thumb, stars, or tags keeps the entry — with done: false — instead of
+// deleting it, and it must also drop out of the derived visited flag.
+test("un-ticking a rated stop keeps the rating with done:false, and clears the visited flag", () => {
+  const state = createState(fakeStorage());
+  state.setDayRating("2026-08-02", "tivoli", { thumb: "up", stars: 4, tags: ["worth-money"] }, "2026-08-02T18:00:00Z");
+
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  const entry = state.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(entry.done, false);
+  assert.equal(entry.stars, 4);
+  assert.deepEqual(entry.tags, ["worth-money"]);
+  assert.deepEqual(state.get().visited, []);
+
+  // Re-ticking restores done: true without disturbing the preserved rating.
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  const retouched = state.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(retouched.done, true);
+  assert.equal(retouched.stars, 4);
+  assert.deepEqual(state.get().visited, ["tivoli"]);
+});
+
+test("un-ticking one of two days leaves the global flag set, because we did still go", () => {
+  const state = createState(fakeStorage());
+  state.toggleDayVisited("2026-08-02", "emmerys");
+  state.toggleDayVisited("2026-08-04", "emmerys");
+  state.toggleDayVisited("2026-08-02", "emmerys");
+  assert.deepEqual(state.get().visited, ["emmerys"]);
+  assert.equal(state.get().dayLog["2026-08-04"].emmerys.done, true);
+});
+
+test("a rating implies the visit happened, so rating an unticked stop ticks it", () => {
+  const state = createState(fakeStorage());
+  state.setDayRating("2026-08-02", "tivoli", { thumb: "up" }, "2026-08-02T18:41:07Z");
+  const entry = state.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(entry.done, true);
+  assert.equal(entry.thumb, "up");
+  assert.equal(entry.at, "2026-08-02T18:41:07Z");
+  assert.deepEqual(state.get().visited, ["tivoli"]);
+});
+
+test("a second rating merges rather than replacing, so stars do not wipe the thumb", () => {
+  const state = createState(fakeStorage());
+  state.setDayRating("2026-08-02", "tivoli", { thumb: "up" }, "2026-08-02T18:00:00Z");
+  state.setDayRating("2026-08-02", "tivoli", { stars: 4, tags: ["baby-great"] }, "2026-08-02T18:05:00Z");
+  const entry = state.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(entry.thumb, "up");
+  assert.equal(entry.stars, 4);
+  assert.deepEqual(entry.tags, ["baby-great"]);
+});
+
+// ── R7: an upgrade must never cost a trip ──
+// Someone mid-trip reloads the page and gets new code. Their v1 payload has no
+// dayLog. It must load intact, not reset to an empty trip.
+test("a v1 payload loads into v2 with an empty dayLog and nothing lost", () => {
+  const v1 = JSON.stringify({
+    version: 1,
+    favourites: ["tivoli"],
+    visited: ["rundetaarn"],
+    notes: { tivoli: "buy tickets Sunday" },
+    days: { "2026-08-02": ["tivoli"] },
+  });
+  const state = createState(fakeStorage({ [STORAGE_KEY]: v1 }));
+  const snapshot = state.get();
+  assert.deepEqual(snapshot.favourites, ["tivoli"]);
+  assert.deepEqual(snapshot.visited, ["rundetaarn"]);
+  assert.equal(snapshot.notes.tivoli, "buy tickets Sunday");
+  assert.deepEqual(snapshot.days["2026-08-02"], ["tivoli"]);
+  assert.deepEqual(snapshot.dayLog, {});
+});
+
+// ── R9: ratings are the point; losing them in transit defeats the feature ──
+test("ratings survive an export and import round trip", () => {
+  const source = createState(fakeStorage());
+  source.setDayRating("2026-08-02", "tivoli", { thumb: "up", stars: 4, tags: ["worth-money"] }, "2026-08-02T18:41:07Z");
+
+  const target = createState(fakeStorage());
+  target.importJson(source.exportJson());
+  const entry = target.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(entry.stars, 4);
+  assert.deepEqual(entry.tags, ["worth-money"]);
+  assert.deepEqual(target.get().visited, ["tivoli"]);
+});
+
+// ── R10: a full disk must not look like a successful save ──
+// Notes are unbounded text sitting beside a cached 90-place dataset. If the
+// quota is hit, the write silently vanishing is the worst outcome: the screen
+// says saved, the phone disagrees, and you find out days later.
+test("a storage write that fails throws, and leaves the in-memory state untouched", () => {
+  const storage = fakeStorage();
+  const state = createState(storage);
+  state.toggleFavourite("tivoli");
+
+  storage.setItem = () => {
+    throw new DOMException("quota", "QuotaExceededError");
+  };
+  assert.throws(() => state.toggleFavourite("rundetaarn"), /Could not save/);
+  assert.deepEqual(state.get().favourites, ["tivoli"]);
+});
