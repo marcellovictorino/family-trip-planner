@@ -1,6 +1,7 @@
 import { clear, h } from "./dom.js";
-import { renderExplore, collectOpenIds, restoreOpenIds } from "./views/explore.js";
+import { renderExplore, collectOpenIds, restoreOpenIds, unknownPlace } from "./views/explore.js";
 import { renderItinerary } from "./views/itinerary.js";
+import { renderRatingSheet } from "./views/rating.js";
 import { renderSaved } from "./views/saved.js";
 import { renderTrip } from "./views/trip.js";
 import { state } from "./state.js";
@@ -53,15 +54,56 @@ function askForDay(dates, placeName) {
   });
 }
 
+// A quota error must reach the user. Silently losing a rating is worse than an
+// ugly alert: the screen would say saved while the phone disagreed.
+function guard(action) {
+  try {
+    action();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+function openRatingSheet(date, id) {
+  const build = () => {
+    const place = data.places.find((p) => p.id === id) ?? unknownPlace(id);
+    const entry = state.get().dayLog[date]?.[id] ?? { done: true, thumb: null, stars: null, tags: [], at: null };
+    const patch = (change) => {
+      guard(() => state.setDayRating(date, id, change));
+      // Rebuild in place: pressed states all read from the entry, and there is
+      // no other way for a tap to show up.
+      const next = build();
+      clear(sheet);
+      for (const child of [...next.children]) sheet.append(child);
+    };
+    return renderRatingSheet({
+      place, date, entry,
+      note: state.get().notes[id] ?? "",
+      handlers: {
+        onThumb: (thumb) => patch({ thumb }),
+        onStars: (stars) => patch({ stars }),
+        onTags: (tags) => patch({ tags }),
+        onNote: (text) => guard(() => state.setNote(id, text)),
+        onClose: () => sheet.close(),
+      },
+    });
+  };
+
+  const sheet = build();
+  document.body.append(sheet);
+  sheet.addEventListener("close", () => sheet.remove());
+  sheet.showModal();
+}
+
 const actions = {
   isFavourite: (id) => state.get().favourites.includes(id),
   isVisited: (id) => state.get().visited.includes(id),
-  onFavourite: (id) => state.toggleFavourite(id),
-  onVisited: (id) => state.toggleVisited(id),
+  onFavourite: (id) => guard(() => state.toggleFavourite(id)),
+  onVisited: (id) => guard(() => state.toggleVisited(id)),
   onAddToDay: async (id) => {
     const place = data.places.find((p) => p.id === id);
     const date = await askForDay(tripDates(data.trip), place.name);
-    if (date) state.addToDay(date, id);
+    if (date) guard(() => state.addToDay(date, id));
   },
 };
 
@@ -99,9 +141,15 @@ function render() {
         places: data.places,
         days: snapshot.days,
         dates: tripDates(data.trip),
+        dayLog: snapshot.dayLog,
         handlers: {
-          onMove: (date, id, delta) => state.moveInDay(date, id, delta),
-          onRemove: (date, id) => state.removeFromDay(date, id),
+          onMove: (date, id, delta) => guard(() => state.moveInDay(date, id, delta)),
+          onRemove: (date, id) => guard(() => state.removeFromDay(date, id)),
+          onToggleDone: (date, id) => guard(() => state.toggleDayVisited(date, id)),
+          onRate: (date, id, thumb) => {
+            guard(() => state.setDayRating(date, id, { thumb }));
+            openRatingSheet(date, id);
+          },
         },
       }),
     );
@@ -115,9 +163,9 @@ function render() {
         visited: snapshot.visited,
         notes: snapshot.notes,
         handlers: {
-          onNote: (id, text) => state.setNote(id, text),
-          onFavourite: (id) => state.toggleFavourite(id),
-          onVisited: (id) => state.toggleVisited(id),
+          onNote: (id, text) => guard(() => state.setNote(id, text)),
+          onFavourite: (id) => guard(() => state.toggleFavourite(id)),
+          onVisited: (id) => guard(() => state.toggleVisited(id)),
         },
       }),
     );

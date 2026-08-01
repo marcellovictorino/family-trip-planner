@@ -179,6 +179,58 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
 .day-item-body .name { font-family: var(--font-body); font-size: var(--text-small); font-weight: var(--weight-semibold); letter-spacing: 0; }
 .remove { width: 44px; min-height: var(--tap-min); border: 0; background: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
 
+/* Itinerary: a stop that has happened */
+.day-item-body {
+  flex: 1; display: grid; gap: var(--space-2xs); text-align: left;
+  min-height: var(--tap-min); border: 0; background: none; padding: 0;
+  font: inherit; color: inherit; cursor: pointer;
+}
+.day-item.is-visited { background: var(--bg-sunken); }
+.day-item.is-visited .name { text-decoration: line-through; text-decoration-color: var(--text-faint); color: var(--text-muted); }
+.day-item.is-visited .facts-line { color: var(--text-faint); }
+.thumbs { display: flex; gap: var(--space-2xs); }
+.thumb {
+  min-width: 40px; min-height: var(--tap-min); border: var(--border-hairline);
+  border-radius: var(--radius-pill); background: var(--surface-raised);
+  font-size: var(--text-small); cursor: pointer; opacity: 0.5;
+  transition: var(--transition-tap);
+}
+.thumb[aria-pressed="true"] { opacity: 1; background: var(--accent-soft); border-color: var(--accent); }
+.thumb:active { transform: scale(var(--press-scale)); }
+
+/* Rating sheet */
+.rating-sheet {
+  border: 0; border-radius: var(--radius-lg); padding: var(--space-xl);
+  max-width: 24rem; width: calc(100% - 2rem);
+  background: var(--surface-raised); box-shadow: var(--shadow-dialog);
+}
+.rating-sheet::backdrop { background: var(--backdrop); }
+.rating-sheet h2 {
+  margin: 0; font-family: var(--font-display); font-size: var(--text-heading);
+  letter-spacing: var(--tracking-tight);
+}
+.sheet-sub { margin: var(--space-2xs) 0 var(--space-lg); font-size: var(--text-fine); color: var(--text-muted); }
+.field { margin-bottom: var(--space-lg); }
+.field-label {
+  margin: 0 0 var(--space-xs); font-size: var(--text-micro); font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-muted);
+}
+.rating-sheet .thumb { flex: 1; font-size: var(--text-body-size); }
+.stars { display: flex; gap: var(--space-2xs); }
+.star {
+  min-width: var(--tap-min); min-height: var(--tap-min); border: 0; background: none;
+  font-size: var(--text-title); color: var(--status-warn); cursor: pointer;
+}
+.tag {
+  min-height: var(--tap-min); padding: 0 var(--space-md); border: var(--border-hairline);
+  border-radius: var(--radius-pill); background: var(--surface-card);
+  font: inherit; font-size: var(--text-fine); color: var(--text-muted); cursor: pointer;
+  transition: var(--transition-tap);
+}
+.tag[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: var(--weight-semibold); }
+.tag:active { transform: scale(var(--press-scale)); }
+.sheet-warning { margin: var(--space-2xs) 0 0; font-size: var(--text-micro); color: var(--text-muted); }
+
 /* Saved */
 .saved-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); }
 .saved-item.is-visited .name { text-decoration: line-through; text-decoration-color: var(--text-muted); }
