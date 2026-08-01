@@ -125,6 +125,12 @@ export function createState(storage) {
       withDay(date, (items) => items.filter((item) => item !== id));
     },
 
+    // Auto Re-Order's proposal, once accepted: an outright replacement of the
+    // day's order, never applied except in response to that explicit accept.
+    reorderDay(date, order) {
+      withDay(date, () => order);
+    },
+
     moveInDay(date, id, delta) {
       withDay(date, (items) => {
         const from = items.indexOf(id);

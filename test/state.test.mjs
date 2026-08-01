@@ -88,6 +88,13 @@ test("moveInDay reorders within a day and clamps at the ends", () => {
   assert.deepEqual(state.get().days["2026-08-03"], ["a", "c", "b"], "moving the first item up is a no-op");
 });
 
+test("reorderDay replaces the day's order wholesale — Auto Re-Order's accepted proposal", () => {
+  const state = createState(fakeStorage());
+  for (const id of ["a", "b", "c"]) state.addToDay("2026-08-03", id);
+  state.reorderDay("2026-08-03", ["c", "a", "b"]);
+  assert.deepEqual(state.get().days["2026-08-03"], ["c", "a", "b"]);
+});
+
 test("removing the last item on a day drops the empty day key", () => {
   const state = createState(fakeStorage());
   state.addToDay("2026-08-03", "tivoli");

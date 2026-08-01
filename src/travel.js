@@ -53,3 +53,53 @@ export function travelMinutes(a, b, zonesConfig) {
     ? { minutes: Math.round(walk), mode: "walk" }
     : { minutes: Math.round(ride), mode: "transit" };
 }
+
+// Legs only exist between two real, geolocated stops — an unknown place (its
+// id survived a dataset regeneration that dropped it) has no lat/lon to route
+// from, so the leg either side of it is left out rather than guessed at.
+export function routeMinutes(stops, zonesConfig) {
+  let total = 0;
+  const legs = [];
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i];
+    const b = stops[i + 1];
+    if (typeof a.lat !== "number" || typeof b.lat !== "number") {
+      legs.push(null);
+      continue;
+    }
+    const leg = travelMinutes(a, b, zonesConfig);
+    total += leg.minutes;
+    legs.push(leg);
+  }
+  return { legs, total };
+}
+
+// D7: exact optimisation, not a heuristic. The first stop stays fixed as the
+// day's starting point — Auto Re-Order proposes a sequence for what's left to
+// visit, not a different place to start from — so the search is over the
+// remaining (n-1)! orderings. At the 8-stop cap that's 7! = 5040, cheap enough
+// that approximating it would be a worse answer for no saving.
+export const MAX_AUTO_REORDER_STOPS = 8;
+
+function* permutations(items) {
+  if (items.length <= 1) {
+    yield items;
+    return;
+  }
+  for (let i = 0; i < items.length; i++) {
+    const rest = [...items.slice(0, i), ...items.slice(i + 1)];
+    for (const tail of permutations(rest)) yield [items[i], ...tail];
+  }
+}
+
+export function proposeOrder(stops, zonesConfig) {
+  if (stops.length < 2) return { order: stops.map((s) => s.id), movingMinutes: 0 };
+  const [first, ...rest] = stops;
+  let best = null;
+  for (const tail of permutations(rest)) {
+    const sequence = [first, ...tail];
+    const { total } = routeMinutes(sequence, zonesConfig);
+    if (best === null || total < best.total) best = { sequence, total };
+  }
+  return { order: best.sequence.map((s) => s.id), movingMinutes: best.total };
+}

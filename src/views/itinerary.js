@@ -1,6 +1,6 @@
 import { h } from "../dom.js";
 import { durationLabel, unknownPlace } from "./explore.js";
-import { travelMinutes } from "../travel.js";
+import { routeMinutes, proposeOrder, MAX_AUTO_REORDER_STOPS } from "../travel.js";
 
 const MODE_GLYPH = { walk: "🚶", transit: "🚇" };
 
@@ -10,28 +10,13 @@ const MODE_GLYPH = { walk: "🚶", transit: "🚇" };
 // too much, so the flag stays quiet rather than blocking anything.
 const LONG_DAY_MINUTES = 540;
 
+// Auto Re-Order needs at least two legs to be worth proposing, and stays
+// within the exact brute-force range above it (D7) — no approximate fallback
+// for a bigger day, so the offer simply doesn't appear past the cap.
+const MIN_AUTO_REORDER_STOPS = 3;
+
 function totalMinutes(items) {
   return items.reduce((sum, place) => sum + (place?.duration_minutes ?? 0), 0);
-}
-
-// Legs only exist between two real, geolocated stops — an unknown place (its
-// id survived a dataset regeneration that dropped it) has no lat/lon to route
-// from, so the leg either side of it is left out rather than guessed at.
-function legMinutes(items, zonesConfig) {
-  let total = 0;
-  const legs = [];
-  for (let i = 0; i < items.length - 1; i++) {
-    const a = items[i];
-    const b = items[i + 1];
-    if (typeof a.lat !== "number" || typeof b.lat !== "number") {
-      legs.push(null);
-      continue;
-    }
-    const leg = travelMinutes(a, b, zonesConfig);
-    total += leg.minutes;
-    legs.push(leg);
-  }
-  return { legs, total };
 }
 
 function legRow(leg) {
@@ -123,8 +108,9 @@ export function renderItinerary({ trip, places, days, dates, dayLog = {}, zonesC
       const ids = days[date] ?? [];
       const items = ids.map((id) => byId.get(id) ?? unknownPlace(id));
       const stopsTotal = totalMinutes(items);
-      const { legs, total: movingTotal } = legMinutes(items, zonesConfig);
+      const { legs, total: movingTotal } = routeMinutes(items, zonesConfig);
       const isLongDay = stopsTotal + movingTotal > LONG_DAY_MINUTES;
+      const canAutoReorder = items.length >= MIN_AUTO_REORDER_STOPS && items.length <= MAX_AUTO_REORDER_STOPS;
       return h(
         "section",
         { class: "day" },
@@ -148,8 +134,38 @@ export function renderItinerary({ trip, places, days, dates, dayLog = {}, zonesC
                 row(place, date, index, items.length, handlers, dayLog[date]?.[place.id]),
                 legRow(legs[index]),
               ])),
+        canAutoReorder &&
+          h("button", {
+            class: "action reorder-suggest", type: "button",
+            onClick: () => handlers.onProposeReorder(date, items),
+          }, "✨ Suggest a better order"),
       );
     }),
+  );
+}
+
+function proposedRow(place, index) {
+  return h("li", { class: "day-item" }, h("span", { class: "day-item-body" },
+    h("span", { class: "name" }, `${index + 1}. ${place.name}`)));
+}
+
+// A pure proposal: the day's array is untouched until the user explicitly
+// accepts it. Dismissing is a no-op on state — the dialog just closes.
+export function renderReorderDialog({ date, proposedItems, currentMinutes, proposedMinutes, handlers }) {
+  return h(
+    "dialog",
+    { class: "reorder-sheet", "aria-label": `Suggested order for ${formatDayHeading(date)}` },
+    h("h2", {}, "Suggested order"),
+    h("p", { class: "sheet-sub" }, formatDayHeading(date)),
+    h("ol", { class: "day-items" }, proposedItems.map((place, index) => proposedRow(place, index))),
+    h("p", { class: "reorder-compare" },
+      `Currently ~${durationLabel(currentMinutes)} moving · Proposed ~${durationLabel(proposedMinutes)} moving`),
+    h(
+      "div",
+      { class: "actions" },
+      h("button", { class: "action primary", type: "button", onClick: () => handlers.onAccept() }, "Use this order"),
+      h("button", { class: "action", type: "button", onClick: () => handlers.onDismiss() }, "Keep current order"),
+    ),
   );
 }
 

@@ -1,11 +1,11 @@
 import { clear, h } from "./dom.js";
 import { renderExplore, collectOpenIds, restoreOpenIds, unknownPlace } from "./views/explore.js";
-import { renderItinerary } from "./views/itinerary.js";
+import { renderItinerary, renderReorderDialog } from "./views/itinerary.js";
 import { renderRatingSheet } from "./views/rating.js";
 import { renderSaved } from "./views/saved.js";
 import { renderTrip } from "./views/trip.js";
 import { state } from "./state.js";
-import { resolveAnchor } from "./travel.js";
+import { resolveAnchor, routeMinutes, proposeOrder } from "./travel.js";
 
 const DATA_URL = "data/copenhagen-2026.json";
 
@@ -63,6 +63,33 @@ function guard(action) {
   } catch (error) {
     alert(error.message);
   }
+}
+
+function zonesConfig() {
+  return { zones: data.zones, zone_minutes: data.zone_minutes };
+}
+
+// The proposal is computed fresh from the day's current items and never
+// touches state until the user explicitly accepts it.
+function openReorderDialog(date, items) {
+  const { total: currentMinutes } = routeMinutes(items, zonesConfig());
+  const { order, movingMinutes: proposedMinutes } = proposeOrder(items, zonesConfig());
+  const byId = new Map(items.map((place) => [place.id, place]));
+  const proposedItems = order.map((id) => byId.get(id));
+
+  const dialog = renderReorderDialog({
+    date, proposedItems, currentMinutes, proposedMinutes,
+    handlers: {
+      onAccept: () => {
+        guard(() => state.reorderDay(date, order));
+        dialog.close();
+      },
+      onDismiss: () => dialog.close(),
+    },
+  });
+  document.body.append(dialog);
+  dialog.addEventListener("close", () => dialog.remove());
+  dialog.showModal();
 }
 
 function openRatingSheet(date, id) {
@@ -139,7 +166,7 @@ function render() {
         onFilterChange: (filters) => guard(() => state.setFilters(filters)),
         actions,
         anchor,
-        zonesConfig: { zones: data.zones, zone_minutes: data.zone_minutes },
+        zonesConfig: zonesConfig(),
       }),
     );
     restoreOpenIds(panels.explore, openCardIds);
@@ -153,7 +180,7 @@ function render() {
         days: snapshot.days,
         dates: tripDates(data.trip),
         dayLog: snapshot.dayLog,
-        zonesConfig: { zones: data.zones, zone_minutes: data.zone_minutes },
+        zonesConfig: zonesConfig(),
         handlers: {
           onMove: (date, id, delta) => guard(() => state.moveInDay(date, id, delta)),
           onRemove: (date, id) => guard(() => state.removeFromDay(date, id)),
@@ -162,6 +189,7 @@ function render() {
             guard(() => state.setDayRating(date, id, { thumb }));
             openRatingSheet(date, id);
           },
+          onProposeReorder: (date, items) => openReorderDialog(date, items),
         },
       }),
     );

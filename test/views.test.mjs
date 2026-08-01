@@ -126,7 +126,7 @@ globalThis.document = {
 };
 
 const { renderExplore, collectOpenIds, restoreOpenIds } = await import("../src/views/explore.js");
-const { renderItinerary, starLabel } = await import("../src/views/itinerary.js");
+const { renderItinerary, renderReorderDialog, starLabel } = await import("../src/views/itinerary.js");
 const { renderSaved } = await import("../src/views/saved.js");
 const { renderTrip } = await import("../src/views/trip.js");
 const { EMPTY_FILTERS } = await import("../src/filter.js");
@@ -339,6 +339,67 @@ test("a long day is flagged quietly, without blocking anything", () => {
   const flag = root.querySelector(".day-flag--long");
   assert.ok(flag, "3 stops of 4h each should trip the long-day flag");
   assert.equal(root.querySelectorAll("button.remove").length, 3, "the day's controls stay fully usable");
+});
+
+function daySpots(count) {
+  return Array.from({ length: count }, (_, i) =>
+    place({ id: `p${i}`, name: `P${i}`, lat: 55.68 + i * 0.001, lon: 12.57, neighbourhood: "Vesterbro" }));
+}
+
+test("Auto Re-Order is offered on a day with 3 to 8 stops, and not otherwise", () => {
+  const handlers = { onMove: () => {}, onRemove: () => {}, onProposeReorder: () => {} };
+  const two = daySpots(2);
+  const rootTwo = renderItinerary({
+    trip: {}, places: two, days: { "2026-08-03": two.map((p) => p.id) }, dates: ["2026-08-03"], handlers,
+  });
+  assert.equal(rootTwo.querySelectorAll(".reorder-suggest").length, 0, "two stops has only one leg — nothing to reorder");
+
+  const three = daySpots(3);
+  const rootThree = renderItinerary({
+    trip: {}, places: three, days: { "2026-08-03": three.map((p) => p.id) }, dates: ["2026-08-03"], handlers,
+  });
+  assert.equal(rootThree.querySelectorAll(".reorder-suggest").length, 1);
+
+  const nine = daySpots(9);
+  const rootNine = renderItinerary({
+    trip: {}, places: nine, days: { "2026-08-03": nine.map((p) => p.id) }, dates: ["2026-08-03"], handlers,
+  });
+  assert.equal(rootNine.querySelectorAll(".reorder-suggest").length, 0, "past the exact-search cap, no approximate fallback is offered");
+});
+
+test("tapping Auto Re-Order hands the day's date and current items to the handler, never mutating anything itself", () => {
+  const three = daySpots(3);
+  let received = null;
+  const handlers = { onMove: () => {}, onRemove: () => {}, onProposeReorder: (date, items) => { received = { date, items }; } };
+  const root = renderItinerary({
+    trip: {}, places: three, days: { "2026-08-03": three.map((p) => p.id) }, dates: ["2026-08-03"], handlers,
+  });
+  root.querySelector(".reorder-suggest").listeners.click();
+  assert.equal(received.date, "2026-08-03");
+  assert.deepEqual(received.items.map((p) => p.id), ["p0", "p1", "p2"]);
+});
+
+test("the reorder dialog shows the proposed order and the before/after moving time, and only acts on explicit accept", () => {
+  const three = daySpots(3);
+  let accepted = false;
+  let dismissed = false;
+  const root = renderReorderDialog({
+    date: "2026-08-03",
+    proposedItems: [three[1], three[0], three[2]],
+    currentMinutes: 40,
+    proposedMinutes: 15,
+    handlers: { onAccept: () => { accepted = true; }, onDismiss: () => { dismissed = true; } },
+  });
+  const names = root.querySelectorAll(".day-item .name").map((n) => n.textContent);
+  assert.deepEqual(names, ["1. P1", "2. P0", "3. P2"]);
+  assert.match(root.querySelector(".reorder-compare").textContent, /40 min/);
+  assert.match(root.querySelector(".reorder-compare").textContent, /15 min/);
+
+  assert.equal(accepted, false);
+  assert.equal(dismissed, false);
+  root.querySelector(".action.primary").listeners.click();
+  assert.equal(accepted, true);
+  assert.equal(dismissed, false);
 });
 
 test("renderSaved lists favourites and visited separately, and shows a note editor for a place with a note", () => {

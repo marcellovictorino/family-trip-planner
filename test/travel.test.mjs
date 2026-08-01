@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { travelMinutes, resolveAnchor } from "../src/travel.js";
+import { travelMinutes, resolveAnchor, routeMinutes, proposeOrder, MAX_AUTO_REORDER_STOPS } from "../src/travel.js";
 
 const TIVOLI = { lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" };
 const GLYPTOTEKET = { lat: 55.6725, lon: 12.5729, neighbourhood: "Vesterbro" }; // ~320 m
@@ -93,4 +93,40 @@ test("an active day with no stops yet skips straight past it to base", () => {
   const base = { lat: 55.6, lon: 12.5 };
   const anchor = resolveAnchor({ places: PLACES, days: { "2026-08-03": [] }, activeDate: "2026-08-03", base, bbox: BBOX });
   assert.deepEqual(anchor.point, base);
+});
+
+// Four stops on a straight line, spaced far enough apart that a scrambled
+// path visibly costs more than the monotonic one — a stand-in for "the
+// search actually finds the better order", not just "it returns something".
+const LINE = ["p0", "p1", "p2", "p3"].map((id, i) => ({
+  id, lat: 55.68, lon: 12.5 + i * 0.01, neighbourhood: "Vesterbro",
+}));
+
+test("proposeOrder finds a cheaper sequence than a scrambled input, keeping the first stop fixed", () => {
+  const scrambled = [LINE[0], LINE[2], LINE[1], LINE[3]]; // p0, p2, p1, p3
+  const { order, movingMinutes } = proposeOrder(scrambled);
+  assert.deepEqual(order, ["p0", "p1", "p2", "p3"], "the monotonic order is the unique optimum on a line");
+  assert.ok(movingMinutes < routeMinutes(scrambled).total, "the proposal must actually beat the current order");
+});
+
+test("proposeOrder never mutates its input — it only ever returns a proposal", () => {
+  const scrambled = [LINE[0], LINE[2], LINE[1], LINE[3]];
+  const copy = scrambled.map((p) => ({ ...p }));
+  proposeOrder(scrambled);
+  assert.deepEqual(scrambled, copy);
+});
+
+test("fewer than two stops is a trivial no-op proposal", () => {
+  assert.deepEqual(proposeOrder([LINE[0]]), { order: ["p0"], movingMinutes: 0 });
+  assert.deepEqual(proposeOrder([]), { order: [], movingMinutes: 0 });
+});
+
+test("the exact search stays exact right up to its documented cap: 8 stops, 7! = 5040 orderings", () => {
+  const eight = Array.from({ length: MAX_AUTO_REORDER_STOPS }, (_, i) => ({
+    id: `s${i}`, lat: 55.68 + (i % 2) * 0.01, lon: 12.5 + i * 0.008, neighbourhood: "Vesterbro",
+  }));
+  const { order } = proposeOrder(eight);
+  assert.equal(order.length, 8);
+  assert.equal(new Set(order).size, 8, "every stop appears exactly once");
+  assert.equal(order[0], "s0", "the first stop stays fixed as the day's starting point");
 });
