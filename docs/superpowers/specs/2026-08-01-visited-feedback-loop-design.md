@@ -125,6 +125,12 @@ moves, so there is no destructive migration and an old exported file still impor
 The defensive merge at `src/state.js:18` already tolerates this shape; reading a v1
 payload needs only an empty `dayLog` default.
 
+Un-ticking a stop clears the entry only when it carries no rating. A rated entry
+(thumb, stars, or tags set) is kept with `done: false` instead — an accidental tap must
+not cost a rating. Re-ticking flips `done` back to `true` without disturbing what was
+recorded. The derived `visited` flag only counts entries with `done: true`, so an
+un-ticked-but-rated entry does not keep a place looking visited.
+
 ### Store record
 
 One JSONL line per `(trip, day, place)`. Three breakfasts at the same bakery produce three
@@ -153,7 +159,8 @@ Path: `feedback/<YYYY-MM>-<city>.jsonl`, git-tracked.
 Joins an exported state file against the dataset it came from and appends rows.
 Idempotent on `(trip, visited_on, place_id)`: re-ingesting the same export replaces rows
 rather than duplicating them. Refuses to run if the export's city and dates do not match
-the dataset's.
+the dataset's. Skips `dayLog` entries with `done: false` — an un-ticked entry kept only
+because it holds a rating is not a recorded visit, so it is never written as one.
 
 ### `tools/feedback-digest.mjs`
 

@@ -130,10 +130,18 @@ export function createState(storage) {
     },
 
     toggleDayVisited(date, id) {
-      // Un-ticking discards the entry entirely rather than leaving done:false
-      // behind — an untouched stop and an un-ticked one are the same thing,
-      // and a stray entry would leak into the export as a phantom visit.
-      withDayEntry(date, id, (entry) => (entry ? null : emptyEntry()));
+      // Un-ticking a stop with no rating discards the entry entirely — an
+      // untouched stop and an un-ticked one are the same thing, and a stray
+      // entry would leak into the export as a phantom visit. But un-ticking a
+      // *rated* stop must not cost the rating: an accidental tap should not
+      // wipe a thumb, stars, or tags, so that entry is kept with done: false,
+      // and re-ticking it later restores done: true with the rating intact.
+      withDayEntry(date, id, (entry) => {
+        if (!entry) return emptyEntry();
+        if (!entry.done) return { ...entry, done: true };
+        const hasRating = entry.thumb !== null || entry.stars !== null || entry.tags.length > 0;
+        return hasRating ? { ...entry, done: false } : null;
+      });
     },
 
     setDayRating(date, id, patch, now = new Date().toISOString()) {

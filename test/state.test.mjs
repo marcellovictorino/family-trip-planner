@@ -128,15 +128,39 @@ test("importing rubbish throws rather than silently wiping the trip", () => {
 // A place can sit on two days, and each visit is its own event with its own
 // rating. Explore only ever asks the simpler question, so its flag is derived:
 // any ticked day means yes, and un-ticking the last one means no again.
-test("ticking a day sets the global visited flag; un-ticking the last day clears it", () => {
+test("ticking a day sets the global visited flag; un-ticking an unrated day clears it and the entry", () => {
   const state = createState(fakeStorage());
   state.toggleDayVisited("2026-08-02", "tivoli");
   assert.equal(state.get().dayLog["2026-08-02"].tivoli.done, true);
   assert.deepEqual(state.get().visited, ["tivoli"]);
 
+  // No rating was ever attached, so an untouched stop and an un-ticked one
+  // are the same thing — the entry is discarded, not kept as done: false.
   state.toggleDayVisited("2026-08-02", "tivoli");
   assert.equal(state.get().dayLog["2026-08-02"]?.tivoli, undefined);
   assert.deepEqual(state.get().visited, []);
+});
+
+// An accidental tap must not cost a rating: un-ticking a stop that carries a
+// thumb, stars, or tags keeps the entry — with done: false — instead of
+// deleting it, and it must also drop out of the derived visited flag.
+test("un-ticking a rated stop keeps the rating with done:false, and clears the visited flag", () => {
+  const state = createState(fakeStorage());
+  state.setDayRating("2026-08-02", "tivoli", { thumb: "up", stars: 4, tags: ["worth-money"] }, "2026-08-02T18:00:00Z");
+
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  const entry = state.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(entry.done, false);
+  assert.equal(entry.stars, 4);
+  assert.deepEqual(entry.tags, ["worth-money"]);
+  assert.deepEqual(state.get().visited, []);
+
+  // Re-ticking restores done: true without disturbing the preserved rating.
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  const retouched = state.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(retouched.done, true);
+  assert.equal(retouched.stars, 4);
+  assert.deepEqual(state.get().visited, ["tivoli"]);
 });
 
 test("un-ticking one of two days leaves the global flag set, because we did still go", () => {
