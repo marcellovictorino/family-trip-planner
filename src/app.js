@@ -142,6 +142,7 @@ function render() {
         days: snapshot.days,
         dates: tripDates(data.trip),
         dayLog: snapshot.dayLog,
+        zonesConfig: { zones: data.zones, zone_minutes: data.zone_minutes },
         handlers: {
           onMove: (date, id, delta) => guard(() => state.moveInDay(date, id, delta)),
           onRemove: (date, id) => guard(() => state.removeFromDay(date, id)),

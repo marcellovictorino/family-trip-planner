@@ -247,6 +247,55 @@ test("an itinerary entry whose id is no longer in the dataset still renders, lab
   assert.match(root.textContent, /ghost-place \(no longer in the guide\)/);
 });
 
+test("consecutive stops on a day render a leg connector with mode glyph and minutes", () => {
+  const places = [
+    place({ id: "a", name: "A", lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" }),
+    place({ id: "b", name: "B", lat: 55.6725, lon: 12.5729, neighbourhood: "Vesterbro" }),
+  ];
+  const root = renderItinerary({
+    trip: {}, places, days: { "2026-08-03": ["a", "b"] }, dates: ["2026-08-03"],
+    handlers: { onMove: () => {}, onRemove: () => {} },
+  });
+  const legs = root.querySelectorAll(".day-leg");
+  assert.equal(legs.length, 1);
+  assert.match(legs[0].textContent, /min/);
+});
+
+test("a day header splits time at stops from time moving, once stops are geolocated", () => {
+  const places = [
+    place({ id: "a", name: "A", duration_minutes: 60, lat: 55.6736, lon: 12.5681, neighbourhood: "Vesterbro" }),
+    place({ id: "b", name: "B", duration_minutes: 60, lat: 55.6552, lon: 12.5964, neighbourhood: "Amager" }),
+  ];
+  const root = renderItinerary({
+    trip: {}, places, days: { "2026-08-03": ["a", "b"] }, dates: ["2026-08-03"],
+    handlers: { onMove: () => {}, onRemove: () => {} },
+  });
+  const meta = root.querySelector(".meta");
+  assert.match(meta.textContent, /at stops/);
+  assert.match(meta.textContent, /moving/);
+});
+
+test("a day with no geolocated stops has no leg rows and no crash — travel time is simply not knowable", () => {
+  const places = [place({ id: "a", name: "A" }), place({ id: "b", name: "B" })];
+  const root = renderItinerary({
+    trip: {}, places, days: { "2026-08-03": ["a", "b"] }, dates: ["2026-08-03"],
+    handlers: { onMove: () => {}, onRemove: () => {} },
+  });
+  assert.equal(root.querySelectorAll(".day-leg").length, 0);
+});
+
+test("a long day is flagged quietly, without blocking anything", () => {
+  const places = Array.from({ length: 3 }, (_, i) =>
+    place({ id: `p${i}`, name: `P${i}`, duration_minutes: 240, lat: 55.67 + i * 0.001, lon: 12.57, neighbourhood: "Vesterbro" }));
+  const root = renderItinerary({
+    trip: {}, places, days: { "2026-08-03": places.map((p) => p.id) }, dates: ["2026-08-03"],
+    handlers: { onMove: () => {}, onRemove: () => {} },
+  });
+  const flag = root.querySelector(".day-flag--long");
+  assert.ok(flag, "3 stops of 4h each should trip the long-day flag");
+  assert.equal(root.querySelectorAll("button.remove").length, 3, "the day's controls stay fully usable");
+});
+
 test("renderSaved lists favourites and visited separately, and shows a note editor for a place with a note", () => {
   const places = [
     place({ id: "tivoli", name: "Tivoli Gardens" }),

@@ -186,6 +186,17 @@ button.day-item-body {
 .day-item-body .name { font-family: var(--font-body); font-size: var(--text-small); font-weight: var(--weight-semibold); letter-spacing: 0; }
 .remove { width: 44px; min-height: var(--tap-min); border: 0; background: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
 
+/* Itinerary: leg connector between two consecutive stops */
+.day-leg {
+  display: flex; align-items: center; gap: var(--space-xs); padding: 0 var(--pad-row);
+  font-size: var(--text-fine); color: var(--text-muted);
+}
+.day-leg-glyph { font-size: var(--text-small); }
+
+/* Itinerary: quiet long-day flag — coloured, never blocking */
+.day-flag { font-size: var(--text-micro); font-weight: var(--weight-semibold); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
+.day-flag--long { background: var(--clay-200); color: var(--clay-600); }
+
 /* Itinerary: a stop that has happened */
 .day-item.is-visited { background: var(--bg-sunken); }
 .day-item.is-visited .name { text-decoration-color: var(--text-faint); color: var(--text-muted); }

@@ -1,8 +1,47 @@
 import { h } from "../dom.js";
 import { durationLabel, unknownPlace } from "./explore.js";
+import { travelMinutes } from "../travel.js";
+
+const MODE_GLYPH = { walk: "🚶", transit: "🚇" };
+
+// A family day of sightseeing with small children realistically runs from a
+// late-morning start to an early-evening finish. Past this, the plan is
+// worth a second look — but geometry alone can't say whether it's actually
+// too much, so the flag stays quiet rather than blocking anything.
+const LONG_DAY_MINUTES = 540;
 
 function totalMinutes(items) {
   return items.reduce((sum, place) => sum + (place?.duration_minutes ?? 0), 0);
+}
+
+// Legs only exist between two real, geolocated stops — an unknown place (its
+// id survived a dataset regeneration that dropped it) has no lat/lon to route
+// from, so the leg either side of it is left out rather than guessed at.
+function legMinutes(items, zonesConfig) {
+  let total = 0;
+  const legs = [];
+  for (let i = 0; i < items.length - 1; i++) {
+    const a = items[i];
+    const b = items[i + 1];
+    if (typeof a.lat !== "number" || typeof b.lat !== "number") {
+      legs.push(null);
+      continue;
+    }
+    const leg = travelMinutes(a, b, zonesConfig);
+    total += leg.minutes;
+    legs.push(leg);
+  }
+  return { legs, total };
+}
+
+function legRow(leg) {
+  if (!leg) return null;
+  return h(
+    "li",
+    { class: "day-leg", "aria-hidden": "true" },
+    h("span", { class: "day-leg-glyph" }, MODE_GLYPH[leg.mode]),
+    h("span", { class: "day-leg-minutes" }, `~${leg.minutes} min`),
+  );
 }
 
 export function starLabel(stars) {
@@ -67,7 +106,7 @@ function emptyDay(text) {
   return h("p", { class: "empty-state" }, h("span", { class: "glyph", "aria-hidden": "true" }, "🗓"), text);
 }
 
-export function renderItinerary({ trip, places, days, dates, dayLog = {}, handlers }) {
+export function renderItinerary({ trip, places, days, dates, dayLog = {}, zonesConfig, handlers }) {
   const byId = new Map(places.map((place) => [place.id, place]));
   const allEmpty = dates.every((date) => (days[date] ?? []).length === 0);
 
@@ -83,16 +122,32 @@ export function renderItinerary({ trip, places, days, dates, dayLog = {}, handle
       // without it. Show it as unknown rather than dropping it silently.
       const ids = days[date] ?? [];
       const items = ids.map((id) => byId.get(id) ?? unknownPlace(id));
+      const stopsTotal = totalMinutes(items);
+      const { legs, total: movingTotal } = legMinutes(items, zonesConfig);
+      const isLongDay = stopsTotal + movingTotal > LONG_DAY_MINUTES;
       return h(
         "section",
         { class: "day" },
-        h("h2", { class: "section-heading" }, formatDayHeading(date), items.length > 0 && h("span", { class: "meta" },
-          `${items.length} stop${items.length === 1 ? "" : "s"} · ${durationLabel(totalMinutes(items))}`)),
+        h(
+          "h2",
+          { class: "section-heading" },
+          formatDayHeading(date),
+          items.length > 0 &&
+            h(
+              "span",
+              { class: "meta" },
+              `${items.length} stop${items.length === 1 ? "" : "s"} · ${durationLabel(stopsTotal)} at stops`,
+              movingTotal > 0 && ` · ${durationLabel(movingTotal)} moving`,
+            ),
+          isLongDay && h("span", { class: "day-flag day-flag--long" }, "Long day"),
+        ),
         items.length === 0
           ? emptyDay(allEmpty ? "Nothing here." : 'Nothing planned. Open a place in Explore and tap "+ Add to day".')
           : h("ol", { class: "day-items" },
-              items.map((place, index) =>
-                row(place, date, index, items.length, handlers, dayLog[date]?.[place.id]))),
+              items.map((place, index) => [
+                row(place, date, index, items.length, handlers, dayLog[date]?.[place.id]),
+                legRow(legs[index]),
+              ])),
       );
     }),
   );

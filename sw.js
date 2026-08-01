@@ -1,4 +1,4 @@
-const CACHE = "trip-planner-v16";
+const CACHE = "trip-planner-v17";
 
 const ASSETS = [
   "./",
@@ -17,6 +17,7 @@ const ASSETS = [
   "src/schema.mjs",
   "src/state.js",
   "src/travel.js",
+  "tools/geo.mjs",
   "data/copenhagen-2026.json",
   "design/tokens/colors.css",
   "design/tokens/fonts.css",
