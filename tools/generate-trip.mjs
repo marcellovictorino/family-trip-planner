@@ -143,8 +143,25 @@ const country = args.country ?? "Denmark";
 const out = args.out ?? `data/${args.city.toLowerCase().replace(/\s+/g, "-")}-${args.from.slice(0, 4)}.json`;
 
 console.log(`Resolving bounding box for ${args.city}...`);
-const bbox = await research(bboxPrompt(args.city, country), "bounding box");
-console.log(`  ${JSON.stringify(bbox)}`);
+const rawBbox = await research(bboxPrompt(args.city, country), "bounding box");
+
+// The model returns a conservative city-centre box. Padding matters: an early
+// Copenhagen run produced east 12.62, which would have rejected Den Blå Planet
+// (12.6549) as a hallucination. The box is a hallucination detector, not a
+// curation filter, so it should be generous enough that only genuinely wrong
+// cities fail it.
+const BBOX_PAD = 0.35;
+function padBbox(box) {
+  const lonPad = (box.east - box.west) * BBOX_PAD;
+  const latPad = (box.north - box.south) * BBOX_PAD;
+  return {
+    west: +(box.west - lonPad).toFixed(4), east: +(box.east + lonPad).toFixed(4),
+    south: +(box.south - latPad).toFixed(4), north: +(box.north + latPad).toFixed(4),
+  };
+}
+const bbox = padBbox(rawBbox);
+console.log(`  model: ${JSON.stringify(rawBbox)}`);
+console.log(`  padded: ${JSON.stringify(bbox)}`);
 
 const places = [];
 for (const batch of BATCHES) {
