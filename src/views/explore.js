@@ -190,6 +190,19 @@ function cardActions(place, actions) {
   );
 }
 
+function noResults(count, onFilterChange) {
+  return h(
+    "div",
+    { class: "empty-state-block" },
+    h("p", { class: "empty-state" },
+      h("span", { class: "glyph", "aria-hidden": "true" }, "🔍"),
+      count > 0 ? "Nothing matches those filters. Try clearing some to see more places." : "No places in the guide yet."),
+    count > 0 &&
+      h("button", { class: "action", type: "button", onClick: () => onFilterChange({ ...EMPTY_FILTERS }) },
+        "Clear filters"),
+  );
+}
+
 export function renderExplore(places, { filters, onFilterChange, actions }) {
   const matching = filterPlaces(places, filters);
   return h(
@@ -198,7 +211,7 @@ export function renderExplore(places, { filters, onFilterChange, actions }) {
     renderControls(filters, onFilterChange),
     h("p", { class: "count" }, `${matching.length} of ${places.length}`),
     matching.length === 0
-      ? h("p", { class: "empty-state" }, h("span", { class: "glyph", "aria-hidden": "true" }, "🔍"), "Nothing matches those filters.")
+      ? noResults(activeFilterCount(filters), onFilterChange)
       : h("div", { class: "cards" }, matching.map((place) => {
           const card = renderCard(place);
           card.querySelector(".detail").append(cardActions(place, actions));

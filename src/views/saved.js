@@ -57,6 +57,18 @@ export function renderSaved({ places, favourites, visited, notes, handlers }) {
   // can be written before deciding to favourite something.
   const noteIds = [...new Set([...Object.keys(notes), ...favourites])];
 
+  // A first-time visitor with nothing saved anywhere needs one clear
+  // explanation, not three near-identical empty sections stacked on top of
+  // each other. Once anything is saved, each section speaks for itself.
+  const hasAnySaved = favourites.length > 0 || visited.length > 0 || Object.keys(notes).length > 0;
+  if (!hasAnySaved) {
+    return h(
+      "div",
+      { class: "itinerary" },
+      emptyState("♥", "Nothing saved yet. Favourite a place or mark it visited from its card in Explore."),
+    );
+  }
+
   return h(
     "div",
     { class: "itinerary" },
@@ -69,7 +81,10 @@ export function renderSaved({ places, favourites, visited, notes, handlers }) {
     h("section", { class: "day" },
       h("h2", { class: "section-heading" }, `📝 Notes · ${Object.keys(notes).length}`),
       noteIds.length === 0
-        ? emptyState("📝", "Favourite something to start noting.")
+        // Reachable when something is favourited/visited elsewhere but no
+        // note has been written yet — a different situation from having
+        // nothing saved at all, so it gets a different prompt.
+        ? emptyState("📝", "No notes yet. Add one to a favourite or visited place.")
         : h("div", { class: "notes" }, noteIds.map((id) => noteEditor(resolve(id), notes[id], handlers)))),
   );
 }

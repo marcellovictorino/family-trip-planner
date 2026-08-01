@@ -29,11 +29,21 @@ function row(place, date, index, count, handlers) {
   );
 }
 
+function emptyDay(text) {
+  return h("p", { class: "empty-state" }, h("span", { class: "glyph", "aria-hidden": "true" }, "🗓"), text);
+}
+
 export function renderItinerary({ trip, places, days, dates, handlers }) {
   const byId = new Map(places.map((place) => [place.id, place]));
+  const allEmpty = dates.every((date) => (days[date] ?? []).length === 0);
+
   return h(
     "div",
     { class: "itinerary" },
+    // First run: one clear explanation of the mechanism, instead of the same
+    // instruction repeated under every single day.
+    allEmpty &&
+      emptyDay('Nothing planned yet. Open a place in Explore and tap "+ Add to day" to put it here.'),
     dates.map((date) => {
       // A stored id with no matching place means the dataset was regenerated
       // without it. Show it as unknown rather than dropping it silently.
@@ -45,7 +55,7 @@ export function renderItinerary({ trip, places, days, dates, handlers }) {
         h("h2", { class: "section-heading" }, formatDayHeading(date), items.length > 0 && h("span", { class: "meta" },
           `${items.length} stop${items.length === 1 ? "" : "s"} · ${durationLabel(totalMinutes(items))}`)),
         items.length === 0
-          ? h("p", { class: "empty-state" }, h("span", { class: "glyph", "aria-hidden": "true" }, "🗓"), "Nothing planned. Add something from Explore.")
+          ? emptyDay(allEmpty ? "Nothing here." : 'Nothing planned. Open a place in Explore and tap "+ Add to day".')
           : h("ol", { class: "day-items" },
               items.map((place, index) => row(place, date, index, items.length, handlers))),
       );

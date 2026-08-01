@@ -33,6 +33,8 @@ export function renderTrip({ trip, places, snapshot, today, handlers }) {
       stat(snapshot.favourites.length, "favourites"),
       stat(planned, "planned stops"),
       stat(Object.keys(snapshot.notes).length, "notes")),
+    planned === 0 &&
+      h("p", { class: "tip" }, "Nothing in the itinerary yet. Add a place to a day from Explore to start filling it in."),
     h("section", { class: "day" },
       h("h2", { class: "section-heading" }, "Backup"),
       h("p", { class: "tip" }, "Export before regenerating the guide, so your notes and plan can be restored."),

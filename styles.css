@@ -66,6 +66,7 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
 /* Empty state */
 .empty-state { display: flex; align-items: center; gap: var(--space-sm); margin: 0; color: var(--text-muted); font-size: var(--text-small); }
 .empty-state .glyph { font-size: 1.1rem; }
+.empty-state-block { display: grid; gap: var(--space-md); }
 
 /* Search field */
 .search {
