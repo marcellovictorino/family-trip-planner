@@ -342,6 +342,68 @@ test("a vanished place id reads identically in Itinerary and Saved, and shows no
   assert.equal(row.textContent, "");
 });
 
+test("a stop that has been ticked is struck through and loses its reorder arrows", () => {
+  const places = [place({ id: "tivoli", name: "Tivoli Gardens" })];
+  const root = renderItinerary({
+    trip: {},
+    places,
+    days: { "2026-08-03": ["tivoli"] },
+    dates: ["2026-08-03"],
+    dayLog: { "2026-08-03": { tivoli: { done: true, thumb: null, stars: null, tags: [], at: null } } },
+    handlers: { onMove: () => {}, onRemove: () => {}, onToggleDone: () => {}, onRate: () => {} },
+  });
+  const row = root.querySelector("li.day-item");
+  assert.ok(row.classList.contains("is-visited"));
+  assert.equal(root.querySelectorAll("button.nudge").length, 0);
+  assert.equal(root.querySelectorAll("button.thumb").length, 2);
+});
+
+test("tapping the row body reports the toggle, so a stop can be ticked and un-ticked", () => {
+  const calls = [];
+  const places = [place({ id: "tivoli", name: "Tivoli Gardens" })];
+  const root = renderItinerary({
+    trip: {},
+    places,
+    days: { "2026-08-03": ["tivoli"] },
+    dates: ["2026-08-03"],
+    dayLog: {},
+    handlers: { onMove: () => {}, onRemove: () => {}, onToggleDone: (date, id) => calls.push([date, id]), onRate: () => {} },
+  });
+  root.querySelector("button.day-item-body").listeners.click();
+  assert.deepEqual(calls, [["2026-08-03", "tivoli"]]);
+});
+
+test("pressing a thumb records that verdict, rather than only opening a sheet to ask again", () => {
+  const calls = [];
+  const places = [place({ id: "tivoli", name: "Tivoli Gardens" })];
+  const root = renderItinerary({
+    trip: {},
+    places,
+    days: { "2026-08-03": ["tivoli"] },
+    dates: ["2026-08-03"],
+    dayLog: { "2026-08-03": { tivoli: { done: true, thumb: null, stars: null, tags: [], at: null } } },
+    handlers: { onMove: () => {}, onRemove: () => {}, onToggleDone: () => {}, onRate: (date, id, thumb) => calls.push([date, id, thumb]) },
+  });
+  const down = root.querySelectorAll("button.thumb").find((b) => b.attrs["aria-label"].includes("not recommend"));
+  down.listeners.click();
+  assert.deepEqual(calls, [["2026-08-03", "tivoli", "down"]]);
+});
+
+// A row that says only "visited" wastes the rating you already gave it. Showing
+// the stars turns the day into a readable summary at a glance.
+test("stars already given appear on the row", () => {
+  const places = [place({ id: "tivoli", name: "Tivoli Gardens" })];
+  const root = renderItinerary({
+    trip: {},
+    places,
+    days: { "2026-08-03": ["tivoli"] },
+    dates: ["2026-08-03"],
+    dayLog: { "2026-08-03": { tivoli: { done: true, thumb: "up", stars: 4, tags: [], at: null } } },
+    handlers: { onMove: () => {}, onRemove: () => {}, onToggleDone: () => {}, onRate: () => {} },
+  });
+  assert.match(root.querySelector("li.day-item").textContent, /★★★★☆/);
+});
+
 test("search input debounces the committed query, but clearing it commits immediately", async () => {
   const places = [place({ id: "tivoli" }), place({ id: "rundetaarn", name: "Rundetaarn" })];
   let committed = null;
