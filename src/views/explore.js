@@ -3,32 +3,24 @@ import { filterPlaces, activeFilterCount, EMPTY_FILTERS } from "../filter.js";
 
 const PRICE_LABEL = { free: "Free", "€": "€", "€€": "€€", "€€€": "€€€" };
 
-// Inline SVG per the FacilityIcon component — no icon font, no image requests.
-const FACILITY_PATHS = {
-  baby: '<circle cx="12" cy="7" r="3.4"/><path d="M6 20c0-4 2.7-7 6-7s6 3 6 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
-  stroller: '<path d="M4 10a8 4.5 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 10h16v2.5H4z"/><circle cx="7.5" cy="18.5" r="2"/><circle cx="16.5" cy="18.5" r="2"/><path d="M20 10.5l2-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
-  indoor: '<path d="M6.5 15a4 4 0 0 1 .3-8 5.6 5.6 0 0 1 10.5 2.1A4 4 0 0 1 17 15z"/><path d="M9 18.5v2M12 18v2.5M15 18.5v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
-  mixed: '<circle cx="7.5" cy="8" r="3.2"/><path d="M7.5 2.8v1.4M2.8 8h1.4M4.5 4.5l1 1M11.5 4.5l-1 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10.5 17a3.6 3.6 0 0 1 .3-7.2 5 5 0 0 1 9.4 1.9A3.6 3.6 0 0 1 20.5 17z"/>',
-  booking: '<path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1.3a1.6 1.6 0 0 0 0 3.4V14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1.3a1.6 1.6 0 0 0 0-3.4z"/><path d="M12 6.5v9" stroke="var(--surface-card)" stroke-width="1.6" stroke-dasharray="2 2"/>',
-};
-
+// Per FacilityIcon: "this product has no icon font and no SVG icons by
+// design" — every facility is the documented emoji glyph, never hand-drawn.
 const FACILITIES = {
-  baby: { label: "Room for a baby to move around" },
-  stroller: { label: "Pram accessible" },
-  indoor: { label: "Indoors" },
-  mixed: { label: "Indoor and outdoor" },
-  glutenFree: { label: "Good gluten-free options" },
-  booking: { label: "Booking required" },
+  baby: { glyph: "👶", label: "Room for a baby to move around" },
+  stroller: { glyph: "🛒", label: "Pram accessible" },
+  indoor: { glyph: "🌧", label: "Indoors" },
+  mixed: { glyph: "🌤", label: "Indoor and outdoor" },
+  glutenFree: { glyph: "GF", label: "Good gluten-free options" },
+  booking: { glyph: "🎫", label: "Booking required" },
 };
 
 function facilityIcon(facility) {
-  const meta = FACILITIES[facility];
-  if (facility === "glutenFree") {
-    return h("span", { class: "facility-icon facility-icon--text", role: "img", "aria-label": meta.label, title: meta.label }, "GF");
-  }
-  const icon = h("span", { class: "facility-icon", role: "img", "aria-label": meta.label, title: meta.label });
-  icon.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${FACILITY_PATHS[facility]}</svg>`;
-  return icon;
+  const { glyph, label } = FACILITIES[facility];
+  const isText = glyph === "GF";
+  return h("span", {
+    class: isText ? "facility-icon facility-icon--text" : "facility-icon",
+    role: "img", "aria-label": label, title: label,
+  }, glyph);
 }
 
 function facts(place) {

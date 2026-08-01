@@ -20,12 +20,16 @@ function line(place, handlers, { favourite, visited }) {
   );
 }
 
-function section(title, items) {
+function emptyState(glyph, text) {
+  return h("p", { class: "empty-state" }, h("span", { class: "glyph", "aria-hidden": "true" }, glyph), text);
+}
+
+function section(title, items, empty) {
   return h(
     "section",
     { class: "day" },
     h("h2", { class: "section-heading" }, title),
-    items.length === 0 ? h("p", { class: "empty-state" }, "Nothing yet.") : h("ul", { class: "saved-list" }, items),
+    items.length === 0 ? empty : h("ul", { class: "saved-list" }, items),
   );
 }
 
@@ -57,13 +61,15 @@ export function renderSaved({ places, favourites, visited, notes, handlers }) {
     "div",
     { class: "itinerary" },
     section(`♥ Favourites · ${favourites.length}`,
-      favourites.map((id) => line(resolve(id), handlers, flags(id)))),
+      favourites.map((id) => line(resolve(id), handlers, flags(id))),
+      emptyState("♡", "Nothing favourited yet. Save places from Explore.")),
     section(`✓ Visited · ${visited.length}`,
-      visited.map((id) => line(resolve(id), handlers, flags(id)))),
+      visited.map((id) => line(resolve(id), handlers, flags(id))),
+      emptyState("✓", "Nothing visited yet. Mark a place visited from its card.")),
     h("section", { class: "day" },
       h("h2", { class: "section-heading" }, `📝 Notes · ${Object.keys(notes).length}`),
       noteIds.length === 0
-        ? h("p", { class: "empty-state" }, "Favourite something to start noting.")
+        ? emptyState("📝", "Favourite something to start noting.")
         : h("div", { class: "notes" }, noteIds.map((id) => noteEditor(resolve(id), notes[id], handlers)))),
   );
 }

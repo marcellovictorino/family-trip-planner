@@ -42,7 +42,9 @@ h1 {
   font-family: var(--font-display); font-size: var(--text-title); font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-tight); color: var(--text-body);
 }
-nav { display: flex; overflow-x: auto; }
+/* overflow-y stays visible so a keyboard-focused tab's --focus-ring isn't
+   clipped top/bottom by the horizontal scroll container. */
+nav { display: flex; overflow-x: auto; overflow-y: visible; }
 .tab {
   flex: 1 0 auto; min-height: var(--tap-min); padding: 0 var(--space-xl);
   border: 0; border-bottom: 3px solid transparent; background: none;
@@ -100,6 +102,11 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
   cursor: pointer; list-style: none;
 }
 .card summary::-webkit-details-marker { display: none; }
+/* The card's own overflow:hidden (needed for its rounded corners) would clip a
+   ring drawn on summary, which sits flush against those corners. Draw it on
+   the card itself instead, which isn't clipped by its own overflow. */
+.card summary:focus-visible { outline: none; box-shadow: none; }
+.card:focus-within { box-shadow: var(--shadow-card), var(--focus-ring); }
 
 .kind-band {
   display: inline-flex; align-items: center; gap: var(--space-2xs); justify-self: start;
@@ -119,8 +126,7 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
 .facts-line { font-size: var(--text-fine); color: var(--text-muted); }
 
 .facility-row { display: flex; gap: var(--gap-chips); align-items: center; }
-.facility-icon { line-height: 1; color: var(--text-body); display: inline-flex; }
-.facility-icon svg { width: 1rem; height: 1rem; }
+.facility-icon { line-height: 1; color: var(--text-body); display: inline-flex; font-size: var(--text-small); }
 .facility-icon--text { font-family: var(--font-mono); font-size: var(--text-fine); font-weight: var(--weight-semibold); }
 
 .detail { padding: 0 var(--pad-card) var(--pad-card); border-top: var(--border-hairline); }
@@ -145,6 +151,7 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
 .action[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--text-on-accent); box-shadow: none; }
 .action.primary { border-color: var(--accent); color: var(--accent); font-weight: var(--weight-semibold); }
 .action:active { transform: scale(var(--press-scale)); }
+.action:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
 
 .empty-state { color: var(--text-muted); }
 
