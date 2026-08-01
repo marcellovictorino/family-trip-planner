@@ -75,20 +75,23 @@ Filtering is not generic. Each rule exists for a reason, and each test states th
 - State survives a dataset regeneration, and a note on a place that has vanished is orphaned rather than deleted.
 - A place outside the trip's bounding box fails the build loudly — *silent bad data is worse than no data.*
 
-## Roadmap
+## Status and roadmap
 
-Each slice ends with something usable on a phone.
+All six slices are shipped: the app is live with 90 verified Copenhagen places, 74 tests
+pass, and it installs to an iPhone home screen. One claim remains unproven — nobody has
+yet opened it on real hardware and turned on airplane mode.
 
-| | Slice | Done when |
-| --- | --- | --- |
-| S1 | Shell, fixture data, Explore, deployment | The URL opens on an iPhone in airplane mode |
-| S2 | Generator, validator, 20 verified real places | `validate-data.mjs` exits 0 on real data |
-| S3 | Search and filters | The six family rules pass under `node --test` |
-| S4 | Itinerary: add to day, reorder, persist | A 7-day plan survives force-quitting Safari |
-| S5 | Favourites, visited, notes, backup | Export and import round-trip the whole state |
-| S6 | Widen the dataset to full coverage | ~85 places, zero code changes |
+See **[ROADMAP.md](ROADMAP.md)** for what shipped, what is next, and what was deliberately
+deferred. Live work is tracked in `td`: `td list`.
 
-Deferred by choice, not oversight: private hosting via Cloudflare Access, an interactive map, live weather, budget tracking, packing lists, transit routing, and a journal.
+| Slice | Delivered |
+| --- | --- |
+| S1 | Shell, four tabs, Explore, deployed with a service worker |
+| S2 | Generator driving `claude -p` with web search, plus a validation gate |
+| S3 | Search across six fields, eight filter groups |
+| S4 | Itinerary: tap-to-assign, reorder, persist |
+| S5 | Favourites, visited, notes, export and import |
+| S6 | 90 real places — 51 attractions, 16 playgrounds, 23 restaurants |
 
 ## Running it
 
