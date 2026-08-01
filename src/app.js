@@ -127,7 +127,7 @@ function render() {
     panels.explore.append(
       renderExplore(data.places, {
         filters: snapshot.filters,
-        onFilterChange: (filters) => state.setFilters(filters),
+        onFilterChange: (filters) => guard(() => state.setFilters(filters)),
         actions,
       }),
     );
