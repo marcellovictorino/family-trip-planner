@@ -130,6 +130,7 @@ const { renderItinerary, starLabel } = await import("../src/views/itinerary.js")
 const { renderSaved } = await import("../src/views/saved.js");
 const { renderTrip } = await import("../src/views/trip.js");
 const { EMPTY_FILTERS } = await import("../src/filter.js");
+const { renderRatingSheet } = await import("../src/views/rating.js");
 
 function place(overrides) {
   return {
@@ -454,4 +455,72 @@ test("search input debounces the committed query, but clearing it commits immedi
   search.listeners.input({ target: { value: "" } });
   assert.ok(committed, "clearing the box should commit immediately, with no debounce");
   assert.equal(committed.query, "");
+});
+
+function sheetFor(overrides = {}, handlers = {}) {
+  return renderRatingSheet({
+    place: place({ id: "tivoli", name: "Tivoli Gardens", kind: "attraction" }),
+    date: "2026-08-03",
+    entry: { done: true, thumb: null, stars: null, tags: [], at: null },
+    note: "",
+    handlers: {
+      onThumb: () => {}, onStars: () => {}, onTags: () => {}, onNote: () => {}, onClose: () => {},
+      ...handlers,
+    },
+    ...overrides,
+  });
+}
+
+test("the sheet offers the tags for this place's kind, not a generic list", () => {
+  const attraction = sheetFor();
+  const labels = attraction.querySelectorAll("button.tag").map((b) => b.textContent);
+  assert.ok(labels.includes("Great with the baby"));
+  assert.ok(!labels.includes("Gluten-free was reliable"));
+
+  const restaurant = sheetFor({ place: place({ id: "gorms", name: "Gorm's", kind: "restaurant" }) });
+  const foodLabels = restaurant.querySelectorAll("button.tag").map((b) => b.textContent);
+  assert.ok(foodLabels.includes("Gluten-free was reliable"));
+});
+
+// Every field commits as it is touched, so there is nothing to cancel and
+// nothing lost by dismissing the sheet mid-thought.
+test("tapping a star commits that rating immediately", () => {
+  const calls = [];
+  const sheet = sheetFor({}, { onStars: (n) => calls.push(n) });
+  sheet.querySelectorAll("button.star")[3].listeners.click();
+  assert.deepEqual(calls, [4]);
+});
+
+test("tapping an already-set star clears it, so a mis-tap is recoverable", () => {
+  const calls = [];
+  const sheet = sheetFor(
+    { entry: { done: true, thumb: null, stars: 4, tags: [], at: null } },
+    { onStars: (n) => calls.push(n) },
+  );
+  sheet.querySelectorAll("button.star")[3].listeners.click();
+  assert.deepEqual(calls, [null]);
+});
+
+test("a tag toggles into and out of the list rather than only ever being added", () => {
+  const calls = [];
+  const sheet = sheetFor(
+    { entry: { done: true, thumb: null, stars: null, tags: ["too-crowded"], at: null } },
+    { onTags: (list) => calls.push(list) },
+  );
+  const tags = sheet.querySelectorAll("button.tag");
+  const crowded = tags.find((b) => b.textContent === "Too crowded");
+  const baby = tags.find((b) => b.textContent === "Great with the baby");
+  crowded.listeners.click();
+  baby.listeners.click();
+  assert.deepEqual(calls, [[], ["too-crowded", "baby-great"]]);
+});
+
+// The repository is public. Somebody typing a note about a restaurant, or
+// about their children, must be told before they type, not after they push.
+test("the sheet warns that notes may be published", () => {
+  assert.match(sheetFor().textContent, /publishable/i);
+});
+
+test("the sheet names the day, because the same place can be rated twice", () => {
+  assert.match(sheetFor().textContent, /Monday 3 August/);
 });
