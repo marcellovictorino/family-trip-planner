@@ -10,7 +10,13 @@
       "south": 55.595,
       "north": 55.765
     },
-    "generated_at": "2026-08-01T13:12:17.378Z"
+    "generated_at": "2026-08-01T13:12:17.378Z",
+    "region_bbox": {
+      "west": 11.8477,
+      "east": 13.2923,
+      "south": 55.2357,
+      "north": 56.1243
+    }
   },
   "zones": {
     "indre-by": {
@@ -7783,6 +7789,170 @@
           "walk_minutes": 10
         }
       ]
+    },
+    {
+      "id": "louisiana-museum-of-modern-art",
+      "name": "Louisiana Museum of Modern Art",
+      "kind": "attraction",
+      "category": "museum",
+      "neighbourhood": "Humlebæk",
+      "lat": 55.9694,
+      "lon": 12.5432,
+      "description": "The Children's Wing lets the 6-year-old build, draw and explore art across three floors, while the sculpture garden's open lawns give the 1-year-old safe grass to crawl and cruise between artworks, with Øresund sea views for the adults.",
+      "duration_minutes": 180,
+      "price_band": "€€",
+      "booking": "recommended",
+      "booking_url": "https://louisiana.dk/en/visit/tickets/",
+      "website": "https://louisiana.dk/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.9694,12.5432",
+      "setting": "mixed",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "The sculpture garden's lawns are flat enough for a crawling or cruising toddler to move freely between pieces.",
+      "gluten_free": "limited",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Humlebæk Station",
+      "tags": [
+        "museum",
+        "sculpture-garden",
+        "modern-art",
+        "seaside"
+      ],
+      "tips": "Arrive at opening (11:00, Tue–Fri) to beat coach-tour crowds and head for the Children's Wing first.",
+      "best_time": "morning",
+      "near": [],
+      "day_trip": true
+    },
+    {
+      "id": "bakken-dyrehavsbakken",
+      "name": "Bakken (Dyrehavsbakken)",
+      "kind": "attraction",
+      "category": "amusement-park",
+      "neighbourhood": "Klampenborg",
+      "lat": 55.7757,
+      "lon": 12.5753,
+      "description": "Denmark's oldest amusement park sits free-to-enter inside a beech forest; the 6-year-old can ride carousels and kiddie attractions while the 1-year-old toddles the gravel paths and watches the rides from the pram.",
+      "duration_minutes": 180,
+      "price_band": "free",
+      "booking": "none",
+      "booking_url": null,
+      "website": "https://www.bakken.dk/en",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.7757,12.5753",
+      "setting": "outdoor",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": true,
+      "changing_table": true,
+      "baby_notes": "Forest paths and grassy clearings around the park give a baby room to crawl well away from the ride areas.",
+      "gluten_free": "limited",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Klampenborg Station",
+      "tags": [
+        "amusement-park",
+        "forest",
+        "rides",
+        "free-entry"
+      ],
+      "tips": "Entry is free; buy a ride wristband online in advance rather than at the box office for a better price.",
+      "best_time": "afternoon",
+      "near": [],
+      "day_trip": true
+    },
+    {
+      "id": "frederiksborg-castle",
+      "name": "Frederiksborg Castle (Museum of National History)",
+      "kind": "attraction",
+      "category": "castle",
+      "neighbourhood": "Hillerød",
+      "lat": 55.9349,
+      "lon": 12.3014,
+      "description": "The moated Renaissance castle's state rooms and chapel give the 6-year-old turrets and a portrait gallery to explore, while the baroque garden's flat gravel terraces let the 1-year-old walk and crawl outside; the castle's upper floors are stairs-only and not pram-friendly.",
+      "duration_minutes": 210,
+      "price_band": "€€",
+      "booking": "recommended",
+      "booking_url": "https://dnm.dk/en/plan-your-visit/tickets/",
+      "website": "https://dnm.dk/en/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=55.9349,12.3014",
+      "setting": "mixed",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": false,
+      "changing_table": true,
+      "baby_notes": "The baroque garden's gravel terraces are flat and safe for crawling or early walking, though the castle's upper floors are stairs-only.",
+      "gluten_free": "limited",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Hillerød Station",
+      "tags": [
+        "castle",
+        "renaissance",
+        "garden",
+        "history"
+      ],
+      "tips": "Do the baroque garden first with the pram, then take turns inside the castle since there is no lift to the upper floors.",
+      "best_time": "morning",
+      "near": [],
+      "day_trip": true
+    },
+    {
+      "id": "kronborg-castle",
+      "name": "Kronborg Castle",
+      "kind": "attraction",
+      "category": "castle",
+      "neighbourhood": "Helsingør",
+      "lat": 56.0388,
+      "lon": 12.6198,
+      "description": "Shakespeare's Elsinore gives the 6-year-old dark casemates and ramparts to explore, while the grassy ramparts and courtyard outside give the 1-year-old open, flat ground to crawl; there is no lift, so the castle's upper rooms are stairs-only.",
+      "duration_minutes": 180,
+      "price_band": "€€",
+      "booking": "recommended",
+      "booking_url": "https://en.kronborg.dk/priser-og-aabningstider",
+      "website": "https://en.kronborg.dk/",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=56.0388,12.6198",
+      "setting": "mixed",
+      "ages": [
+        "baby",
+        "toddler",
+        "child",
+        "adult"
+      ],
+      "baby_friendly": true,
+      "stroller": false,
+      "changing_table": true,
+      "baby_notes": "The grassy ramparts and courtyard outside the castle are flat and safe for crawling; the casemates and upper floors involve stairs and uneven stone.",
+      "gluten_free": "limited",
+      "kids_menu": true,
+      "high_chair": true,
+      "nearest_metro": "Helsingør Station",
+      "tags": [
+        "castle",
+        "unesco",
+        "hamlet",
+        "ramparts"
+      ],
+      "tips": "Visit the dark casemates early before school groups arrive, and check seasonal opening days before travelling.",
+      "best_time": "morning",
+      "near": [],
+      "day_trip": true
     }
   ]
 }
