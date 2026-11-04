@@ -74,6 +74,7 @@ Filtering is not generic. Each rule exists for a reason, and each test states th
 - One search box covers name, tags, description, category, neighbourhood and metro — *no thinking about which field a word lives in.*
 - State survives a dataset regeneration, and a note on a place that has vanished is orphaned rather than deleted.
 - A place outside the trip's bounding box fails the build loudly — *silent bad data is worse than no data.*
+- A day trip (Louisiana, Bakken) is checked against a wider regional box — the metro box plus 40 km — and only places the generator flagged as day trips get that slack — *a family's best day can be an hour out of town, but a hallucinated city must still fail.*
 
 ## Status and roadmap
 

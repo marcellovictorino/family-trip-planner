@@ -9,7 +9,7 @@ import {
   WALK_METRES_PER_MINUTE,
   validatePlace,
 } from "../src/schema.mjs";
-import { computeNear, padBbox } from "./geo.mjs";
+import { computeNear, padBbox, regionBbox } from "./geo.mjs";
 import { extractJson, extractText } from "./parse.mjs";
 
 // The single seam for swapping research backends. To use pi with a gpt model,
@@ -20,9 +20,9 @@ const RESEARCH_ARGS = ["-p", "--model", "claude-sonnet-5", "--effort", "medium",
 
 const MAX_ATTEMPTS = 3;
 
-// No "day-trips" batch: places like Louisiana at lat 55.97 sit outside even
-// the padded metro bounding box, so the validator would reject them. The
-// remaining counts are widened to make up the total.
+// The day-trips batch is the one batch checked against the wider regional box
+// rather than the metro box (TRIP-4): Louisiana at lat 55.97 sits outside even
+// the padded metro box, so without it the whole batch was rejected.
 const BATCHES = [
   // Deliberately first: an earlier run produced a technically valid dataset with
   // no Tivoli in it. The batches below ask by category, which quietly skips the
@@ -36,6 +36,7 @@ const BATCHES = [
   { key: "food-gf", count: 12, brief: "family-friendly restaurants and cafes with reliable gluten-free options" },
   { key: "food-quick", count: 10, brief: "quick, casual, child-tolerant lunch spots and bakeries" },
   { key: "evening", count: 5, brief: "early-evening options that work with a 19:00 bedtime" },
+  { key: "day-trips", count: 6, dayTrip: true, brief: "day trips outside the city itself but within about an hour by train or car — art museums, amusement parks, castles, beaches and open-air museums" },
 ];
 
 function parseArgs(argv) {
@@ -82,7 +83,8 @@ covering the area a tourist would plausibly visit on foot or by metro.
 Output nothing except the JSON object. No prose before it, no remarks after it, no code fence:
 {"west":<number>,"east":<number>,"south":<number>,"north":<number>}`;
 
-function batchPrompt({ city, country, from, to, batch, bbox, existingNames }) {
+function batchPrompt({ city, country, from, to, batch, bbox, regionBbox, existingNames }) {
+  const box = batch.dayTrip ? regionBbox : bbox;
   return `Research ${batch.count} ${batch.brief} in ${city}, ${country}, for a family visiting ${from} to ${to}.
 The family is two adults, a 6-year-old and a 1-year-old who is starting to walk.
 Use web search and prefer official sites. Do not invent anything: if you cannot confirm a
@@ -98,7 +100,7 @@ name              official name
 kind              one of ${ENUMS.kind.join(" | ")}
 category          short lower-case kebab-case type, e.g. museum, aquarium, playground, bakery
 neighbourhood     district name
-lat, lon          decimal degrees, must lie inside west ${bbox.west}, east ${bbox.east}, south ${bbox.south}, north ${bbox.north}
+lat, lon          decimal degrees, must lie inside west ${box.west}, east ${box.east}, south ${box.south}, north ${box.north}
 description       2-3 sentences, at least 40 characters, written for THIS family: say what the
                   6-year-old does and what the 1-year-old does
 duration_minutes  realistic visit length in minutes, including the faff of arriving with a pram
@@ -133,8 +135,9 @@ async function researchBatch(context) {
     try {
       const places = extractJson(extractText(await runResearch(batchPrompt(context))));
       if (!Array.isArray(places)) throw new Error("response was not an array");
+      if (context.batch.dayTrip) for (const place of places) place.day_trip = true;
       const problems = places.flatMap((place) =>
-        validatePlace(place, { bbox: context.bbox, knownIds: new Set() }),
+        validatePlace(place, { bbox: context.bbox, regionBbox: context.regionBbox, knownIds: new Set() }),
       );
       if (problems.length > 0) throw new Error(`invalid batch:\n  ${problems.join("\n  ")}`);
       return places;
@@ -164,12 +167,14 @@ const rawBbox = await research(bboxPrompt(args.city, country), "bounding box");
 const bbox = padBbox(rawBbox);
 console.log(`  model: ${JSON.stringify(rawBbox)}`);
 console.log(`  padded: ${JSON.stringify(bbox)}`);
+const region = regionBbox(bbox);
+console.log(`  day-trip region: ${JSON.stringify(region)}`);
 
 const places = [];
 for (const batch of BATCHES) {
   console.log(`Researching "${batch.key}" (${batch.count})...`);
   const found = await researchBatch({
-    city: args.city, country, from: args.from, to: args.to, batch, bbox,
+    city: args.city, country, from: args.from, to: args.to, batch, bbox, regionBbox: region,
     existingNames: places.map((p) => p.name),
   });
   const fresh = found.filter((p) => !places.some((existing) => existing.id === p.id));
@@ -183,7 +188,7 @@ if (places.length === 0) {
 }
 
 const dataset = {
-  trip: { city: args.city, country, from: args.from, to: args.to, bbox, generated_at: new Date().toISOString() },
+  trip: { city: args.city, country, from: args.from, to: args.to, bbox, region_bbox: region, generated_at: new Date().toISOString() },
   places: computeNear(places, { radius: NEAR_RADIUS_METRES, pace: WALK_METRES_PER_MINUTE }),
 };
 
