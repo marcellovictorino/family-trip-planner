@@ -25,7 +25,13 @@ export const NEAR_RADIUS_METRES = 800;
 
 const MIN_DESCRIPTION_LENGTH = 40;
 
-export function validatePlace(place, { bbox, knownIds }) {
+const inBox = (place, box) =>
+  place.lat >= box.south && place.lat <= box.north && place.lon >= box.west && place.lon <= box.east;
+
+// A place flagged day_trip is checked against the wider regional box instead
+// of the metro one (TRIP-4). Unflagged places never get that slack, so the box
+// still catches a hallucinated city.
+export function validatePlace(place, { bbox, regionBbox, knownIds }) {
   const problems = [];
   const where = place?.id ?? place?.name ?? "<unidentified place>";
 
@@ -51,10 +57,19 @@ export function validatePlace(place, { bbox, knownIds }) {
     problems.push(`${where}: ages must be an array`);
   }
 
-  if (typeof place.lat === "number" && typeof place.lon === "number" && bbox) {
-    const inside =
-      place.lat >= bbox.south && place.lat <= bbox.north && place.lon >= bbox.west && place.lon <= bbox.east;
-    if (!inside) problems.push(`${where}: lat/lon ${place.lat},${place.lon} outside trip bbox`);
+  if (place.day_trip !== undefined && typeof place.day_trip !== "boolean") {
+    problems.push(`${where}: day_trip must be true or false`);
+  }
+
+  if (typeof place.lat === "number" && typeof place.lon === "number") {
+    if (place.day_trip === true) {
+      if (!regionBbox) problems.push(`${where}: is a day trip but the trip has no region_bbox`);
+      else if (!inBox(place, regionBbox)) {
+        problems.push(`${where}: lat/lon ${place.lat},${place.lon} outside trip region_bbox`);
+      }
+    } else if (bbox && !inBox(place, bbox)) {
+      problems.push(`${where}: lat/lon ${place.lat},${place.lon} outside trip bbox`);
+    }
   }
 
   if (typeof place.duration_minutes === "number" && place.duration_minutes <= 0) {
@@ -93,7 +108,7 @@ export function validateDataset(data) {
     seen.add(place?.id);
   }
   for (const place of data.places) {
-    problems.push(...validatePlace(place, { bbox: trip.bbox, knownIds: seen }));
+    problems.push(...validatePlace(place, { bbox: trip.bbox, regionBbox: trip.region_bbox, knownIds: seen }));
   }
   return problems;
 }

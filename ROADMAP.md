@@ -57,8 +57,6 @@ number it invented. Everything else in the model degrades gracefully; this does 
 The app's usefulness rests on generated content, and the schema gate proves structure,
 not truth.
 
-- **Day trips are unreachable** (`td-920b3a`). Louisiana and Bakken fall outside even the
-  padded bounding box, so that batch was cut. Regional batches need their own box.
 - **`nearest_metro` is 55 free-text variants** (`td-1e55cb`). `Nørreport`,
   `Nørreport Station` and `Nørreport St.` are three separate values across 98 places.
   Blocks any future station-graph routing; deliberately out of scope for S11–S14, which
