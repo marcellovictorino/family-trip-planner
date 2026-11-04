@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { haversineMetres, computeNear, padBbox } from "../tools/geo.mjs";
+import { readFile } from "node:fs/promises";
+import { haversineMetres, computeNear, padBbox, regionBbox } from "../tools/geo.mjs";
 
 const TIVOLI = { lat: 55.6736, lon: 12.5681 };
 const GLYPTOTEKET = { lat: 55.6725, lon: 12.5729 };   // ~320 m east of Tivoli
@@ -84,4 +85,34 @@ test("padding is symmetric on each axis, so it cannot skew the box toward one ed
 
 test("a zero fraction is a no-op, so padding can be disabled without a special case", () => {
   assert.deepEqual(padBbox(COPENHAGEN_METRO_BBOX, 0), COPENHAGEN_METRO_BBOX);
+});
+
+// TRIP-4 (td-920b3a): Louisiana and Bakken are the day trips a Copenhagen
+// family would actually take, and both sit outside even the padded metro box.
+const LOUISIANA = { lat: 55.9696, lon: 12.5430 };
+const BAKKEN = { lat: 55.7745, lon: 12.5785 };
+const AARHUS = { lat: 56.1572, lon: 10.2107 };
+
+async function committedTripBbox() {
+  const raw = await readFile(new URL("../data/copenhagen-2026.json", import.meta.url), "utf8");
+  return JSON.parse(raw).trip.bbox;
+}
+
+test("the regional box reaches the day trips the padded metro box drops", async () => {
+  const metro = await committedTripBbox();
+  for (const [name, point] of [["Louisiana", LOUISIANA], ["Bakken", BAKKEN]]) {
+    assert.ok(!insideBox(point, metro), `${name} must be outside the metro box for this test to mean anything`);
+    assert.ok(insideBox(point, regionBbox(metro)), `${name} should fall inside the regional box`);
+  }
+});
+
+test("the regional box is a day trip's reach, not the whole country — Aarhus stays outside", async () => {
+  assert.ok(!insideBox(AARHUS, regionBbox(await committedTripBbox())), "Aarhus is a 3-hour trip, not a day trip");
+});
+
+test("the regional box contains the metro box, so widening never drops a city place", async () => {
+  const metro = await committedTripBbox();
+  const region = regionBbox(metro);
+  assert.ok(region.west < metro.west && region.east > metro.east);
+  assert.ok(region.south < metro.south && region.north > metro.north);
 });

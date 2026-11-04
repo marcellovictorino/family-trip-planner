@@ -29,6 +29,47 @@ test("a place outside the trip bbox is rejected, because that is how a hallucina
   assert.match(problems[0], /outside trip bbox/);
 });
 
+// TRIP-4 (td-920b3a): day trips are checked against the wider regional box,
+// and only places the generator flagged as day trips get that slack.
+const REGION_BBOX = { west: 11.84, east: 13.30, south: 55.24, north: 56.12 };
+const LOUISIANA = { id: "louisiana-museum-of-modern-art", lat: 55.9696, lon: 12.5430 };
+
+test("a flagged day trip outside the metro box passes inside the regional box", () => {
+  const problems = validatePlace(validPlace({ ...LOUISIANA, day_trip: true }), {
+    bbox: BBOX, regionBbox: REGION_BBOX, knownIds: new Set(),
+  });
+  assert.deepEqual(problems, []);
+});
+
+test("the regional box is not a loophole: an unflagged place at Louisiana is still outside the trip bbox", () => {
+  const problems = validatePlace(validPlace(LOUISIANA), { bbox: BBOX, regionBbox: REGION_BBOX, knownIds: new Set() });
+  assert.match(problems.join(" "), /outside trip bbox/);
+});
+
+test("a day trip beyond a day's reach is still rejected", () => {
+  // Aarhus: a real Danish city, three hours away.
+  const problems = validatePlace(validPlace({ lat: 56.1572, lon: 10.2107, day_trip: true }), {
+    bbox: BBOX, regionBbox: REGION_BBOX, knownIds: new Set(),
+  });
+  assert.match(problems.join(" "), /outside trip region_bbox/);
+});
+
+test("a dataset with a day trip but no region_bbox fails loudly instead of skipping the check", () => {
+  const data = {
+    trip: { city: "Copenhagen", country: "Denmark", from: "2026-08-02", to: "2026-08-08", bbox: BBOX },
+    places: [validPlace({ ...LOUISIANA, day_trip: true })],
+  };
+  assert.match(validateDataset(data).join(" "), /region_bbox/);
+});
+
+test("a dataset with region_bbox accepts its flagged day trips", () => {
+  const data = {
+    trip: { city: "Copenhagen", country: "Denmark", from: "2026-08-02", to: "2026-08-08", bbox: BBOX, region_bbox: REGION_BBOX },
+    places: [validPlace(), validPlace({ ...LOUISIANA, day_trip: true })],
+  };
+  assert.deepEqual(validateDataset(data), []);
+});
+
 test("an unknown enum value is rejected rather than passed through to the UI", () => {
   const problems = validatePlace(validPlace({ price_band: "$$" }), { bbox: BBOX, knownIds: new Set() });
   assert.match(problems.join(" "), /price_band/);
