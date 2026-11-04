@@ -10,6 +10,7 @@ import {
   validatePlace,
 } from "../src/schema.mjs";
 import { computeNear, padBbox, regionBbox } from "./geo.mjs";
+import { canonicalMetro } from "./metro.mjs";
 import { extractJson, extractText } from "./parse.mjs";
 
 // The single seam for swapping research backends. To use pi with a gpt model,
@@ -136,6 +137,7 @@ async function researchBatch(context) {
       const places = extractJson(extractText(await runResearch(batchPrompt(context))));
       if (!Array.isArray(places)) throw new Error("response was not an array");
       if (context.batch.dayTrip) for (const place of places) place.day_trip = true;
+      for (const place of places) place.nearest_metro = canonicalMetro(place.nearest_metro);
       const problems = places.flatMap((place) =>
         validatePlace(place, { bbox: context.bbox, regionBbox: context.regionBbox, knownIds: new Set() }),
       );

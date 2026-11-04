@@ -143,7 +143,7 @@
       "gluten_free": "good",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "København H (Central Station)",
+      "nearest_metro": "København H",
       "tags": [
         "amusement-park",
         "rides",
@@ -2194,7 +2194,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Østerport (then bus 9A)",
+      "nearest_metro": "Østerport",
       "tags": [
         "climbing",
         "kids-wall",
@@ -2231,7 +2231,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nordhavn Station",
+      "nearest_metro": "Nordhavn",
       "tags": [
         "trampoline",
         "climbing",
@@ -2277,7 +2277,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Ørestad Station",
+      "nearest_metro": "Ørestad",
       "tags": [
         "trampoline",
         "shopping-mall",
@@ -2357,13 +2357,13 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Husum St (S-train, ~15 min walk)",
+      "nearest_metro": "Husum",
       "tags": [
         "swimming",
         "baby-pool",
         "indoor"
       ],
-      "tips": null,
+      "tips": "Husum S-train station is about a 15-minute walk away.",
       "best_time": "morning",
       "near": []
     },
@@ -2524,7 +2524,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport St.",
+      "nearest_metro": "Nørreport",
       "tags": [
         "royal-garden",
         "playground",
@@ -2640,7 +2640,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Frederiksberg St.",
+      "nearest_metro": "Frederiksberg",
       "tags": [
         "landscape-garden",
         "canal",
@@ -2696,7 +2696,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Amager Strand St.",
+      "nearest_metro": "Amager Strand",
       "tags": [
         "beach",
         "lagoon",
@@ -2735,7 +2735,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Islands Brygge St.",
+      "nearest_metro": "Islands Brygge",
       "tags": [
         "harbour-bath",
         "swimming",
@@ -2807,7 +2807,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørrebro St.",
+      "nearest_metro": "Nørrebro",
       "tags": [
         "urban-park",
         "playground",
@@ -2855,7 +2855,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørrebros Runddel St.",
+      "nearest_metro": "Nørrebros Runddel",
       "tags": [
         "cemetery-park",
         "history",
@@ -2911,7 +2911,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Trianglen St.",
+      "nearest_metro": "Trianglen",
       "tags": [
         "playground",
         "themed",
@@ -2959,7 +2959,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport St.",
+      "nearest_metro": "Nørreport",
       "tags": [
         "botanical-garden",
         "glasshouse",
@@ -3055,7 +3055,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Sjælør St.",
+      "nearest_metro": "Sjælør",
       "tags": [
         "large-park",
         "nature-playground",
@@ -3094,7 +3094,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Østerport St.",
+      "nearest_metro": "Østerport",
       "tags": [
         "fortress",
         "ramparts",
@@ -3891,7 +3891,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Dybbølsbro St.",
+      "nearest_metro": "Dybbølsbro",
       "tags": [
         "staffed-playground",
         "paddling-pool",
@@ -3959,7 +3959,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Carlsberg St.",
+      "nearest_metro": "Carlsberg",
       "tags": [
         "pirate-ship",
         "rubber-surface",
@@ -4007,7 +4007,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Enghave Plads (Metro)",
+      "nearest_metro": "Enghave Plads",
       "tags": [
         "staffed-playground",
         "baby-swing",
@@ -4063,7 +4063,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport St.",
+      "nearest_metro": "Nørreport",
       "tags": [
         "historic",
         "staffed-playground",
@@ -4151,7 +4151,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørrebro St.",
+      "nearest_metro": "Nørrebro",
       "tags": [
         "staffed-playground",
         "large-park",
@@ -4207,7 +4207,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Grøndal St.",
+      "nearest_metro": "Grøndal",
       "tags": [
         "train-themed",
         "toddler-room",
@@ -4246,7 +4246,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Lindevang (Metro)",
+      "nearest_metro": "Lindevang",
       "tags": [
         "staffed-playground",
         "splash-pool",
@@ -4290,7 +4290,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Poul Henningsens Plads (Metro)",
+      "nearest_metro": "Poul Henningsens Plads",
       "tags": [
         "traffic-playground",
         "bikes",
@@ -4342,7 +4342,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Lergravsparken (Metro)",
+      "nearest_metro": "Lergravsparken",
       "tags": [
         "staffed-playground",
         "climbing-net",
@@ -4381,7 +4381,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nordhavn St.",
+      "nearest_metro": "Nordhavn",
       "tags": [
         "rooftop",
         "nordhavn",
@@ -4425,7 +4425,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Fasanvej St.",
+      "nearest_metro": "Fasanvej",
       "tags": [
         "free-entry",
         "indoor",
@@ -4469,7 +4469,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport St.",
+      "nearest_metro": "Nørreport",
       "tags": [
         "small",
         "central",
@@ -4601,7 +4601,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Kongens Nytorv (Metro)",
+      "nearest_metro": "Kongens Nytorv",
       "tags": [
         "small",
         "central",
@@ -4729,7 +4729,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Kongens Nytorv (Metro)",
+      "nearest_metro": "Kongens Nytorv",
       "tags": [
         "central",
         "grass-mounds",
@@ -4825,7 +4825,7 @@
       "gluten_free": "good",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Vesterport St-train station",
+      "nearest_metro": "Vesterport",
       "tags": [
         "gluten-free-menu",
         "burgers",
@@ -4930,7 +4930,7 @@
       "gluten_free": "good",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Kongens Nytorv Metro Station",
+      "nearest_metro": "Kongens Nytorv",
       "tags": [
         "gluten-free-pizza",
         "dedicated-gf-dough",
@@ -5062,7 +5062,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Østerport Station",
+      "nearest_metro": "Østerport",
       "tags": [
         "dedicated-gluten-free",
         "bakery",
@@ -5138,7 +5138,7 @@
       "gluten_free": "limited",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Frederiksberg Metro Station",
+      "nearest_metro": "Frederiksberg",
       "tags": [
         "burgers",
         "gluten-free-bun",
@@ -5195,7 +5195,7 @@
       "gluten_free": "limited",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Nørreport Station",
+      "nearest_metro": "Nørreport",
       "tags": [
         "kids-play-room",
         "buffet",
@@ -5339,7 +5339,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Frederiksberg Metro Station",
+      "nearest_metro": "Frederiksberg",
       "tags": [
         "dedicated-gluten-free",
         "vegan",
@@ -5395,7 +5395,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport Station",
+      "nearest_metro": "Nørreport",
       "tags": [
         "dedicated-gluten-free",
         "vegan",
@@ -5512,7 +5512,7 @@
       "gluten_free": "good",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Dybbølsbro Station",
+      "nearest_metro": "Dybbølsbro",
       "tags": [
         "organic",
         "kids-corner",
@@ -5588,7 +5588,7 @@
       "gluten_free": "limited",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Kongens Nytorv Metro Station",
+      "nearest_metro": "Kongens Nytorv",
       "tags": [
         "ice-cream",
         "waffles",
@@ -5689,7 +5689,7 @@
       "gluten_free": "limited",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Vesterport Station",
+      "nearest_metro": "Vesterport",
       "tags": [
         "organic-bakery",
         "coffee",
@@ -5789,7 +5789,7 @@
       "gluten_free": "limited",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Enghave Plads Metro Station",
+      "nearest_metro": "Enghave Plads",
       "tags": [
         "italian",
         "sharing-plates",
@@ -5853,7 +5853,7 @@
       "gluten_free": "limited",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Islands Brygge Metro Station",
+      "nearest_metro": "Islands Brygge",
       "tags": [
         "bakery",
         "japanese-danish",
@@ -5905,7 +5905,7 @@
       "gluten_free": "none",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Nørrebro Station",
+      "nearest_metro": "Nørrebro",
       "tags": [
         "seafood",
         "fish-and-chips",
@@ -5953,7 +5953,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport Station",
+      "nearest_metro": "Nørreport",
       "tags": [
         "bakery",
         "cinnamon-roll",
@@ -6073,7 +6073,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Frederiksberg Station",
+      "nearest_metro": "Frederiksberg",
       "tags": [
         "bakery",
         "sourdough",
@@ -6133,7 +6133,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nordhavn Station",
+      "nearest_metro": "Nordhavn",
       "tags": [
         "bakery",
         "cardamom-bun",
@@ -6185,7 +6185,7 @@
       "gluten_free": "limited",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Christianshavn Station",
+      "nearest_metro": "Christianshavn",
       "tags": [
         "bakery",
         "chain",
@@ -6245,7 +6245,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport Station",
+      "nearest_metro": "Nørreport",
       "tags": [
         "food-market",
         "indoor",
@@ -6353,7 +6353,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "København H (Central Station)",
+      "nearest_metro": "København H",
       "tags": [
         "smorrebrod",
         "danish-classic",
@@ -6453,7 +6453,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørreport Station",
+      "nearest_metro": "Nørreport",
       "tags": [
         "burgers",
         "casual",
@@ -6597,7 +6597,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Nørrebro Station",
+      "nearest_metro": "Nørrebro",
       "tags": [
         "bakery",
         "pedestrian-street",
@@ -6649,7 +6649,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Christianshavn Station",
+      "nearest_metro": "Christianshavn",
       "tags": [
         "porridge",
         "soft-food",
@@ -6785,7 +6785,7 @@
       "gluten_free": "none",
       "kids_menu": false,
       "high_chair": false,
-      "nearest_metro": "Kastrup Station",
+      "nearest_metro": "Kastrup",
       "tags": [
         "sea-bath",
         "sunset",
@@ -6889,7 +6889,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Nørrebro Station",
+      "nearest_metro": "Nørrebro",
       "tags": [
         "pizza",
         "gluten-free",
@@ -6995,7 +6995,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Kongens Nytorv St.",
+      "nearest_metro": "Kongens Nytorv",
       "tags": [
         "gluten-free",
         "paleo",
@@ -7140,7 +7140,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Frederiksberg St.",
+      "nearest_metro": "Frederiksberg",
       "tags": [
         "gluten-free",
         "paleo",
@@ -7201,7 +7201,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Nørreport St.",
+      "nearest_metro": "Nørreport",
       "tags": [
         "gluten-free",
         "pizza",
@@ -7306,7 +7306,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Nørreport St.",
+      "nearest_metro": "Nørreport",
       "tags": [
         "gluten-free",
         "pasta",
@@ -7411,7 +7411,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Kongens Nytorv St.",
+      "nearest_metro": "Kongens Nytorv",
       "tags": [
         "gluten-free",
         "vegan",
@@ -7540,7 +7540,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Nørreport St.",
+      "nearest_metro": "Nørreport",
       "tags": [
         "gluten-free",
         "vegan",
@@ -7677,7 +7677,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Christianshavn St.",
+      "nearest_metro": "Christianshavn",
       "tags": [
         "gluten-free",
         "vegan",
@@ -7770,7 +7770,7 @@
       "gluten_free": "good",
       "kids_menu": false,
       "high_chair": true,
-      "nearest_metro": "Enghave Plads St.",
+      "nearest_metro": "Enghave Plads",
       "tags": [
         "gluten-free",
         "vegan",
@@ -7819,7 +7819,7 @@
       "gluten_free": "limited",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Humlebæk Station",
+      "nearest_metro": "Humlebæk",
       "tags": [
         "museum",
         "sculpture-garden",
@@ -7860,7 +7860,7 @@
       "gluten_free": "limited",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Klampenborg Station",
+      "nearest_metro": "Klampenborg",
       "tags": [
         "amusement-park",
         "forest",
@@ -7901,7 +7901,7 @@
       "gluten_free": "limited",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Hillerød Station",
+      "nearest_metro": "Hillerød",
       "tags": [
         "castle",
         "renaissance",
@@ -7942,7 +7942,7 @@
       "gluten_free": "limited",
       "kids_menu": true,
       "high_chair": true,
-      "nearest_metro": "Helsingør Station",
+      "nearest_metro": "Helsingør",
       "tags": [
         "castle",
         "unesco",
