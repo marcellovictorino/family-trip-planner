@@ -5,12 +5,14 @@ import { renderRatingSheet } from "./views/rating.js";
 import { renderSaved } from "./views/saved.js";
 import { renderTrip } from "./views/trip.js";
 import { state } from "./state.js";
+import { createMapView } from "./views/map.js";
 import { resolveAnchor, routeMinutes, proposeOrder } from "./travel.js";
 
 const DATA_URL = "data/copenhagen-2026.json";
 
 const panels = {
   explore: document.querySelector("#panel-explore"),
+  map: document.querySelector("#panel-map"),
   itinerary: document.querySelector("#panel-itinerary"),
   saved: document.querySelector("#panel-saved"),
   trip: document.querySelector("#panel-trip"),
@@ -18,6 +20,7 @@ const panels = {
 
 let data;
 let activeTab = "explore";
+let mapView;
 
 // Inclusive list of trip dates, derived from the dataset so it works for any trip.
 export function tripDates({ from, to }) {
@@ -174,6 +177,14 @@ function render() {
       }),
     );
     restoreOpenIds(panels.explore, openCardIds);
+  }
+  if (activeTab === "map") {
+    if (!mapView) {
+      mapView = createMapView({ trip: data.trip, places: data.places, actions });
+      panels.map.append(mapView.root);
+    }
+    mapView.mount();
+    mapView.update();
   }
   if (activeTab === "itinerary") {
     clear(panels.itinerary);

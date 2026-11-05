@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Trip Planner</title>
+<link rel="stylesheet" href="assets/leaflet/leaflet.css">
 <link rel="stylesheet" href="styles.css">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/app-icon-192.png" type="image/png">
@@ -31,6 +32,7 @@
   <h1 id="trip-title">Trip Planner</h1>
   <nav id="tabs" role="tablist" aria-label="Sections">
     <button id="tab-explore" role="tab" class="tab" data-tab="explore" aria-selected="true" aria-controls="panel-explore">Explore</button>
+    <button id="tab-map" role="tab" class="tab" data-tab="map" aria-selected="false" aria-controls="panel-map">Map</button>
     <button id="tab-itinerary" role="tab" class="tab" data-tab="itinerary" aria-selected="false" aria-controls="panel-itinerary">Itinerary</button>
     <button id="tab-saved" role="tab" class="tab" data-tab="saved" aria-selected="false" aria-controls="panel-saved">Saved</button>
     <button id="tab-trip" role="tab" class="tab" data-tab="trip" aria-selected="false" aria-controls="panel-trip">Trip</button>
@@ -40,10 +42,12 @@
   <!-- aria-live here (not on .count in src/views/explore.js, which this task does not own) so a
        screen reader hears the result count change when filters are applied. -->
   <section id="panel-explore" role="tabpanel" aria-labelledby="tab-explore" aria-live="polite"></section>
+  <section id="panel-map" role="tabpanel" aria-labelledby="tab-map" hidden></section>
   <section id="panel-itinerary" role="tabpanel" aria-labelledby="tab-itinerary" hidden></section>
   <section id="panel-saved" role="tabpanel" aria-labelledby="tab-saved" hidden></section>
   <section id="panel-trip" role="tabpanel" aria-labelledby="tab-trip" hidden></section>
 </main>
+<script src="assets/leaflet/leaflet.js" defer></script>
 <script type="module" src="src/app.js"></script>
 </body>
 </html>

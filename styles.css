@@ -302,3 +302,21 @@ button.day-item-body {
 
 .hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 label.action { display: inline-flex; align-items: center; cursor: pointer; }
+
+/* Leaflet owns its internal panes; contain their z-index below our sticky header. */
+.place-map {
+  height: 52vh; min-height: 320px; max-height: 540px;
+  width: 100%; isolation: isolate; z-index: 0;
+  border: var(--border-hairline); border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+}
+.map-view > .controls { margin-top: var(--space-md); }
+.map-selection { margin-top: var(--space-lg); }
+.place-marker { background: none; border: none; }
+.map-dot { display: block; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); border: 3px solid var(--surface-raised); box-shadow: var(--shadow-card); }
+.map-dot[data-kind="restaurant"] { background: var(--text-body); }
+.map-dot[data-kind="playground"] { background: var(--text-link); }
+.place-map .leaflet-popup-content { font-family: var(--font-body); font-size: var(--text-small); color: var(--text-body); }
+.place-map .leaflet-popup-content-wrapper, .place-map .leaflet-popup-tip { background: var(--surface-raised); }
+.place-map .leaflet-control-zoom a { min-width: var(--tap-min); min-height: var(--tap-min); line-height: var(--tap-min); }
+@media (max-width: 480px) { .tab { padding-inline: var(--space-md); } }

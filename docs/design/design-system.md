@@ -62,7 +62,7 @@ Vibe in one line: *a well-organised parent's notebook — calm, warm, factual, q
 
 **Type.** Display face **Bricolage Grotesque** (700/800, tracking −0.02em) for the trip title, place names and section headings — a grotesque with enough character to feel friendly without being cute. Body **Nunito Sans** (300–800) for everything else: humanist, soft-cornered and legible at 13–16px on a phone in daylight. **JetBrains Mono** for coordinates, dates and the "GF" badge. Body copy is 16px/1.5; fact lines 14px; meta 12–13.6px. Nothing on a phone screen goes below 12px.
 
-**Layout.** Mobile first, 390px design width, content capped at `46rem` and centred so it survives a tablet. `1rem` screen padding. A single column always — the product never introduces a second column, a sidebar or a drawer. Navigation is a **sticky top header**: trip title, then four tabs (Explore · Itinerary · Saved · Trip) with a 3px accent underline on the active tab. Nothing else is fixed to the viewport; there is no bottom bar and no floating action button.
+**Layout.** Mobile first, 390px design width, content capped at `46rem` and centred so it survives a tablet. `1rem` screen padding. A single column always — the product never introduces a second column, a sidebar or a drawer. Navigation is a **sticky top header**: trip title, then five tabs (Explore · Map · Itinerary · Saved · Trip) with a 3px accent underline on the active tab. Nothing else is fixed to the viewport; there is no bottom bar and no floating action button.
 
 **Touch.** Every interactive element is at least **44px** tall (`--tap-min`). The reorder chevrons are the one exception by design: 44px wide, 22px tall, stacked so the pair totals 44px.
 

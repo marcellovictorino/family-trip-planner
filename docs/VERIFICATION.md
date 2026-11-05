@@ -171,3 +171,44 @@ All paths — `index.html`, `styles.css`, `manifest.webmanifest`, every `src/`
 module, every `design/tokens/*.css` file, all four icon PNGs and all eight
 font woff2 files, and `data/copenhagen-2026.json` — returned HTTP 200 from
 the live GitHub Pages origin. No subpath-resolution problems found.
+
+## Map journey — real tiles and regional day trips
+
+```bash
+node tools/map-check.mjs
+EVIDENCE=/absolute/path/outside/project node tools/map-check.mjs
+node tools/map-check.mjs --break-library  # expected failure, not a passing test
+node tools/map-check.mjs --break-tiles    # expected failure: no decoded tiles
+node tools/map-check.mjs --city-bounds    # expected failure: day trips off-screen
+```
+
+The journey shares the scale check's isolated Chrome launcher and local server.
+It uses the committed guide, not invented places or substitute tiles. It clicks
+with browser pointer input and exercises the place selector through its native
+change event. Chrome's headless macOS select menu does not accept the runner's arrow
+keys; this check does not claim a complete native keyboard journey. It checks:
+
+1. Every guide place has a marker; Louisiana, Bakken, Frederiksborg and Kronborg
+   are inside the initial regional viewport on desktop and at 390 × 844.
+2. Visible tile images finish decoding at 256 pixels, and actual OpenStreetMap
+   tile responses return 200. A marker-only blank canvas cannot pass.
+3. Each day-trip marker opens the correct popup, selector value and details.
+4. The place selector opens Louisiana, Save reaches Saved, and Add to day reaches
+   Itinerary. Returning to Map preserves the selection.
+5. The phone layout does not scroll sideways, and the browser reports no
+   exceptions, console errors or error-level browser logs.
+
+`EVIDENCE` keeps screenshots of the regional views, individual popups and selection,
+plus a tile-response and browser-error transcript. Store these outside the project.
+The negative control blocks the actual Leaflet library before the page loads. The
+same journey must fail because markers never initialise; it must not pass against
+an error message or an empty map. The other negative controls block the tile provider
+or deliberately substitute the guide's narrower city box; both must also fail.
+This is an online probe: a tile-provider outage
+fails the check rather than substituting a tile or silently skipping the assertion.
+Run it when the map, navigation, map assets or its data contract changes.
+
+For a manual check, open Map, confirm recognisable map tiles, choose each day trip,
+then Save and Add to day. Confirm the place in Saved and Itinerary and return to Map.
+Use Fit region to restore all day trips; check the browser console for errors.
+Offline tile coverage and real iPhone Safari are not proven by this Chrome journey.

@@ -55,7 +55,7 @@ const MIME = {
   ".png": "image/png", ".woff2": "font/woff2",
 };
 
-function startServer(datasetBody) {
+export function startServer(datasetBody) {
   return new Promise((resolve) => {
     const server = createServer((req, res) => {
       let urlPath = decodeURIComponent(req.url.split("?")[0]);
@@ -91,7 +91,7 @@ function findChrome() {
   return found;
 }
 
-async function launchChrome() {
+export async function launchChrome() {
   const profile = mkdtempSync(join(tmpdir(), "scale-check-"));
   const chrome = spawn(findChrome(), [
     "--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`,
@@ -120,7 +120,7 @@ async function launchChrome() {
 }
 
 // The smallest DevTools client: one socket, flat sessions, promises by id.
-async function connect(wsUrl) {
+export async function connect(wsUrl) {
   const socket = new WebSocket(wsUrl);
   await new Promise((resolve, reject) => {
     socket.addEventListener("open", resolve, { once: true });
@@ -149,7 +149,7 @@ async function connect(wsUrl) {
   return { send, on: (fn) => listeners.push(fn), close: () => socket.close() };
 }
 
-async function openPage(cdp) {
+export async function openPage(cdp) {
   const { targetInfos } = await cdp.send("Target.getTargets");
   const { targetId } = targetInfos.find((target) => target.type === "page");
   const { sessionId } = await cdp.send("Target.attachToTarget", { targetId, flatten: true });
