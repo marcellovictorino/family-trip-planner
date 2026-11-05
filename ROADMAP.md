@@ -57,10 +57,11 @@ number it invented. Everything else in the model degrades gracefully; this does 
 The app's usefulness rests on generated content, and the schema gate proves structure,
 not truth.
 
-- **`nearest_metro` is 55 free-text variants** (`td-1e55cb`). `Nørreport`,
-  `Nørreport Station` and `Nørreport St.` are three separate values across 98 places.
-  Blocks any future station-graph routing; deliberately out of scope for S11–S14, which
-  need only coordinates.
+- **`nearest_metro` is one name per station** (`td-1e55cb`, done). `Nørreport`,
+  `Nørreport Station` and `Nørreport St.` now share one value: 62 spellings became 35
+  stations across 102 places. `tools/metro.mjs` holds the rule, `tools/normalise-metro.mjs`
+  reports and rewrites a dataset, and the generator applies it to each new batch.
+  Station-graph routing is now possible; it is not yet built.
 
 ### Then — scale
 
