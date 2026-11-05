@@ -84,20 +84,34 @@ export function createState(storage) {
     };
   }
 
-  function withDayEntry(date, id, mutate) {
-    const day = { ...(current.dayLog[date] ?? {}) };
+  // A copy of the log with one stop's entry for one day replaced, or removed
+  // when mutate returns null.
+  function dayLogWith(log, date, id, mutate) {
+    const day = { ...(log[date] ?? {}) };
     const updated = mutate(day[id]);
     if (updated === null) delete day[id];
     else day[id] = updated;
 
-    const dayLog = { ...current.dayLog };
+    const dayLog = { ...log };
     if (Object.keys(day).length === 0) delete dayLog[date];
     else dayLog[date] = day;
+    return dayLog;
+  }
 
-    commit(withDerivedVisited({ ...current, dayLog }, id));
+  function withDayEntry(date, id, mutate) {
+    commit(withDerivedVisited({ ...current, dayLog: dayLogWith(current.dayLog, date, id, mutate) }, id));
   }
 
   const emptyEntry = () => ({ done: true, thumb: null, stars: null, tags: [], at: null });
+  const hasRating = (entry) => entry.thumb !== null || entry.stars !== null || entry.tags.length > 0;
+
+  // A stop leaving its day is un-ticked, by the same rule as un-ticking one: an
+  // unrated visit leaves no entry behind to derive a phantom visit from, and a
+  // rated one keeps its verdict with done: false.
+  const unTickOnRemoval = (entry) => {
+    if (!entry?.done) return entry ?? null;
+    return hasRating(entry) ? { ...entry, done: false } : null;
+  };
 
   return {
     get: () => current,
@@ -122,7 +136,18 @@ export function createState(storage) {
     },
 
     removeFromDay(date, id) {
-      withDay(date, (items) => items.filter((item) => item !== id));
+      const items = (current.days[date] ?? []).filter((item) => item !== id);
+      const days = { ...current.days };
+      if (items.length === 0) delete days[date];
+      else days[date] = items;
+
+      // Only a ticked stop can have changed the derived visited flag, so only
+      // then is it re-derived; an untouched stop's removal leaves Explore's
+      // hand-set flag alone.
+      const wasDone = Boolean(current.dayLog[date]?.[id]?.done);
+      const dayLog = dayLogWith(current.dayLog, date, id, unTickOnRemoval);
+      const next = { ...current, days, dayLog };
+      commit(wasDone ? withDerivedVisited(next, id) : next);
     },
 
     // Auto Re-Order's proposal, once accepted: an outright replacement of the
@@ -151,8 +176,7 @@ export function createState(storage) {
       withDayEntry(date, id, (entry) => {
         if (!entry) return emptyEntry();
         if (!entry.done) return { ...entry, done: true };
-        const hasRating = entry.thumb !== null || entry.stars !== null || entry.tags.length > 0;
-        return hasRating ? { ...entry, done: false } : null;
+        return hasRating(entry) ? { ...entry, done: false } : null;
       });
     },
 
