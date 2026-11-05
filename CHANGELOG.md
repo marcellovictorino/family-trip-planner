@@ -15,6 +15,7 @@ minor for features, major for breaking changes to saved data.
   (`scale-check`, `map-check`), workflow lint (actionlint, zizmor), a Pages deploy that waits
   for CI, and an OpenSSF Scorecard run. Actions are pinned by commit and tokens are read-only.
 - Dependabot keeps the pinned actions current.
+- `AGENTS.md` (and a `CLAUDE.md` pointer) describing the process for every change.
 - A visible app version (`src/version.js`), checked against this changelog by a unit test.
 
 ## 0.5.0 — 5 November 2026 — interactive map (PR #6)
