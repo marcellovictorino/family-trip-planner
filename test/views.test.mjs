@@ -628,12 +628,12 @@ function sheetFor(overrides = {}, handlers = {}) {
 
 test("the sheet offers the tags for this place's kind, not a generic list", () => {
   const attraction = sheetFor();
-  const labels = attraction.querySelectorAll("button.tag").map((b) => b.textContent);
+  const labels = attraction.querySelectorAll("button.chip--tag").map((b) => b.textContent);
   assert.ok(labels.includes("Great with the baby"));
   assert.ok(!labels.includes("Gluten-free was reliable"));
 
   const restaurant = sheetFor({ place: place({ id: "gorms", name: "Gorm's", kind: "restaurant" }) });
-  const foodLabels = restaurant.querySelectorAll("button.tag").map((b) => b.textContent);
+  const foodLabels = restaurant.querySelectorAll("button.chip--tag").map((b) => b.textContent);
   assert.ok(foodLabels.includes("Gluten-free was reliable"));
 });
 
@@ -662,7 +662,7 @@ test("a tag toggles into and out of the list rather than only ever being added",
     { entry: { done: true, thumb: null, stars: null, tags: ["too-crowded"], at: null } },
     { onTags: (list) => calls.push(list) },
   );
-  const tags = sheet.querySelectorAll("button.tag");
+  const tags = sheet.querySelectorAll("button.chip--tag");
   const crowded = tags.find((b) => b.textContent === "Too crowded");
   const baby = tags.find((b) => b.textContent === "Great with the baby");
   crowded.listeners.click();
@@ -678,4 +678,39 @@ test("the sheet warns that notes may be published", () => {
 
 test("the sheet names the day, because the same place can be rated twice", () => {
   assert.match(sheetFor().textContent, /Monday 3 August/);
+});
+
+// S7 review minor: the itinerary heading and the rating sheet used to carry
+// two copies of one date formatter. Both now come from src/dates.js, and this
+// pins the shared wording for the day the two views must agree on.
+test("the itinerary heading and the rating sheet name a trip day in the same words", () => {
+  const root = renderItinerary({
+    trip: {},
+    places: [place({ id: "tivoli", name: "Tivoli Gardens" })],
+    days: { "2026-08-03": ["tivoli"] },
+    dates: ["2026-08-03"],
+    dayLog: {},
+    handlers: { onMove: () => {}, onRemove: () => {} },
+  });
+  assert.match(root.querySelector("h2").textContent, /^Monday 3 August/);
+  assert.match(sheetFor().textContent, /Monday 3 August/);
+});
+
+// S7 review minor: an aria-label replaces the button's text, so the row's
+// neighbourhood, duration and stars were invisible to a screen reader. They now
+// ride in the label, after the action the button performs.
+test("a stop's row names its neighbourhood, duration and stars to a screen reader, not only its name", () => {
+  const root = renderItinerary({
+    trip: {},
+    places: [place({ id: "tivoli", name: "Tivoli Gardens", neighbourhood: "Vesterbro", duration_minutes: 240 })],
+    days: { "2026-08-03": ["tivoli"] },
+    dates: ["2026-08-03"],
+    dayLog: { "2026-08-03": { tivoli: { done: true, thumb: null, stars: 4, tags: [], at: null } } },
+    handlers: { onMove: () => {}, onRemove: () => {}, onToggleDone: () => {}, onRate: () => {} },
+  });
+  const label = root.querySelector("button.day-item-body").attrs["aria-label"];
+  assert.match(label, /^Mark Tivoli Gardens not visited, /);
+  assert.match(label, /Vesterbro/);
+  assert.match(label, /4h/);
+  assert.match(label, /★★★★☆/);
 });

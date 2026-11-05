@@ -1,6 +1,7 @@
 import { h } from "../dom.js";
 import { durationLabel, unknownPlace } from "./explore.js";
 import { routeMinutes, proposeOrder, MAX_AUTO_REORDER_STOPS } from "../travel.js";
+import { formatDayHeading } from "../dates.js";
 
 const MODE_GLYPH = { walk: "🚶", transit: "🚇" };
 
@@ -75,7 +76,10 @@ function row(place, date, index, count, handlers, entry) {
           }, "⌄")),
     h("button", {
       class: "day-item-body", type: "button", "aria-pressed": String(done),
-      "aria-label": `Mark ${place.name} ${done ? "not visited" : "visited"}`,
+      // The facts ride in the label: an aria-label replaces the button's text, so
+      // without them a screen reader would never hear the neighbourhood, duration
+      // or stars.
+      "aria-label": [`Mark ${place.name} ${done ? "not visited" : "visited"}`, facts].filter(Boolean).join(", "),
       onClick: () => handlers.onToggleDone(date, place.id),
     },
       h("span", { class: "name" }, place.name),
@@ -167,10 +171,4 @@ export function renderReorderDialog({ date, proposedItems, currentMinutes, propo
       h("button", { class: "action", type: "button", onClick: () => handlers.onDismiss() }, "Keep current order"),
     ),
   );
-}
-
-function formatDayHeading(iso) {
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
-    weekday: "long", day: "numeric", month: "long", timeZone: "UTC",
-  });
 }

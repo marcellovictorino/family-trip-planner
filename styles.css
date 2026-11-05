@@ -256,14 +256,13 @@ button.day-item-body {
   min-width: var(--tap-min); min-height: var(--tap-min); border: 0; background: none;
   font-size: var(--text-title); color: var(--status-warn); cursor: pointer;
 }
-.tag {
-  min-height: var(--tap-min); padding: 0 var(--space-md); border: var(--border-hairline);
-  border-radius: var(--radius-pill); background: var(--surface-card);
-  font: inherit; font-size: var(--text-fine); color: var(--text-muted); cursor: pointer;
-  transition: var(--transition-tap);
+/* A tag is a chip that stays quiet until chosen: muted text on the card surface,
+   then a semibold accent once pressed. */
+.chip--tag {
+  padding: 0 var(--space-md); font-weight: var(--weight-regular); white-space: normal; line-height: inherit;
+  background: var(--surface-card); color: var(--text-muted);
 }
-.tag[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: var(--weight-semibold); }
-.tag:active { transform: scale(var(--press-scale)); }
+.chip--tag[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: var(--weight-semibold); }
 .sheet-warning { margin: var(--space-2xs) 0 0; font-size: var(--text-micro); color: var(--text-muted); }
 
 /* Saved */

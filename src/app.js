@@ -98,11 +98,15 @@ function openRatingSheet(date, id) {
     const entry = state.get().dayLog[date]?.[id] ?? { done: true, thumb: null, stars: null, tags: [], at: null };
     const patch = (change) => {
       guard(() => state.setDayRating(date, id, change));
+      const focused = document.activeElement?.dataset?.control;
       // Rebuild in place: pressed states all read from the entry, and there is
       // no other way for a tap to show up.
       const next = build();
       clear(sheet);
       for (const child of [...next.children]) sheet.append(child);
+      // A rebuilt control is a new element, so focus would fall to the body.
+      // Hand it back to the same control, so a keyboard user can keep going.
+      if (focused) sheet.querySelector(`[data-control="${focused}"]`)?.focus();
     };
     return renderRatingSheet({
       place, date, entry,

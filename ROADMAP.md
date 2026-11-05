@@ -100,7 +100,8 @@ what the last trip taught.
   thumb records a verdict and opens a sheet with stars, tag chips and a note. Tags vary by
   `place.kind`, because a playground and a restaurant fail in different ways. State gains a
   per-`(date, place)` `dayLog`; the Explore visited flag derives from it. Un-ticking a
-  rated stop keeps the rating, so a stray tap costs nothing.
+  rated stop keeps the rating, so a stray tap costs nothing. Taking a stop off its day
+  un-ticks it by the same rule, so no visit is left behind that the app cannot show.
 - **S8 · Ingest** (`td-f7cc82`). One command turns an exported state file into rows in
   `feedback/<YYYY-MM>-<city>.jsonl`, denormalising place attributes so a row still means
   something after the dataset is regenerated. JSONL rather than a committed SQLite or
@@ -119,8 +120,9 @@ Two S7 decisions the review recorded rather than fixed, both chosen deliberately
 Hand-ticking a place in Explore, then ticking and un-ticking it on a day, clears the
 hand-set flag — one rule, no provenance tracking, and re-ticking in Explore restores it.
 And an un-ticked-but-rated row still shows its stars while styled as not visited, which
-is the only remaining signal that the preserved rating exists. The rest of the review's
-deferred items are in `td-37a677`.
+is the only remaining signal that the preserved rating exists. Of the review's deferred
+minors (`td-37a677`), all but one are cleared: the rating controls are still reachable
+only through a thumb press, which is a design choice and stays open.
 
 ## Deferred by choice
 

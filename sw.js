@@ -1,4 +1,4 @@
-const CACHE = "trip-planner-v22";
+const CACHE = "trip-planner-v23";
 
 const ASSETS = [
   "./",
@@ -6,6 +6,7 @@ const ASSETS = [
   "styles.css",
   "manifest.webmanifest",
   "src/app.js",
+  "src/dates.js",
   "src/dom.js",
   "src/feedback.js",
   "src/views/explore.js",
