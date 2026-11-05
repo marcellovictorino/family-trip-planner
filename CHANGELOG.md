@@ -2,6 +2,29 @@
 
 Notable changes, newest first. Dates are the day the work merged to `main`.
 
+## 5 November 2026 — 200+ places
+
+Checks the app at the size the spec targets, 200 places, rather than the 102 it holds
+(`td-9fdf7e`). Search, every filter chip, Saved and the layout at phone width were already
+correct at 204 and 306 places, and WebKit, the engine behind Safari on iPhone, was
+already quick.
+
+### Fixed
+
+- In Chrome 156 every filter chip, save or sort tap took 0.66–0.69 s at 204 places on a
+  CPU slowed four times to stand in for a phone, and about 1 s at 306. Nearly all of it
+  was the browser searching the system's fonts for each card's emoji on every re-render.
+  The card emoji now name their fonts after the body font, and the slowest tap takes
+  about 0.1 s. The cards render pixel for pixel as before in Chrome and WebKit.
+
+### Added
+
+- `tools/scale-check.mjs` doubles the real guide, loads the app in headless Chrome at
+  phone size with a slowed CPU, and checks that every place renders, every filter chip
+  and a search show exactly what `src/filter.js` says, a save does not move the card, the
+  page fits 390 px, and no tap takes over 400 ms. Zero dependencies, like
+  `tools/verify-app.mjs`.
+
 ## 1 August 2026 — S11–S14: logistics
 
 Stops the itinerary pinballing across the city. Explore can sort by how far a place is,

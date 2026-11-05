@@ -65,9 +65,12 @@ not truth.
 
 ### Then — scale
 
-- **Verify at 200+ places** (`td-9fdf7e`). The spec targets 200; the guide holds 98.
-  Measure before optimising. Note that Auto Re-Order is exact only to eight stops a day,
-  which is a per-day bound and does not move with the dataset.
+- **Verify at 200+ places** (`td-9fdf7e`, done). Measured at 204 and 306 places with
+  `tools/scale-check.mjs`. Search, every filter chip, Saved and the layout at phone width
+  were already correct, and WebKit was already quick. Chrome 156 was not: each tap spent
+  about 0.7 s finding a font for every card's emoji. Naming the emoji fonts brings the
+  slowest tap to about 0.1 s. Auto Re-Order is exact only to eight stops a day, a
+  per-day bound that does not move with the dataset.
 
 ## Shipped — logistics
 

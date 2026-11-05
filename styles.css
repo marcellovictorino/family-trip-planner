@@ -139,6 +139,14 @@ main { padding: var(--pad-screen); max-width: var(--content-max); margin: 0 auto
 .facility-row { display: flex; gap: var(--gap-chips); align-items: center; }
 .facility-icon { line-height: 1; color: var(--text-body); display: inline-flex; font-size: var(--text-small); }
 .facility-icon--text { font-family: var(--font-mono); font-size: var(--text-fine); font-weight: var(--weight-semibold); }
+/* Name the emoji fonts after the body font rather than leave each glyph to a
+   system-wide fallback search. That search ran for every card on every
+   re-render: at 204 places it was ~95% of a filter tap's layout in Chrome 156
+   on a slowed CPU. Keeping the body font first keeps the glyph size, so cards
+   render pixel for pixel as before in Chrome and WebKit. */
+.facility-icon:not(.facility-icon--text), .kind-band > [aria-hidden="true"] {
+  font-family: var(--font-body), "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+}
 
 .detail { padding: 0 var(--pad-card) var(--pad-card); border-top: var(--border-hairline); }
 .detail p { margin: var(--space-md) 0; font-size: var(--text-small); }
