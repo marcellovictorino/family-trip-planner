@@ -86,6 +86,73 @@ ones. Both assertions held.
 Treat a `PASS` here as "nothing is silently broken offline", not as a
 substitute for the manual device check.
 
+## Scale check — 200+ places
+
+`tools/scale-check.mjs` checks the app at the size the spec targets. It needs a Chrome or
+Chromium on the machine (set `CHROME` to point at one) and nothing else:
+
+```bash
+node tools/scale-check.mjs            # 204 places: the guide twice over
+node tools/scale-check.mjs --factor 3 # 306 places
+```
+
+It copies the real places under new ids and names, so kinds, settings, prices and text
+lengths keep the guide's real mix, and serves the app with that dataset in place of the
+guide. Headless Chrome then loads it at 390 × 844 with the CPU slowed four times, the
+setting Lighthouse uses to stand in for a phone, and checks:
+
+1. **Every place renders once**, and the count reads `204 of 204`.
+2. **Every filter chip and a search show exactly the right places**, compared id for id
+   with `filterPlaces` from `src/filter.js` over the same dataset.
+3. **Saving a place deep in the list leaves it where it was**, open and saved. Every tap
+   rebuilds the list, so a card that loses its height on the rebuild makes the page jump.
+4. **Nothing scrolls sideways at 390 px**, in Explore or in Saved with every place saved.
+5. **No tap takes over 400 ms** to paint: filter chips, save, Nearest first, and the
+   switch between Saved and Explore.
+6. **No console errors.**
+
+It prints `RESULT: PASS` or `RESULT: FAIL`, and the timings it measured.
+
+### What it found, 2026-11-05
+
+At 204 and 306 places, correctness and layout already held. Speed held in WebKit and in
+stable Chrome 157, and not in Chrome 156. Measured with Chrome for Testing 156:
+
+| Tap, 204 places | Before | After |
+|---|---|---|
+| Filter chip, median of 17 | 229 ms | 39 ms |
+| Filter chip, slowest | 668 ms | 79 ms |
+| Save a place | 663 ms | 78 ms |
+| Nearest first | 689 ms | 100 ms |
+| Saved back to Explore | 686 ms | 85 ms |
+
+At 306 places the slowest tap went from 1 062 ms to 164 ms.
+
+Timing one tap's forced layout with parts of the card hidden found the cause. Without the
+card emoji, layout took 7 ms instead of 120 ms. The browser was searching the system's
+fonts for an emoji glyph, once per card, on every re-render. The card emoji now list the
+emoji fonts after the body font, so the glyph is found without that search. Screenshots
+before and after are identical pixel for pixel in Chrome and in WebKit.
+
+Two other routes were tried and rejected:
+
+- `content-visibility: auto` on cards skips layout for off-screen cards and was as fast.
+  An off-screen card then stands in at an estimated height. Chrome hides the correction
+  when it scrolls into view; WebKit does not, so scrolling back up the list jumped by
+  14–28 px a step in WebKit.
+- Naming the emoji font alone, without the body font first, was as fast but drew the
+  emoji about a tenth smaller in WebKit.
+
+### What it deliberately does not check
+
+- **Safari.** It drives Chrome only, and WebKit cannot slow its CPU the same way. WebKit
+  was measured separately, at full laptop speed: a filter tap took about 30 ms at 204
+  places and 45 ms at 306, before and after the fix alike.
+- **Every Chrome build.** Stable Chrome 157 laid out the unfixed list in about a tenth of
+  the time 156 took, so on 157 the speed check passes before the fix too. The other
+  checks fail on the faults they cover in either build.
+- **A real phone.** A slowed laptop CPU is a stand-in.
+
 ## Live deployment check — 2026-08-01
 
 `tools/verify-app.mjs` only proves the paths are correct on a local server at

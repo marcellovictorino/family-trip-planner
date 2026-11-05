@@ -101,6 +101,7 @@ in `td`: `td list`.
 ```bash
 python3 -m http.server 8000   # then open http://localhost:8000
 node --test test/*.test.mjs   # the whole suite; no install step
+node tools/scale-check.mjs    # 200+ places in headless Chrome; see docs/VERIFICATION.md
 ```
 
 ## Documents
