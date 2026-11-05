@@ -12,7 +12,7 @@ minor for features, major for breaking changes to saved data.
 
 - GitHub Actions: CI on every pull request and push to `main` (unit tests, data check,
   offline check on Node 26 from `.node-version`), weekly and on-demand browser checks
-  (`scale-check`, `map-check`), workflow lint (actionlint, zizmor), a Pages deploy that waits
+  (`scale-check`, `map-check`), workflow lint (actionlint, zizmor), a Pages deploy (a job in CI) that waits
   for CI, and an OpenSSF Scorecard run. Actions are pinned by commit and tokens are read-only.
 - Dependabot keeps the pinned actions current.
 - `AGENTS.md` (and a `CLAUDE.md` pointer) describing the process for every change.

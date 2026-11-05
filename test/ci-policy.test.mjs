@@ -9,9 +9,9 @@ const dir = new URL("../.github/workflows/", import.meta.url);
 const workflows = readdirSync(dir).filter((f) => f.endsWith(".yml"))
   .map((f) => ({ file: f, text: readFileSync(new URL(f, dir), "utf8") }));
 
-test("workflows exist for CI, browser checks, lint, Pages and Scorecard", () => {
+test("workflows exist for CI (with Pages deploy), browser checks, lint and Scorecard", () => {
   const names = workflows.map((w) => w.file).sort();
-  for (const f of ["browser-checks.yml", "ci.yml", "pages.yml", "scorecard.yml", "workflow-lint.yml"]) {
+  for (const f of ["browser-checks.yml", "ci.yml", "scorecard.yml", "workflow-lint.yml"]) {
     assert.ok(names.includes(f), `${f} missing`);
   }
 });
