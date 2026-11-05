@@ -33,8 +33,13 @@ a { color: var(--text-link); }
 a:hover { color: var(--text-link-hover); }
 :focus-visible { outline: none; box-shadow: var(--focus-ring); }
 
+/* index.html sets viewport-fit=cover with a black-translucent status bar, so the
+   page draws under the Dynamic Island / notch. Pad the header by the safe-area
+   insets so the title and tabs start below it (portrait) and beside it (landscape),
+   while its background still fills the status-bar strip. */
 header {
   position: sticky; top: 0; z-index: 2;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
   background: var(--bg-header); border-bottom: var(--border-hairline);
 }
 h1 {
