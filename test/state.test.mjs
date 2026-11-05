@@ -271,3 +271,45 @@ test("a storage write that fails throws, and leaves the in-memory state untouche
   assert.throws(() => state.toggleFavourite("rundetaarn"), /Could not save/);
   assert.deepEqual(state.get().favourites, ["tivoli"]);
 });
+
+// ── S7 review minor: a stop that leaves its day must not leave a visit behind ──
+// Removing a stop takes it out of the plan, so the app can no longer show its
+// visit or let anyone undo it. Removal applies the same rule as un-ticking: an
+// unrated visit leaves nothing behind, a rated one keeps its verdict as not
+// visited, and either way the derived visited flag stops claiming a visit.
+test("removing a ticked, unrated stop from its day leaves no entry and no visited flag", () => {
+  const state = createState(fakeStorage());
+  state.addToDay("2026-08-02", "tivoli");
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  state.removeFromDay("2026-08-02", "tivoli");
+  assert.equal(state.get().dayLog["2026-08-02"], undefined);
+  assert.deepEqual(state.get().visited, []);
+});
+
+test("removing a ticked, rated stop keeps its rating as not visited, and clears the visited flag", () => {
+  const state = createState(fakeStorage());
+  state.addToDay("2026-08-02", "tivoli");
+  state.setDayRating("2026-08-02", "tivoli", { stars: 5 });
+  state.removeFromDay("2026-08-02", "tivoli");
+  const entry = state.get().dayLog["2026-08-02"].tivoli;
+  assert.equal(entry.done, false);
+  assert.equal(entry.stars, 5);
+  assert.deepEqual(state.get().visited, []);
+});
+
+test("removing a stop from one day leaves its visit on another day standing", () => {
+  const state = createState(fakeStorage());
+  state.toggleDayVisited("2026-08-02", "tivoli");
+  state.toggleDayVisited("2026-08-04", "tivoli");
+  state.removeFromDay("2026-08-02", "tivoli");
+  assert.equal(state.get().dayLog["2026-08-04"].tivoli.done, true);
+  assert.deepEqual(state.get().visited, ["tivoli"]);
+});
+
+test("removing an unticked stop leaves a visited flag set by hand in Explore alone", () => {
+  const state = createState(fakeStorage());
+  state.toggleVisited("tivoli");
+  state.addToDay("2026-08-02", "tivoli");
+  state.removeFromDay("2026-08-02", "tivoli");
+  assert.deepEqual(state.get().visited, ["tivoli"]);
+});

@@ -1,11 +1,6 @@
 import { h } from "../dom.js";
 import { tagsForKind } from "../feedback.js";
-
-function heading(iso) {
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
-    weekday: "long", day: "numeric", month: "long", timeZone: "UTC",
-  });
-}
+import { formatDayHeading } from "../dates.js";
 
 function field(label, ...children) {
   return h("div", { class: "field" }, h("p", { class: "field-label" }, label), ...children);
@@ -17,7 +12,7 @@ function thumbs(entry, handlers) {
     { class: "thumbs" },
     ["up", "down"].map((direction) =>
       h("button", {
-        class: "thumb", type: "button",
+        class: "thumb", type: "button", "data-control": `thumb-${direction}`,
         "aria-pressed": String(entry.thumb === direction),
         "aria-label": direction === "up" ? "Would recommend" : "Would not recommend",
         // Tapping the thumb that is already set clears it: the sheet opens with
@@ -34,7 +29,7 @@ function stars(entry, handlers) {
     { class: "stars" },
     [1, 2, 3, 4, 5].map((n) =>
       h("button", {
-        class: "star", type: "button",
+        class: "star", type: "button", "data-control": `star-${n}`,
         "aria-pressed": String((entry.stars ?? 0) >= n),
         "aria-label": `${n} star${n === 1 ? "" : "s"}`,
         onClick: () => handlers.onStars(entry.stars === n ? null : n),
@@ -52,7 +47,7 @@ function tags(place, entry, handlers) {
     // the thumb, the stars and the note still work.
     tagsForKind(place.kind).map((tag) =>
       h("button", {
-        class: "tag", type: "button",
+        class: "chip chip--tag", type: "button", "data-control": `tag-${tag.value}`,
         "aria-pressed": String(chosen.includes(tag.value)),
         onClick: () =>
           handlers.onTags(
@@ -68,7 +63,7 @@ export function renderRatingSheet({ place, date, entry, note, handlers }) {
     "dialog",
     { class: "rating-sheet", "aria-label": `Rate ${place.name}` },
     h("h2", {}, place.name),
-    h("p", { class: "sheet-sub" }, [heading(date), place.neighbourhood].filter(Boolean).join(" · ")),
+    h("p", { class: "sheet-sub" }, [formatDayHeading(date), place.neighbourhood].filter(Boolean).join(" · ")),
     field("Would you recommend to another family?", thumbs(entry, handlers)),
     field("Rating", stars(entry, handlers)),
     field("What stood out", tags(place, entry, handlers)),
