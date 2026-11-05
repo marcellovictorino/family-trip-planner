@@ -4,7 +4,7 @@ For a non-technical audience. Everything below is a real tap on the deployed app
 
 Open on a phone, at `https://marcellovictorino.github.io/family-trip-planner/`, before starting.
 
-1. **Open the app.** It is already added to the home screen — tap the icon like any other app. Point out there is no loading spinner, no login: the four tabs (Explore · Itinerary · Saved · Trip) are there immediately.
+1. **Open the app.** It is already added to the home screen — tap the icon like any other app. Point out there is no loading spinner, no login: the five tabs (Explore · Map · Itinerary · Saved · Trip) are there immediately.
 
 2. **Explore, filters.** On the Explore tab, tap the **🌧 Rainy** chip.
    - Kongens Have Playground (outdoor only) disappears.
@@ -24,7 +24,7 @@ Open on a phone, at `https://marcellovictorino.github.io/family-trip-planner/`, 
 
 State plainly, before anyone asks:
 
-- **No map.** Places show a neighbourhood name and coordinates, not a pin.
+- **Map tiles need a connection.** Map shows regional place markers, popups and selected-place details; it does not download a complete offline region.
 - **No live weather.** The rain filter is something *you* toggle when it starts raining; the app does not know the forecast.
 - **No budget tracking.**
 - **No packing list.**

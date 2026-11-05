@@ -2,6 +2,21 @@
 
 Notable changes, newest first. Dates are the day the work merged to `main`.
 
+## Unreleased — interactive map
+
+### Added
+
+- A Leaflet Map tab with OpenStreetMap tiles, all guide markers, popups and a place
+  selector. The initial view and Fit region include the wider day-trip region,
+  including Louisiana, Bakken, Frederiksborg and Kronborg.
+- Selected-place details, Save and Add to day share the existing guide and state.
+  Switching tabs or saving preserves the map and selection.
+- Vendored Leaflet library, styles, images and licence; a cache update makes the
+  map code available offline. New tiles still need a connection, with a visible
+  explanation when tile loading fails.
+- A repeatable Chrome journey with real tile responses and desktop/phone pictures;
+  fault controls prove that missing Leaflet, missing tiles and city-only bounds fail.
+
 ## 5 November 2026 — 200+ places
 
 Checks the app at the size the spec targets, 200 places, rather than the 102 it holds

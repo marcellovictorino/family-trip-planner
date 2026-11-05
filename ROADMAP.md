@@ -132,7 +132,7 @@ only through a thumb press, which is a design choice and stays open.
 Epic `td-1f0fe9`. None of these are needed for the Copenhagen trip to work. Each was cut
 to protect the vertical slice, not overlooked.
 
-Interactive map · live weather · budget tracking · reservation tracking · packing
+Live weather · budget tracking · reservation tracking · packing
 checklist · journal and photo timeline · private hosting via Cloudflare Access · a richer
 design pass · drag-and-drop itinerary reordering.
 
@@ -142,10 +142,12 @@ browser's localStorage, and two phones cannot see each other without a server. I
 need a deployed app (Cloudflare), Google sign-in, and server-side trip state — at which
 point a backend database replaces the JSONL feedback store.
 
-Two carry a constraint worth stating before anyone starts. A **Leaflet map** needs
-vendored library code and offline tiles, which collides head-on with the zero-dependency
-and offline rules. **Live weather** needs a runtime network call and must degrade to the
-existing manual Rainy and Sunny chips when there is no signal.
+The **Leaflet map** is now implemented with vendored library code, regional bounds,
+place popups and selection. It does not promise a complete offline tile region: new
+OpenStreetMap tiles need a connection, while the guide, markers and details stay local.
+`node tools/map-check.mjs` checks real tile loading and the selection journey in Chrome.
+**Live weather** still needs a runtime network call and must degrade to the existing
+manual Rainy and Sunny chips when there is no signal.
 
 ## Reusing this for another trip
 

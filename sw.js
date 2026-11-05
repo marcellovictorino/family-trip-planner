@@ -1,4 +1,4 @@
-const CACHE = "trip-planner-v24";
+const CACHE = "trip-planner-v25";
 
 const ASSETS = [
   "./",
@@ -10,6 +10,14 @@ const ASSETS = [
   "src/dom.js",
   "src/feedback.js",
   "src/views/explore.js",
+  "src/views/map.js",
+  "assets/leaflet/leaflet.js",
+  "assets/leaflet/leaflet.css",
+  "assets/leaflet/images/layers.png",
+  "assets/leaflet/images/layers-2x.png",
+  "assets/leaflet/images/marker-icon.png",
+  "assets/leaflet/images/marker-icon-2x.png",
+  "assets/leaflet/images/marker-shadow.png",
   "src/views/itinerary.js",
   "src/views/rating.js",
   "src/views/saved.js",

@@ -26,7 +26,7 @@ tools/validate-data.mjs     Gate. Untrusted input. Rejects anything outside the
 data/<city>-<year>.json     Verified. Static. Immutable once committed.
         │
         ▼
-index.html + src/*.js       The app. Location-agnostic, offline, zero dependencies.
+index.html + src/*.js       The app. Location-agnostic, offline guide; vendored Leaflet map.
         │
         ▼
 GitHub Pages + service worker → Add to Home Screen
@@ -47,9 +47,9 @@ Two consequences of the split are worth stating explicitly:
 
 | Constraint | Reason |
 | --- | --- |
-| Zero npm dependencies | Nothing to install, nothing to break, nothing to audit |
+| Zero npm dependencies | No install step; Leaflet 1.9.4 is vendored with its BSD licence in `assets/leaflet/` |
 | No build step | Files are served exactly as authored |
-| Offline after first load | The whole point; verified in airplane mode, not assumed |
+| Offline guide after first load | Map markers and details work offline; new OpenStreetMap tiles need a connection. Viewed tiles may be cached, not a complete offline region |
 | Mobile first, iPhone Safari | Where it will actually be used |
 | Tap-to-assign, no drag-and-drop | HTML5 drag does not work on iOS, and a day picker is better on touch anyway |
 | No place photography | Verified, hotlink-stable, cacheable image URLs for *places* cost hours and break silently. A category glyph and colour band cost nothing. This is narrower than "no images" — the app icon and the self-hosted font files below are images and fonts, not place photos, and carry none of that risk because they ship once, in the repo, at a fixed set of sizes |
@@ -102,7 +102,20 @@ in `td`: `td list`.
 python3 -m http.server 8000   # then open http://localhost:8000
 node --test test/*.test.mjs   # the whole suite; no install step
 node tools/scale-check.mjs    # 200+ places in headless Chrome; see docs/VERIFICATION.md
+node tools/map-check.mjs      # real tiles, day trips, popups and selection in Chrome
 ```
+
+## Map
+
+Open **Map** to see every place in the guide. The initial view and **Fit region** use
+`trip.region_bbox` (falling back to `trip.bbox`), so Louisiana, Bakken, Frederiksborg
+and Kronborg are on-screen, not outside the city-only view. Tap a marker or use
+**Select a place** to open its popup and details. Save it or add it to a day without
+leaving the map; switching tabs retains the selection and zoom.
+
+Leaflet is served locally, with no runtime CDN dependency. OpenStreetMap supplies
+the tiles and attribution. The app does not download a whole region for offline use.
+If tiles fail, a visible message explains that markers and place details still work.
 
 ## Documents
 
