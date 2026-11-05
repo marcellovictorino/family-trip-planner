@@ -105,6 +105,12 @@ node tools/scale-check.mjs    # 200+ places in headless Chrome; see docs/VERIFIC
 node tools/map-check.mjs      # real tiles, day trips, popups and selection in Chrome
 ```
 
+## Continuous integration
+
+GitHub Actions runs the unit tests, the data check and the offline check on every pull request and push to `main` (Node version in `.node-version`). The two browser checks run weekly and on demand; workflows are linted, Pages deploys after CI passes, and Dependabot keeps the pinned actions current. See `.github/`.
+
+Each pull request bumps `APP_VERSION` in `src/version.js` and adds an entry to `CHANGELOG.md` (see its header); a unit test keeps the two in step.
+
 ## Map
 
 Open **Map** to see every place in the guide. The initial view and **Fit region** use

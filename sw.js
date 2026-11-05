@@ -25,6 +25,7 @@ const ASSETS = [
   "src/filter.js",
   "src/schema.mjs",
   "src/state.js",
+  "src/version.js",
   "src/travel.js",
   "tools/geo.mjs",
   "data/copenhagen-2026.json",
