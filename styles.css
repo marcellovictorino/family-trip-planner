@@ -320,3 +320,10 @@ label.action { display: inline-flex; align-items: center; cursor: pointer; }
 .place-map .leaflet-popup-content-wrapper, .place-map .leaflet-popup-tip { background: var(--surface-raised); }
 .place-map .leaflet-control-zoom a { min-width: var(--tap-min); min-height: var(--tap-min); line-height: var(--tap-min); }
 @media (max-width: 480px) { .tab { padding-inline: var(--space-md); } }
+
+.app-version {
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--text-small);
+  color: var(--text-muted, var(--text-body));
+  text-align: center;
+}

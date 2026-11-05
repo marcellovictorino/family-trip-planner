@@ -1,8 +1,23 @@
 # Changelog
 
-Notable changes, newest first. Dates are the day the work merged to `main`.
+Notable changes, newest first, in the style of [Keep a Changelog](https://keepachangelog.com).
+Dates are the day the work merged to `main`. Every pull request bumps `APP_VERSION` in
+`src/version.js` (shown at the foot of the app) and adds an entry here under Added, Changed,
+Fixed or Improved; the version below must match it. Patch for fixes and small improvements,
+minor for features, major for breaking changes to saved data.
 
-## Unreleased — interactive map
+## 0.6.0 — 5 November 2026 — checks, changelog and version
+
+### Added
+
+- GitHub Actions: CI on every pull request and push to `main` (unit tests, data check,
+  offline check on Node 26 from `.node-version`), weekly and on-demand browser checks
+  (`scale-check`, `map-check`), workflow lint (actionlint, zizmor), a Pages deploy that waits
+  for CI, and an OpenSSF Scorecard run. Actions are pinned by commit and tokens are read-only.
+- Dependabot keeps the pinned actions current.
+- A visible app version (`src/version.js`), checked against this changelog by a unit test.
+
+## 0.5.0 — 5 November 2026 — interactive map (PR #6)
 
 ### Added
 
@@ -17,7 +32,7 @@ Notable changes, newest first. Dates are the day the work merged to `main`.
 - A repeatable Chrome journey with real tile responses and desktop/phone pictures;
   fault controls prove that missing Leaflet, missing tiles and city-only bounds fail.
 
-## 5 November 2026 — 200+ places
+## 0.4.3 — 5 November 2026 — 200+ places (PR #5)
 
 Checks the app at the size the spec targets, 200 places, rather than the 102 it holds
 (`td-9fdf7e`). Search, every filter chip, Saved and the layout at phone width were already
@@ -40,7 +55,35 @@ already quick.
   page fits 390 px, and no tap takes over 400 ms. Zero dependencies, like
   `tools/verify-app.mjs`.
 
-## 1 August 2026 — S11–S14: logistics
+## 0.4.2 — 5 November 2026 (PR #4)
+
+### Fixed
+
+- Cleared five of the six minors the S7 review deferred. A stop taken off its day could
+  leave a visit the app could no longer show or undo, which exported as a phantom visit.
+
+## 0.4.1 — 5 November 2026 (PR #3)
+
+### Fixed
+
+- On iPhone the sticky header overlapped the Dynamic Island and status area; it now keeps
+  clear of the device safe areas.
+
+## 0.4.0 — 5 November 2026 (PR #2)
+
+### Changed
+
+- Each place's `nearest_metro` uses one canonical station name, so places at one station
+  group together and station-graph routing can use them.
+
+## 0.3.1 — 4 November 2026 (PR #1)
+
+### Fixed
+
+- Day trips such as Louisiana and Bakken pass the trip's location check; before, the
+  generator dropped the whole day-trips batch and the app had none.
+
+## 0.3.0 — 1 August 2026 — S11–S14: logistics
 
 Stops the itinerary pinballing across the city. Explore can sort by how far a place is,
 the itinerary shows how long each hop takes, and a day can propose its own running order.
@@ -82,7 +125,7 @@ since correcting exactly those is the reason the table exists. Separately, the d
 carries no opening hours — only a free-text `best_time` — so a day can be geometrically
 feasible and still impossible. Nothing in the app implies otherwise.
 
-## 1 August 2026 — data quality
+## 0.2.1 — 1 August 2026 — data quality
 
 - Gluten-free coverage across the guide's restaurants went from 7 rated `good` to 15.
   Only the dedicated gluten-free batch had been briefed for it, so weak coverage leaked
@@ -94,7 +137,7 @@ feasible and still impossible. Nothing in the app implies otherwise.
 - The twelve places with an empty `near[]` were investigated and left alone. At an 800 m
   radius that is accurate geography, not a defect.
 
-## 1 August 2026 — S7: tick and rate
+## 0.2.0 — 1 August 2026 — S7: tick and rate
 
 Turns the Itinerary into a todo list you tick as the day happens, and captures why each
 stop was or was not worth it. The first half of the feedback loop
@@ -139,7 +182,7 @@ digest scripts follow after the trip, once there are real ratings to build again
   a module script fails the MIME check and kills the import chain, turning a partly-failed
   install into a blank screen offline. The shell fallback is now scoped to navigations.
 
-## 1 August 2026 — S1–S6: the MVP
+## 0.1.0 — 1 August 2026 — S1–S6: the MVP
 
 App shell and four tabs, deployed to GitHub Pages with a service worker. A research
 generator driving `claude -p` with web search behind a validation gate that rejects

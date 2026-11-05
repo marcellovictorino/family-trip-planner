@@ -5,8 +5,11 @@ import { renderRatingSheet } from "./views/rating.js";
 import { renderSaved } from "./views/saved.js";
 import { renderTrip } from "./views/trip.js";
 import { state } from "./state.js";
+import { APP_VERSION } from "./version.js";
 import { createMapView } from "./views/map.js";
 import { resolveAnchor, routeMinutes, proposeOrder } from "./travel.js";
+
+document.querySelector("#app-version").textContent = `Version ${APP_VERSION}`;
 
 const DATA_URL = "data/copenhagen-2026.json";
 
